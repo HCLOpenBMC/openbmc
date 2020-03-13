@@ -1,0 +1,12 @@
+[Unit]
+Description=VUART1 Console Server
+ConditionPathExists=/etc/obmc-console/server.ttyVUART1.conf
+
+[Service]
+# Instance ID is the VUART basename
+ExecStart=/usr/sbin/obmc-console-server --config /etc/obmc-console/server.ttyVUART1.conf ttyS0
+SyslogIdentifier=VUART1-console-server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
