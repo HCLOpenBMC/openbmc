@@ -1,19 +1,19 @@
-From 41e75dfdba7ea6c047a013f7ab5a854b01e82b30 Mon Sep 17 00:00:00 2001
+From 0bee6cc93f1af792e47444e4db93e6a18a011b89 Mon Sep 17 00:00:00 2001
 From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
-Date: Thu, 12 Mar 2020 19:18:29 +0530
+Date: Thu, 19 Mar 2020 23:29:32 +0530
 Subject: [PATCH] Yosemite-device-tree
 
 ---
- .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 263 +++++++++++++++++++++
- 1 file changed, 263 insertions(+)
+ .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 247 +++++++++++++++++++++
+ 1 file changed, 247 insertions(+)
  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
 
 diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
 new file mode 100644
-index 0000000..b72bd10
+index 0000000..9719a91
 --- /dev/null
 +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
-@@ -0,0 +1,263 @@
+@@ -0,0 +1,247 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +// Copyright (c) 2018 Facebook Inc.
 +/dts-v1/;
@@ -136,45 +136,29 @@ index 0000000..b72bd10
 +			&pinctrl_adc15_default>;
 +};
 +
++&i2c0 {
++	//Host1 NIC bus
++	status = "okay";
++        multi-master;
++	ipmb0@10 {
++		compatible = "ipmb-dev";
++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
++		i2c-protocol;
++	};
++};
++
++
 +&i2c1 {
 +	//Host1 IPMB bus
 +	status = "okay";
++        multi-master;
 +	ipmb1@10 {
 +		compatible = "ipmb-dev";
-+		reg = <0x10>;
++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
 +		i2c-protocol;
 +	};
 +};
 +
-+&i2c3 {
-+	//Host2 IPMB bus
-+	status = "okay";
-+	ipmb1@10 {
-+		compatible = "ipmb-dev";
-+		reg = <0x10>;
-+		i2c-protocol;
-+	};
-+};
-+
-+&i2c5 {
-+	//Host3 IPMB bus
-+	status = "okay";
-+	ipmb1@10 {
-+		compatible = "ipmb-dev";
-+		reg = <0x10>;
-+		i2c-protocol;
-+	};
-+};
-+
-+&i2c7 {
-+	//Host4 IPMB bus
-+	status = "okay";
-+	ipmb1@10 {
-+		compatible = "ipmb-dev";
-+		reg = <0x10>;
-+		i2c-protocol;
-+	};
-+};
 +&i2c8 {
 +	status = "okay";
 +	//FRU EEPROM
