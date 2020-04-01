@@ -4,10 +4,10 @@ ConditionPathExists=/etc/obmc-console/server.ttyVUART4.conf
 
 [Service]
 # Instance ID is the VUART basename
+Restart=always
 ExecStart=/usr/sbin/obmc-console-server --config /etc/obmc-console/server.ttyVUART4.conf ttyS3
 SyslogIdentifier=VUART4-console-server
-Restart=always
+
 
 [Install]
 WantedBy=multi-user.target
-
