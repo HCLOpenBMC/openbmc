@@ -8,15 +8,16 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=e3fc50a88d0a364313df4b21ef20c29e"
 
 inherit autotools pkgconfig
-inherit pythonnative
+inherit python3native
 inherit obmc-phosphor-dbus-service
 inherit phosphor-logging
 inherit phosphor-dbus-yaml
 
 DEPENDS += "autoconf-archive-native"
 DEPENDS += "systemd"
-DEPENDS += "python-mako-native"
-DEPENDS += "python-pyyaml-native"
+DEPENDS += "${PYTHON_PN}-mako-native"
+DEPENDS += "${PYTHON_PN}-pyyaml-native"
+DEPENDS += "${PYTHON_PN}-native"
 DEPENDS += "sdbusplus sdbusplus-native"
 DEPENDS += "phosphor-dbus-interfaces phosphor-dbus-interfaces-native"
 DEPENDS += "virtual/phosphor-logging-callouts"
@@ -54,7 +55,7 @@ FILES_phosphor-rsyslog-config += " \
 "
 
 SRC_URI += "git://github.com/openbmc/phosphor-logging"
-SRCREV = "5f5352e5f6b0ebcdd5bf0a7306f13c503246c9b9"
+SRCREV = "1e71a4dcf6ddc73411a7c171cd066f2544e0a7f5"
 
 S = "${WORKDIR}/git"
 
