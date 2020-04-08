@@ -1,57 +1,19 @@
-From 52483d951310187e3718c3155e408681f064ad6e Mon Sep 17 00:00:00 2001
+From 898851c2beff93dbc78ef1b64de5c691d26258e6 Mon Sep 17 00:00:00 2001
 From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
-Date: Thu, 2 Apr 2020 17:18:26 +0530
-Subject: [PATCH v9] ARM: dts: aspeed: Adding Facebook Yosemite V2 BMC
+Date: Wed, 8 Apr 2020 20:20:20 +0530
+Subject: [PATCH] osemite-device-tree
 
-The Yosemite V2 is a facebook multi-node server
-platform that host four OCP server. The BMC
-in the Yosemite V2 platform based on AST2500 SoC.
-
-This patch adds linux device tree entry related to
-Yosemite V2 specific devices connected to BMC SoC.
-
-Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
-Acked-by     : Andrew Jeffery <andrew@aj.id.au>
-Reviewed-by  : Vijay Khemka <vkhemka@fb.com>
 ---
----      v9 - Added external i2c debug card support.
----      v8 - Added dtb entry in Makefile as review comment.
----           -Added IPMB bridge device details as review comment.
----      v7 - Added multi-host SOL feature.
----      v6 - Added device tree property for multi-host Mellanox NIC in the ncsi driver.
----      v5 - Spell and contributor name correction.
----           - License identifier changed to GPL-2.0-or-later.
----           - aspeed-gpio.h removed.
----           - FAN2 tacho channel changed.
----      v4 - Bootargs removed.
----      v3 - Uart1 Debug removed .
----      v2 - LPC and VUART removed .
----      v1 - Initial draft.
----
----
- arch/arm/boot/dts/Makefile                         |   1 +
- .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 237 +++++++++++++++++++++
- 2 files changed, 238 insertions(+)
+ .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 236 +++++++++++++++++++++
+ 1 file changed, 236 insertions(+)
  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index fcd607f..00b6649 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1289,6 +1289,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-facebook-wedge40.dtb \
- 	aspeed-bmc-facebook-wedge100.dtb \
- 	aspeed-bmc-facebook-yamp.dtb \
-+	aspeed-bmc-facebook-yosemitev2.dtb \
- 	aspeed-bmc-ibm-rainier.dtb \
- 	aspeed-bmc-intel-s2600wf.dtb \
- 	aspeed-bmc-inspur-fp5280g2.dtb \
 diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
 new file mode 100644
-index 0000000..9fcafd7
+index 0000000..ed7e9dc
 --- /dev/null
 +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
-@@ -0,0 +1,237 @@
+@@ -0,0 +1,236 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +// Copyright (c) 2018 Facebook Inc.
 +/dts-v1/;
@@ -136,11 +98,6 @@ index 0000000..9fcafd7
 +
 +&uart5 {
 +	// BMC Console
-+	status = "okay";
-+};
-+
-+&vuart {
-+	// Virtual UART
 +	status = "okay";
 +};
 +
@@ -270,10 +227,14 @@ index 0000000..9fcafd7
 +};
 +
 +&i2c13 {
-+	// External Debug card
-+	status = "okay";	
++	status = "okay";
++	//Debug card IPMB bus
++	ipmb13@10 {
++		compatible = "ipmb-dev";
++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
++		i2c-protocol;
++	};
 +};
-+
 +
 +&pwm_tacho {
 +	status = "okay";
