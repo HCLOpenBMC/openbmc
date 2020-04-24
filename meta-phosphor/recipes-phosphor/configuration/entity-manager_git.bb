@@ -3,7 +3,7 @@ DESCRIPTION = "Entity Manager provides d-bus configuration data \
 and configures system sensors"
 
 SRC_URI = "git://github.com/openbmc/entity-manager.git"
-SRCREV = "29d83258f1268b3c41f97649518fa9bb1ffe83ed"
+SRCREV = "ff58eba9e7f06b60879db38e1be6b41c6b2b9092"
 PV = "0.1+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
@@ -19,6 +19,8 @@ DEPENDS = "boost \
 
 S = "${WORKDIR}/git/"
 inherit meson systemd
+
+EXTRA_OEMESON = "-Dtests=disabled"
 
 PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'ipmi-fru', d)}"
 PACKAGECONFIG[ipmi-fru] = "-Dfru-device=true, -Dfru-device=false, i2c-tools,"

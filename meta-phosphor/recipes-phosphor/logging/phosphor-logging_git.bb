@@ -18,7 +18,8 @@ DEPENDS += "systemd"
 DEPENDS += "${PYTHON_PN}-mako-native"
 DEPENDS += "${PYTHON_PN}-pyyaml-native"
 DEPENDS += "${PYTHON_PN}-native"
-DEPENDS += "sdbusplus sdbusplus-native"
+DEPENDS += "${PYTHON_PN}-sdbus++-native"
+DEPENDS += "sdbusplus"
 DEPENDS += "phosphor-dbus-interfaces phosphor-dbus-interfaces-native"
 DEPENDS += "virtual/phosphor-logging-callouts"
 DEPENDS += "phosphor-logging-error-logs-native"
@@ -55,7 +56,7 @@ FILES_phosphor-rsyslog-config += " \
 "
 
 SRC_URI += "git://github.com/openbmc/phosphor-logging"
-SRCREV = "1e71a4dcf6ddc73411a7c171cd066f2544e0a7f5"
+SRCREV = "d03d3d91bc39dcae72d07cd59ecbcbe530a7a9ed"
 
 S = "${WORKDIR}/git"
 
@@ -63,7 +64,7 @@ S = "${WORKDIR}/git"
 # as they will not be available in host machine
 DEPENDS_remove_class-native = " \
         virtual/phosphor-logging-callouts \
-        sdbus++ \
+        sdbusplus \
         systemd \
         libcereal \
         sdeventplus \
@@ -73,7 +74,7 @@ DEPENDS_remove_class-native = " \
 # as they will not be available in host machine
 DEPENDS_remove_class-nativesdk = " \
         virtual/phosphor-logging-callouts \
-        sdbus++-native \
+        sdbusplus \
         libcereal \
         systemd \
         phosphor-dbus-interfaces \
