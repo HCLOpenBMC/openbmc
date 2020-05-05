@@ -1,0 +1,39 @@
+From 16c673d2ce6c32a70fb0080f5e6d05246935dd4b Mon Sep 17 00:00:00 2001
+From: Patrick Williams <patrick@stwcx.xyz>
+Date: Sat, 02 May 2020 06:31:39 -0500
+Subject: [PATCH] systemd: reformat PACKAGECONFIG for easier comparison
+
+Break each PACKAGECONFIG variable into their own line and sort to
+allow easier comparison with meta-poky's systemd_%.bb files.
+
+Signed-off-by: Patrick Williams <patrick@stwcx.xyz>
+Change-Id: I3b20bb5e8a1fa5196c1996caf4dcf025a33a289b
+---
+
+diff --git a/recipes-core/systemd/systemd_%.bbappend b/recipes-core/systemd/systemd_%.bbappend
+index 16ba8f7..312b583 100644
+--- a/recipes-core/systemd/systemd_%.bbappend
++++ b/recipes-core/systemd/systemd_%.bbappend
+@@ -1,8 +1,20 @@
+ FILES_${PN}-catalog-extralocales = \
+             "${exec_prefix}/lib/systemd/catalog/*.*.catalog"
+ PACKAGES =+ "${PN}-catalog-extralocales"
+-PACKAGECONFIG = "pam hostnamed networkd randomseed resolved sysusers timedated \
+-                 timesyncd xz kmod coredump"
++
++PACKAGECONFIG = " \
++        coredump \
++        hostnamed \
++        kmod \
++        networkd \
++        pam \
++        randomseed \
++        resolved \
++        sysusers \
++        timedated \
++        timesyncd \
++        xz \
++        "
+ 
+ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+ SRC_URI += "file://default.network"
