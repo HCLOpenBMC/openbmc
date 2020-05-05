@@ -1,0 +1,258 @@
+From 5a40bc06e6244d667d986435f9aff8b00a967b1e Mon Sep 17 00:00:00 2001
+From: HCLOpenBMC <HCL_OpenBMC@hcl.com>
+Date: Tue, 5 May 2020 10:48:18 +0530
+Subject: [PATCH] meta-facebook: restructure phosphor default-virtuals
+
+---
+ meta-facebook/conf/machine/include/facebook.inc    | 22 +++++++++++++++++
+ .../meta-tiogapass/conf/machine/tiogapass.conf     |  2 +-
+ .../conf/machine/tiogapass.conf.orig               | 27 +++++++++++++++++++++
+ .../meta-tiogapass/conf/machine/tiogapass.conf.rej | 28 ++++++++++++++++++++++
+ .../meta-yosemitev2/conf/machine/yosemitev2.conf   |  2 +-
+ .../conf/machine/yosemitev2.conf.orig              | 25 +++++++++++++++++++
+ .../conf/machine/yosemitev2.conf.rej               | 26 ++++++++++++++++++++
+ .../packagegroups/packagegroup-fb-apps.bb          | 25 ++++++++++++++++++-
+ 8 files changed, 154 insertions(+), 3 deletions(-)
+ create mode 100644 meta-facebook/conf/machine/include/facebook.inc
+ create mode 100644 meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.orig
+ create mode 100644 meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.rej
+ create mode 100644 meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.orig
+ create mode 100644 meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.rej
+
+diff --git a/meta-facebook/conf/machine/include/facebook.inc b/meta-facebook/conf/machine/include/facebook.inc
+new file mode 100644
+index 0000000..9b6e3ef
+--- /dev/null
++++ b/meta-facebook/conf/machine/include/facebook.inc
+@@ -0,0 +1,22 @@
++OBMC_MACHINE_FEATURES += "\
++        obmc-bmc-state-mgmt \
++        obmc-chassis-state-mgmt \
++        obmc-host-ipmi \
++        obmc-host-state-mgmt \
++        obmc-phosphor-chassis-mgmt \
++        obmc-phosphor-fan-mgmt \
++        obmc-phosphor-flash-mgmt \
++        "
++
++VIRTUAL-RUNTIME_skeleton_workbook = "${MACHINE}-config"
++VIRTUAL-RUNTIME_obmc-host-state-manager ?= "x86-power-control"
++VIRTUAL-RUNTIME_obmc-chassis-state-manager ?= "x86-power-control"
++
++PREFERRED_PROVIDER_virtual/obmc-chassis-mgmt = "packagegroup-fb-apps"
++PREFERRED_PROVIDER_virtual/obmc-fan-mgmt = "packagegroup-fb-apps"
++PREFERRED_PROVIDER_virtual/obmc-flash-mgmt = "packagegroup-fb-apps"
++PREFERRED_PROVIDER_virtual/obmc-host-ipmi-hw ?= "phosphor-ipmi-kcs"
++PREFERRED_PROVIDER_virtual/obmc-inventory-data ?= "${VIRTUAL-RUNTIME_skeleton_workbook}"
++PREFERRED_PROVIDER_virtual/obmc-system-mgmt = "packagegroup-fb-apps"
++
++OVERRIDES .= ":facebook"
+diff --git a/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf
+index f99ba44..46cbcd2 100644
+--- a/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf
++++ b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf
+@@ -3,7 +3,7 @@ KERNEL_DEVICETREE = "${KMACHINE}-bmc-facebook-${MACHINE}.dtb"
+ 
+ UBOOT_MACHINE = "ast_g5_ncsi_config"
+ 
+-require conf/machine/include/facebook-compute-singlehost.inc
++require conf/machine/include/facebook.inc
+ require conf/machine/include/ast2500.inc
+ require conf/machine/include/obmc-bsp-common.inc
+ 
+diff --git a/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.orig b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.orig
+new file mode 100644
+index 0000000..f99ba44
+--- /dev/null
++++ b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.orig
+@@ -0,0 +1,27 @@
++KMACHINE = "aspeed"
++KERNEL_DEVICETREE = "${KMACHINE}-bmc-facebook-${MACHINE}.dtb"
++
++UBOOT_MACHINE = "ast_g5_ncsi_config"
++
++require conf/machine/include/facebook-compute-singlehost.inc
++require conf/machine/include/ast2500.inc
++require conf/machine/include/obmc-bsp-common.inc
++
++SERIAL_CONSOLES = "57600;ttyS4"
++
++OBMC_MACHINE_FEATURES += "\
++        obmc-phosphor-fan-mgmt \
++        obmc-phosphor-chassis-mgmt \
++        obmc-phosphor-flash-mgmt \
++        obmc-host-ipmi \
++        obmc-host-state-mgmt \
++        obmc-chassis-state-mgmt \
++        obmc-bmc-state-mgmt \
++        "
++PREFERRED_PROVIDER_virtual/obmc-host-ctl ?= ""
++PREFERRED_PROVIDER_virtual/obmc-system-mgmt = "packagegroup-fb-apps"
++PREFERRED_PROVIDER_virtual/obmc-host-ipmi-hw = "phosphor-ipmi-kcs"
++FLASH_SIZE = "32768"
++VIRTUAL-RUNTIME_skeleton_workbook = "${MACHINE}-config"
++VIRTUAL-RUNTIME_obmc-host-state-manager = "x86-power-control"
++VIRTUAL-RUNTIME_obmc-chassis-state-manager = "x86-power-control"
+diff --git a/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.rej b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.rej
+new file mode 100644
+index 0000000..58c0816
+--- /dev/null
++++ b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf.rej
+@@ -0,0 +1,28 @@
++--- meta-tiogapass/conf/machine/tiogapass.conf
+++++ meta-tiogapass/conf/machine/tiogapass.conf
++@@ -3,24 +3,11 @@
++ 
++ UBOOT_MACHINE = "ast_g5_ncsi_config"
++ 
+++require conf/machine/include/facebook.inc
++ require conf/machine/include/ast2500.inc
++ require conf/machine/include/obmc-bsp-common.inc
++ 
++ SERIAL_CONSOLES = "57600;ttyS4"
++ 
++-OBMC_MACHINE_FEATURES += "\
++-        obmc-phosphor-fan-mgmt \
++-        obmc-phosphor-chassis-mgmt \
++-        obmc-phosphor-flash-mgmt \
++-        obmc-host-ipmi \
++-        obmc-host-state-mgmt \
++-        obmc-chassis-state-mgmt \
++-        obmc-bmc-state-mgmt \
++-        "
++ PREFERRED_PROVIDER_virtual/obmc-host-ctl ?= ""
++-PREFERRED_PROVIDER_virtual/obmc-system-mgmt = "packagegroup-fb-apps"
++-PREFERRED_PROVIDER_virtual/obmc-host-ipmi-hw = "phosphor-ipmi-kcs"
++ FLASH_SIZE = "32768"
++-VIRTUAL-RUNTIME_skeleton_workbook = "${MACHINE}-config"
++-VIRTUAL-RUNTIME_obmc-host-state-manager = "x86-power-control"
++-VIRTUAL-RUNTIME_obmc-chassis-state-manager = "x86-power-control"
+diff --git a/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf
+index 2577b49..cc3eb18 100644
+--- a/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf
++++ b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf
+@@ -3,7 +3,7 @@ KERNEL_DEVICETREE = "${KMACHINE}-bmc-facebook-${MACHINE}.dtb"
+ 
+ UBOOT_MACHINE = "ast_g5_ncsi_config"
+ 
+-require conf/machine/include/facebook-compute-multihost.inc
++require conf/machine/include/facebook.inc
+ require conf/machine/include/ast2500.inc
+ require conf/machine/include/obmc-bsp-common.inc
+ 
+diff --git a/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.orig b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.orig
+new file mode 100644
+index 0000000..2577b49
+--- /dev/null
++++ b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.orig
+@@ -0,0 +1,25 @@
++KMACHINE = "aspeed"
++KERNEL_DEVICETREE = "${KMACHINE}-bmc-facebook-${MACHINE}.dtb"
++
++UBOOT_MACHINE = "ast_g5_ncsi_config"
++
++require conf/machine/include/facebook-compute-multihost.inc
++require conf/machine/include/ast2500.inc
++require conf/machine/include/obmc-bsp-common.inc
++
++SERIAL_CONSOLES = "57600;ttyS4"
++
++OBMC_MACHINE_FEATURES += "\
++        obmc-phosphor-fan-mgmt \
++        obmc-phosphor-chassis-mgmt \
++        obmc-phosphor-flash-mgmt \
++        obmc-host-ipmi \
++        obmc-host-state-mgmt \
++        obmc-chassis-state-mgmt \
++        obmc-bmc-state-mgmt \
++        "
++PREFERRED_PROVIDER_virtual/obmc-host-ctl ?= ""
++PREFERRED_PROVIDER_virtual/obmc-system-mgmt = "packagegroup-fb-apps"
++FLASH_SIZE = "32768"
++VIRTUAL-RUNTIME_skeleton_workbook = "${MACHINE}-config"
++
+diff --git a/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.rej b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.rej
+new file mode 100644
+index 0000000..42ac9f1
+--- /dev/null
++++ b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf.rej
+@@ -0,0 +1,26 @@
++--- meta-yosemitev2/conf/machine/yosemitev2.conf
+++++ meta-yosemitev2/conf/machine/yosemitev2.conf
++@@ -3,22 +3,11 @@
++ 
++ UBOOT_MACHINE = "ast_g5_ncsi_config"
++ 
+++require conf/machine/include/facebook.inc
++ require conf/machine/include/ast2500.inc
++ require conf/machine/include/obmc-bsp-common.inc
++ 
++ SERIAL_CONSOLES = "57600;ttyS4"
++ 
++-OBMC_MACHINE_FEATURES += "\
++-        obmc-phosphor-fan-mgmt \
++-        obmc-phosphor-chassis-mgmt \
++-        obmc-phosphor-flash-mgmt \
++-        obmc-host-ipmi \
++-        obmc-host-state-mgmt \
++-        obmc-chassis-state-mgmt \
++-        obmc-bmc-state-mgmt \
++-        "
++ PREFERRED_PROVIDER_virtual/obmc-host-ctl ?= ""
++-PREFERRED_PROVIDER_virtual/obmc-system-mgmt = "packagegroup-fb-apps"
++ FLASH_SIZE = "32768"
++-VIRTUAL-RUNTIME_skeleton_workbook = "${MACHINE}-config"
++-
+diff --git a/meta-facebook/recipes-fb/packagegroups/packagegroup-fb-apps.bb b/meta-facebook/recipes-fb/packagegroups/packagegroup-fb-apps.bb
+index 1709ac2..1dcc7cb 100644
+--- a/meta-facebook/recipes-fb/packagegroups/packagegroup-fb-apps.bb
++++ b/meta-facebook/recipes-fb/packagegroups/packagegroup-fb-apps.bb
+@@ -5,13 +5,37 @@ inherit packagegroup
+ 
+ PROVIDES = "${PACKAGES}"
+ PACKAGES = " \
++        ${PN}-chassis \
++        ${PN}-fans \
++        ${PN}-flash \
+         ${PN}-system \
+         "
+ 
++PROVIDES += "virtual/obmc-chassis-mgmt"
++PROVIDES += "virtual/obmc-fan-mgmt"
++PROVIDES += "virtual/obmc-flash-mgmt"
+ PROVIDES += "virtual/obmc-system-mgmt"
+ 
++RPROVIDES_${PN}-chassis += "virtual-obmc-chassis-mgmt"
++RPROVIDES_${PN}-fans += "virtual-obmc-fan-mgmt"
++RPROVIDES_${PN}-flash += "virtual-obmc-flash-mgmt"
+ RPROVIDES_${PN}-system += "virtual-obmc-system-mgmt"
+ 
++SUMMARY_${PN}-chassis = "Facebook Chassis"
++RDEPENDS_${PN}-chassis = " \
++        x86-power-control \
++        "
++
++SUMMARY_${PN}-fans = "Facebook Fans"
++RDEPENDS_${PN}-fans = " \
++        phosphor-pid-control \
++        "
++
++SUMMARY_${PN}-flash = "Facebook Flash"
++RDEPENDS_${PN}-flash = " \
++        phosphor-software-manager \
++        "
++
+ SUMMARY_${PN}-system = "Facebook System"
+ RDEPENDS_${PN}-system = " \
+         entity-manager \
+@@ -19,7 +43,6 @@ RDEPENDS_${PN}-system = " \
+         fb-powerctrl \
+         phosphor-ipmi-ipmb \
+         fb-ipmi-oem \
+-        phosphor-pid-control \
+         phosphor-hostlogger \
+         phosphor-sel-logger \
+         ipmitool \
+-- 
+2.7.4
+
