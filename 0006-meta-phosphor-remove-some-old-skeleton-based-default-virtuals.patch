@@ -1,0 +1,306 @@
+From 747382d909fd6803fbc80424372a1207591dd652 Mon Sep 17 00:00:00 2001
+From: HCLOpenBMC <HCL_OpenBMC@hcl.com>
+Date: Tue, 5 May 2020 10:11:39 +0530
+Subject: [PATCH] 0005-meta-phosphor: remove some old skeleton-based default
+ virtuals
+
+---
+ .../conf/distro/include/phosphor-defaults.inc      |  5 ----
+ .../chassis/files/obmc-phosphor-chassisd.py        | 29 ----------------------
+ .../chassis/files/obmc-phosphor-chassisd.service   | 10 --------
+ .../chassis/obmc-phosphor-chassisd.bb              | 13 ----------
+ meta-phosphor/recipes-phosphor/fans/files/Makefile | 15 -----------
+ .../fans/files/obmc-phosphor-fand.c                | 29 ----------------------
+ .../fans/files/obmc-phosphor-fand.service          | 10 --------
+ .../recipes-phosphor/fans/obmc-phosphor-fand.bb    | 17 -------------
+ .../flash/files/obmc-phosphor-flashd.py            | 29 ----------------------
+ .../flash/files/obmc-phosphor-flashd.service       | 10 --------
+ .../recipes-phosphor/flash/obmc-phosphor-flashd.bb | 13 ----------
+ .../ipmi/phosphor-ipmi-hw-example_git.bb           | 14 -----------
+ 12 files changed, 194 deletions(-)
+ delete mode 100644 meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.py
+ delete mode 100644 meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.service
+ delete mode 100644 meta-phosphor/recipes-phosphor/chassis/obmc-phosphor-chassisd.bb
+ delete mode 100644 meta-phosphor/recipes-phosphor/fans/files/Makefile
+ delete mode 100644 meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.c
+ delete mode 100644 meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.service
+ delete mode 100644 meta-phosphor/recipes-phosphor/fans/obmc-phosphor-fand.bb
+ delete mode 100644 meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.py
+ delete mode 100644 meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.service
+ delete mode 100644 meta-phosphor/recipes-phosphor/flash/obmc-phosphor-flashd.bb
+ delete mode 100644 meta-phosphor/recipes-phosphor/ipmi/phosphor-ipmi-hw-example_git.bb
+
+diff --git a/meta-phosphor/conf/distro/include/phosphor-defaults.inc b/meta-phosphor/conf/distro/include/phosphor-defaults.inc
+index 58be25a..b90f280 100644
+--- a/meta-phosphor/conf/distro/include/phosphor-defaults.inc
++++ b/meta-phosphor/conf/distro/include/phosphor-defaults.inc
+@@ -8,11 +8,6 @@ OBMC_POWER_INSTANCES ?= "0"
+ OBMC_RESET_BUTTON_INSTANCES ?= "0"
+ OBMC_WATCHDOG_INSTANCES ?= "0"
+ 
+-PREFERRED_PROVIDER_virtual/obmc-chassis-mgmt ?= "obmc-phosphor-chassisd"
+-PREFERRED_PROVIDER_virtual/obmc-fan-mgmt ?= "obmc-phosphor-fand"
+-PREFERRED_PROVIDER_virtual/obmc-flash-mgmt ?= "obmc-phosphor-flashd"
+-PREFERRED_PROVIDER_virtual/obmc-host-ipmi-hw ?= "phosphor-ipmi-hw-example"
+-
+ # obmc-bmc-state-manager
+ #
+ # Provides an implementation of the xyz.openbmc_project.State.BMC
+diff --git a/meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.py b/meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.py
+deleted file mode 100644
+index a68f2e5..0000000
+--- a/meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.py
++++ /dev/null
+@@ -1,29 +0,0 @@
+-#!/usr/bin/env python
+-
+-# Contributors Listed Below - COPYRIGHT 2015
+-# [+] International Business Machines Corp.
+-#
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+-# implied. See the License for the specific language governing
+-# permissions and limitations under the License.
+-
+-import time
+-import sys
+-import dbus
+-import dbus.service
+-import dbus.mainloop.glib
+-
+-if __name__ == '__main__':
+-	print "obmc-phosphor-chassisd starting..."
+-
+-	while 1:
+-		time.sleep(5)
+diff --git a/meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.service b/meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.service
+deleted file mode 100644
+index 2ca9fe3..0000000
+--- a/meta-phosphor/recipes-phosphor/chassis/files/obmc-phosphor-chassisd.service
++++ /dev/null
+@@ -1,10 +0,0 @@
+-[Unit]
+-Description=Phosphor Chassis Controller
+-
+-[Service]
+-Restart=always
+-ExecStart=/usr/bin/env obmc-phosphor-chassisd
+-SyslogIdentifier=obmc-phosphor-chassisd
+-
+-[Install]
+-WantedBy=multi-user.target
+diff --git a/meta-phosphor/recipes-phosphor/chassis/obmc-phosphor-chassisd.bb b/meta-phosphor/recipes-phosphor/chassis/obmc-phosphor-chassisd.bb
+deleted file mode 100644
+index d9dcd1a..0000000
+--- a/meta-phosphor/recipes-phosphor/chassis/obmc-phosphor-chassisd.bb
++++ /dev/null
+@@ -1,13 +0,0 @@
+-SUMMARY = "Phosphor OpenBMC Chassis Management"
+-DESCRIPTION = "Phosphor OpenBMC chassis management reference implementation."
+-PR = "r1"
+-LICENSE = "Apache-2.0"
+-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
+-
+-inherit obmc-phosphor-pydbus-service
+-
+-PROVIDES += "virtual/obmc-chassis-mgmt"
+-RPROVIDES_${PN} += "virtual-obmc-chassis-mgmt"
+-
+-S = "${WORKDIR}"
+-SRC_URI += "file://${BPN}.py"
+diff --git a/meta-phosphor/recipes-phosphor/fans/files/Makefile b/meta-phosphor/recipes-phosphor/fans/files/Makefile
+deleted file mode 100644
+index 10e3fa2..0000000
+--- a/meta-phosphor/recipes-phosphor/fans/files/Makefile
++++ /dev/null
+@@ -1,15 +0,0 @@
+-EXE     = obmc-phosphor-fand
+-OBJS    = $(EXE).o
+-DEPPKGS = gio-unix-2.0 glib-2.0
+-CC      ?= $(CROSS_COMPILE)gcc
+-INCLUDES += $(shell pkg-config --cflags $(DEPPKGS))
+-LIBS += $(shell pkg-config --libs $(DEPPKGS))
+-
+-%.o : %.c
+-	$(CC) -c $^ $(CFLAGS) $(INCLUDES) -o $@
+-$(EXE): $(OBJS)
+-	$(CC) $^ $(LDFLAGS) $(LDFLAGS) -o $@
+-clean:
+-	rm -f $(OBJS) $(EXE) *.o *.d
+-distclean: clean
+-	rm -f *.c~ *.h~ *.sh~ Makefile~ config.mk~
+diff --git a/meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.c b/meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.c
+deleted file mode 100644
+index 558ba10..0000000
+--- a/meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.c
++++ /dev/null
+@@ -1,29 +0,0 @@
+-/* Contributors Listed Below - COPYRIGHT 2015                             */
+-/* [+] International Business Machines Corp.                              */
+-/*                                                                        */
+-/*                                                                        */
+-/* Licensed under the Apache License, Version 2.0 (the "License");        */
+-/* you may not use this file except in compliance with the License.       */
+-/* You may obtain a copy of the License at                                */
+-/*                                                                        */
+-/*     http://www.apache.org/licenses/LICENSE-2.0                         */
+-/*                                                                        */
+-/* Unless required by applicable law or agreed to in writing, software    */
+-/* distributed under the License is distributed on an "AS IS" BASIS,      */
+-/* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or        */
+-/* implied. See the License for the specific language governing           */
+-/* permissions and limitations under the License.                         */
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <gio/gio.h>
+-
+-int main(int argc, char *argv[])
+-{
+-	printf("obmc-phosphor-fand starting...\n");
+-
+-	while(1)
+-		sleep(5);
+-
+-	exit(EXIT_SUCCESS);
+-}
+diff --git a/meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.service b/meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.service
+deleted file mode 100644
+index a7d0b4b..0000000
+--- a/meta-phosphor/recipes-phosphor/fans/files/obmc-phosphor-fand.service
++++ /dev/null
+@@ -1,10 +0,0 @@
+-[Unit]
+-Description=Phosphor Fan Controller
+-
+-[Service]
+-Restart=always
+-ExecStart=/usr/bin/env obmc-phosphor-fand
+-SyslogIdentifier=obmc-phosphor-fand
+-
+-[Install]
+-WantedBy=multi-user.target
+diff --git a/meta-phosphor/recipes-phosphor/fans/obmc-phosphor-fand.bb b/meta-phosphor/recipes-phosphor/fans/obmc-phosphor-fand.bb
+deleted file mode 100644
+index f7a3e05..0000000
+--- a/meta-phosphor/recipes-phosphor/fans/obmc-phosphor-fand.bb
++++ /dev/null
+@@ -1,17 +0,0 @@
+-SUMMARY = "Phosphor OpenBMC Fan Management."
+-DESCRIPTION = "Phosphor OpenBMC fan management reference implementation."
+-PR = "r1"
+-LICENSE = "Apache-2.0"
+-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
+-
+-inherit pkgconfig
+-inherit obmc-phosphor-sdbus-service
+-inherit obmc-phosphor-c-daemon
+-
+-PROVIDES += "virtual/obmc-fan-mgmt"
+-RPROVIDES_${PN} += "virtual-obmc-fan-mgmt"
+-
+-S = "${WORKDIR}"
+-SRC_URI += "file://Makefile \
+-           file://obmc-phosphor-fand.c \
+-           "
+diff --git a/meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.py b/meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.py
+deleted file mode 100644
+index 5e5dd8f..0000000
+--- a/meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.py
++++ /dev/null
+@@ -1,29 +0,0 @@
+-#!/usr/bin/env python
+-
+-# Contributors Listed Below - COPYRIGHT 2015
+-# [+] International Business Machines Corp.
+-#
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#     http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+-# implied. See the License for the specific language governing
+-# permissions and limitations under the License.
+-
+-import time
+-import sys
+-import dbus
+-import dbus.service
+-import dbus.mainloop.glib
+-
+-if __name__ == '__main__':
+-	print "obmc-phosphor-flashd starting..."
+-
+-	while 1:
+-		time.sleep(5)
+diff --git a/meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.service b/meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.service
+deleted file mode 100644
+index 2695919..0000000
+--- a/meta-phosphor/recipes-phosphor/flash/files/obmc-phosphor-flashd.service
++++ /dev/null
+@@ -1,10 +0,0 @@
+-[Unit]
+-Description=Phosphor Flash Controller
+-
+-[Service]
+-Restart=always
+-ExecStart=/usr/bin/env obmc-phosphor-flashd
+-SyslogIdentifier=obmc-phosphor-flashd
+-
+-[Install]
+-WantedBy=multi-user.target
+diff --git a/meta-phosphor/recipes-phosphor/flash/obmc-phosphor-flashd.bb b/meta-phosphor/recipes-phosphor/flash/obmc-phosphor-flashd.bb
+deleted file mode 100644
+index 9287150..0000000
+--- a/meta-phosphor/recipes-phosphor/flash/obmc-phosphor-flashd.bb
++++ /dev/null
+@@ -1,13 +0,0 @@
+-SUMMARY = "Phosphor OpenBMC Flash Management"
+-DESCRIPTION = "Phosphor OpenBMC flash management reference implementation."
+-PR = "r1"
+-LICENSE = "Apache-2.0"
+-LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
+-
+-inherit obmc-phosphor-pydbus-service
+-
+-PROVIDES += "virtual/obmc-flash-mgmt"
+-RPROVIDES_${PN} += "virtual-obmc-flash-mgmt"
+-
+-S = "${WORKDIR}"
+-SRC_URI += "file://${BPN}.py"
+diff --git a/meta-phosphor/recipes-phosphor/ipmi/phosphor-ipmi-hw-example_git.bb b/meta-phosphor/recipes-phosphor/ipmi/phosphor-ipmi-hw-example_git.bb
+deleted file mode 100644
+index a9e070c..0000000
+--- a/meta-phosphor/recipes-phosphor/ipmi/phosphor-ipmi-hw-example_git.bb
++++ /dev/null
+@@ -1,14 +0,0 @@
+-SUMMARY = "Phosphor OpenBMC host IPMI to DBUS Example"
+-DESCRIPTION = "Phosphor OpenBMC host IPMI to DBUS example implementation."
+-PR = "r1"
+-PV = "1.0+git${SRCPV}"
+-
+-RDEPENDS_${PN} += "python-subprocess python-dbus python-pygobject"
+-RRECOMMENDS_${PN} += "phosphor-ipmi-host"
+-
+-inherit skeleton-python
+-
+-PROVIDES += "virtual/obmc-host-ipmi-hw"
+-RPROVIDES_${PN} += "virtual-obmc-host-ipmi-hw"
+-
+-SKELETON_DIR = "pyipmitest"
+-- 
+2.7.4
+
