@@ -1,0 +1,74 @@
+From 4d0bff803383f77625dc966afa65c8a7306d7f7e Mon Sep 17 00:00:00 2001
+From: HCLOpenBMC <HCL_OpenBMC@hcl.com>
+Date: Tue, 5 May 2020 10:20:08 +0530
+Subject: [PATCH] systemd: remove default.network
+
+---
+ .../recipes-core/systemd/systemd/default.network    |  4 ----
+ .../recipes-core/systemd/systemd_%.bbappend         |  6 ------
+ .../recipes-core/systemd/systemd_%.bbappend.orig    | 21 +++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 10 deletions(-)
+ delete mode 100644 meta-phosphor/recipes-core/systemd/systemd/default.network
+ create mode 100644 meta-phosphor/recipes-core/systemd/systemd_%.bbappend.orig
+
+diff --git a/meta-phosphor/recipes-core/systemd/systemd/default.network b/meta-phosphor/recipes-core/systemd/systemd/default.network
+deleted file mode 100644
+index c75c3d6..0000000
+--- a/meta-phosphor/recipes-core/systemd/systemd/default.network
++++ /dev/null
+@@ -1,4 +0,0 @@
+-[Match]
+-Name=eth*
+-[Network]
+-DHCP=ipv4
+diff --git a/meta-phosphor/recipes-core/systemd/systemd_%.bbappend b/meta-phosphor/recipes-core/systemd/systemd_%.bbappend
+index 16ba8f7..22e50c3 100644
+--- a/meta-phosphor/recipes-core/systemd/systemd_%.bbappend
++++ b/meta-phosphor/recipes-core/systemd/systemd_%.bbappend
+@@ -5,16 +5,10 @@ PACKAGECONFIG = "pam hostnamed networkd randomseed resolved sysusers timedated \
+                  timesyncd xz kmod coredump"
+ 
+ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+-SRC_URI += "file://default.network"
+ SRC_URI += "file://0001-sd-bus-Don-t-automatically-add-ObjectManager.patch"
+ 
+-FILES_${PN} += "${systemd_unitdir}/network/default.network"
+ EXTRA_OEMESON += "-Ddns-servers=''"
+ 
+-do_install_append() {
+-        install -m 644 ${WORKDIR}/default.network ${D}${systemd_unitdir}/network/
+-}
+-
+ ALTERNATIVE_${PN} += "init"
+ ALTERNATIVE_TARGET[init] = "${rootlibexecdir}/systemd/systemd"
+ ALTERNATIVE_LINK_NAME[init] = "${base_sbindir}/init"
+diff --git a/meta-phosphor/recipes-core/systemd/systemd_%.bbappend.orig b/meta-phosphor/recipes-core/systemd/systemd_%.bbappend.orig
+new file mode 100644
+index 0000000..16ba8f7
+--- /dev/null
++++ b/meta-phosphor/recipes-core/systemd/systemd_%.bbappend.orig
+@@ -0,0 +1,21 @@
++FILES_${PN}-catalog-extralocales = \
++            "${exec_prefix}/lib/systemd/catalog/*.*.catalog"
++PACKAGES =+ "${PN}-catalog-extralocales"
++PACKAGECONFIG = "pam hostnamed networkd randomseed resolved sysusers timedated \
++                 timesyncd xz kmod coredump"
++
++FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
++SRC_URI += "file://default.network"
++SRC_URI += "file://0001-sd-bus-Don-t-automatically-add-ObjectManager.patch"
++
++FILES_${PN} += "${systemd_unitdir}/network/default.network"
++EXTRA_OEMESON += "-Ddns-servers=''"
++
++do_install_append() {
++        install -m 644 ${WORKDIR}/default.network ${D}${systemd_unitdir}/network/
++}
++
++ALTERNATIVE_${PN} += "init"
++ALTERNATIVE_TARGET[init] = "${rootlibexecdir}/systemd/systemd"
++ALTERNATIVE_LINK_NAME[init] = "${base_sbindir}/init"
++ALTERNATIVE_PRIORITY[init] ?= "300"
+-- 
+2.7.4
+
