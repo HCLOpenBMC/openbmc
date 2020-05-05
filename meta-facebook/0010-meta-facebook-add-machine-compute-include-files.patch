@@ -1,0 +1,70 @@
+From 660e2b53a7b7e0187b01d88b36bf244f13281950 Mon Sep 17 00:00:00 2001
+From: HCLOpenBMC <HCL_OpenBMC@hcl.com>
+Date: Tue, 5 May 2020 10:35:20 +0530
+Subject: [PATCH] meta-facebook: add machine-compute include files
+
+---
+ meta-facebook/conf/machine/include/facebook-compute-multihost.inc  | 3 +++
+ meta-facebook/conf/machine/include/facebook-compute-singlehost.inc | 3 +++
+ meta-facebook/conf/machine/include/facebook-compute.inc            | 3 +++
+ meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf           | 1 +
+ meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf         | 1 +
+ 5 files changed, 11 insertions(+)
+ create mode 100644 meta-facebook/conf/machine/include/facebook-compute-multihost.inc
+ create mode 100644 meta-facebook/conf/machine/include/facebook-compute-singlehost.inc
+ create mode 100644 meta-facebook/conf/machine/include/facebook-compute.inc
+
+diff --git a/meta-facebook/conf/machine/include/facebook-compute-multihost.inc b/meta-facebook/conf/machine/include/facebook-compute-multihost.inc
+new file mode 100644
+index 0000000..f472cfa
+--- /dev/null
++++ b/meta-facebook/conf/machine/include/facebook-compute-multihost.inc
+@@ -0,0 +1,3 @@
++require conf/machine/include/facebook-compute.inc
++
++OVERRIDES .= ":fb-compute-multihost"
+diff --git a/meta-facebook/conf/machine/include/facebook-compute-singlehost.inc b/meta-facebook/conf/machine/include/facebook-compute-singlehost.inc
+new file mode 100644
+index 0000000..f6a8683
+--- /dev/null
++++ b/meta-facebook/conf/machine/include/facebook-compute-singlehost.inc
+@@ -0,0 +1,3 @@
++require conf/machine/include/facebook-compute.inc
++
++OVERRIDES .= ":fb-compute-singlehost"
+diff --git a/meta-facebook/conf/machine/include/facebook-compute.inc b/meta-facebook/conf/machine/include/facebook-compute.inc
+new file mode 100644
+index 0000000..66b0f75
+--- /dev/null
++++ b/meta-facebook/conf/machine/include/facebook-compute.inc
+@@ -0,0 +1,3 @@
++require conf/machine/include/facebook.inc
++
++OVERRIDES .= ":fb-compute"
+diff --git a/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf
+index 9c7a39a..f99ba44 100644
+--- a/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf
++++ b/meta-facebook/meta-tiogapass/conf/machine/tiogapass.conf
+@@ -3,6 +3,7 @@ KERNEL_DEVICETREE = "${KMACHINE}-bmc-facebook-${MACHINE}.dtb"
+ 
+ UBOOT_MACHINE = "ast_g5_ncsi_config"
+ 
++require conf/machine/include/facebook-compute-singlehost.inc
+ require conf/machine/include/ast2500.inc
+ require conf/machine/include/obmc-bsp-common.inc
+ 
+diff --git a/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf
+index d37fc56..2577b49 100644
+--- a/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf
++++ b/meta-facebook/meta-yosemitev2/conf/machine/yosemitev2.conf
+@@ -3,6 +3,7 @@ KERNEL_DEVICETREE = "${KMACHINE}-bmc-facebook-${MACHINE}.dtb"
+ 
+ UBOOT_MACHINE = "ast_g5_ncsi_config"
+ 
++require conf/machine/include/facebook-compute-multihost.inc
+ require conf/machine/include/ast2500.inc
+ require conf/machine/include/obmc-bsp-common.inc
+ 
+-- 
+2.7.4
+
