@@ -1,0 +1,645 @@
+From 44cff2d6186b85ee21a4d79bd2014859eab604f2 Mon Sep 17 00:00:00 2001
+From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+Date: Sat, 2 May 2020 10:26:12 +0530
+Subject: [PATCH] sysfs-based-multi-host-power-control
+
+---
+ .../recipes-fb/fb-powerctrl/fb-powerctrl.bb        |  24 ++-
+ .../fb-powerctrl/files/yosemitev2/LICENSE          |  13 ++
+ .../fb-powerctrl/files/yosemitev2/ast-functions    | 163 +++++++++++++++++++
+ .../files/yosemitev2/host-gpio.service             |   9 ++
+ .../files/yosemitev2/host-poweroff.service         |  12 ++
+ .../files/yosemitev2/host-poweron.service          |  15 ++
+ .../fb-powerctrl/files/yosemitev2/power-util       | 179 +++++++++++++++++++++
+ .../fb-powerctrl/files/yosemitev2/power_led.sh     |  58 +++++++
+ .../fb-powerctrl/files/yosemitev2/setup_gpio.sh    |  68 ++++++++
+ 9 files changed, 538 insertions(+), 3 deletions(-)
+ create mode 100644 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/LICENSE
+ create mode 100644 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/ast-functions
+ create mode 100644 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-gpio.service
+ create mode 100644 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweroff.service
+ create mode 100644 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweron.service
+ create mode 100755 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power-util
+ create mode 100755 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power_led.sh
+ create mode 100755 meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/setup_gpio.sh
+
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/fb-powerctrl.bb b/meta-facebook/recipes-fb/fb-powerctrl/fb-powerctrl.bb
+index a46c44b..20db762 100644
+--- a/meta-facebook/recipes-fb/fb-powerctrl/fb-powerctrl.bb
++++ b/meta-facebook/recipes-fb/fb-powerctrl/fb-powerctrl.bb
+@@ -1,4 +1,5 @@
+-FILESEXTRAPATHS_append := "${THISDIR}/files:"
++FILESEXTRAPATHS_append_tiogapass := "${THISDIR}/files:"
++FILESEXTRAPATHS_append_yosemitev2 := "${THISDIR}/files/yosemitev2:"
+ 
+ inherit obmc-phosphor-systemd
+ LICENSE = "Apache-2.0"
+@@ -6,21 +7,38 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=a8328fd2a610bf4527feedcaa3ae3d14"
+ 
+ S = "${WORKDIR}/"
+ 
+-SRC_URI = "file://setup_gpio.sh \
++SRC_URI_append_tiogapass = "file://setup_gpio.sh \
+            file://power-util \
+            file://host-gpio.service \
+            file://host-poweroff.service \
+            file://host-poweron.service \
+            file://LICENSE"
+ 
++SRC_URI_append_yosemitev2 = "file://setup_gpio.sh \
++           file://power-util \
++           file://power_led.sh \
++           file://ast-functions \
++           file://host-gpio.service \
++           file://host-poweroff.service \
++           file://host-poweron.service \
++           file://LICENSE"
++
+ DEPENDS = "systemd"
+ RDEPENDS_${PN} = "bash"
+ 
+ SYSTEMD_PACKAGES = "${PN}"
+ SYSTEMD_SERVICE_${PN} = "host-gpio.service host-poweron.service host-poweroff.service"
+ 
+-do_install() {
++do_install_append_tiogapass(){
++    install -d ${D}/usr/sbin
++    install -m 0755 ${S}setup_gpio.sh ${D}/${sbindir}/
++    install -m 0755 ${S}power-util ${D}/${sbindir}/
++}
++
++do_install_append_yosemitev2(){
+     install -d ${D}/usr/sbin
+     install -m 0755 ${S}setup_gpio.sh ${D}/${sbindir}/
+     install -m 0755 ${S}power-util ${D}/${sbindir}/
++    install -m 0755 ${S}power_led.sh ${D}/${sbindir}/
++    install -m 0755 ${S}ast-functions ${D}/${sbindir}/
+ }
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/LICENSE b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/LICENSE
+new file mode 100644
+index 0000000..2caf820
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/LICENSE
+@@ -0,0 +1,13 @@
++Copyright 2018 Facebook Inc
++
++Licensed under the Apache License, Version 2.0 (the "License");
++you may not use this file except in compliance with the License.
++You may obtain a copy of the License at
++
++    http://www.apache.org/licenses/LICENSE-2.0
++
++Unless required by applicable law or agreed to in writing, software
++distributed under the License is distributed on an "AS IS" BASIS,
++WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++See the License for the specific language governing permissions and
++limitations under the License.
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/ast-functions b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/ast-functions
+new file mode 100644
+index 0000000..189a5d5
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/ast-functions
+@@ -0,0 +1,163 @@
++# Copyright 2014-present Facebook. All Rights Reserved.
++
++GPIODIR="/sys/class/gpio"
++GPIOEXPORT="$GPIODIR/export"
++
++gpio_dir() {
++    echo "$GPIODIR/gpio$1"
++}
++
++gpio_name2value() {
++    local first remaining base val
++    remaining=$1
++    val=0
++    while [ -n "$remaining" ]; do
++        first=${remaining:0:1}
++        case "$first" in
++            [[:lower:]])
++                base=$(printf "%d" "'$first'")
++                base=$((base - 96))
++                val=$((val * 26 + base))
++                ;;
++            [[:upper:]])
++                base=$(printf "%d" "'$first'")
++                base=$((base - 64))
++                val=$((val * 26 + base))
++                ;;
++            *)
++                if [ $val -gt 0 ]; then
++                    val=$((val-1))
++                fi
++                val=$((val * 8 + $remaining))
++                break
++                ;;
++        esac
++        remaining=${remaining:1}
++    done
++    echo "$val"
++}
++
++gpio_export() {
++    local gpio
++    gpio=$(gpio_name2value $1)
++    gpio=$((gpio280))
++    echo $gpio
++    dir=$(gpio_dir $gpio)
++    echo $dir
++    if [ ! -d ${dir} ]; then
++        echo $gpio > $GPIOEXPORT
++    fi
++}
++
++gpio_set() {
++    local gpio
++    local val
++    gpio=$(gpio_name2value $1)
++    gpio=$((gpio+280))
++    val=$2
++    dir=$(gpio_dir $gpio)
++    if [ ! -d ${dir} ]; then
++        echo $gpio > $GPIOEXPORT
++    fi
++
++    if [ $val == 1 ]; then
++      echo high > ${dir}/direction
++    else
++      echo low > ${dir}/direction
++    fi
++}
++
++gpio_get() {
++    local gpio
++    local val
++    gpio=$(gpio_name2value $1)
++    gpio=$((gpio+280))
++    dir=$(gpio_dir $gpio)
++    if [ ! -d ${dir} ]; then
++        echo $gpio > $GPIOEXPORT
++    fi
++    echo in > ${dir}/direction
++    cat ${dir}/value
++}
++
++# Check to see if server is present in given slot or not
++is_server_prsnt() {
++  local prsnt
++
++  case $1 in
++    1)
++      prsnt=$[ $(gpio_get AA0) || $(gpio_get Z0) ]
++      ;;
++    2)
++      prsnt=$[ $(gpio_get AA1) || $(gpio_get Z1) ]
++      ;;
++    3)
++      prsnt=$[ $(gpio_get AA2) || $(gpio_get Z2) ]
++      ;;
++    4)
++      prsnt=$[ $(gpio_get AA3) || $(gpio_get Z3) ]
++      ;;
++    *)
++      prsnt=$[ $(gpio_get AA3) || $(gpio_get Z3) ]
++      ;;
++  esac
++
++  if [ $prsnt == "0" ]; then
++    echo 1
++  else
++    echo 0
++  fi
++}
++
++read_file_rertry() {
++  retries=$1
++  wait_time=$2
++  file=$3
++
++  for i in `seq 1 $retries`; do
++    value=`cat $file`
++    [ ! -z $value ] && break
++    usleep $wait_time
++  done
++
++  echo $value
++}
++
++# Get slot type (00:TwinLakes, 01:Crace Flat, 10:Glacier Point, 11:Empty Slot)
++get_slot_type() {
++  slot_file="/tmp/slot$1.bin"
++  if [ -f $slot_file ]; then
++    type=$(read_file_rertry 3 10000 $slot_file)
++    if [ -z $type ]; then
++      type=3
++    fi
++  else
++    type=3
++  fi
++
++  echo $type
++}
++
++fby2_is_server_on() {
++  local pwr_sts
++
++  case $1 in
++   1)
++    pwr_sts=$(gpio_get I0)
++    ;;
++   2)
++    pwr_sts=$(gpio_get I1)
++    ;;
++   3)
++    pwr_sts=$(gpio_get I2)
++    ;;
++   4)
++    pwr_sts=$(gpio_get I3)
++    ;;
++   *)
++    pwr_sts="0"
++    ;;
++  esac
++
++  echo $pwr_sts
++}
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-gpio.service b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-gpio.service
+new file mode 100644
+index 0000000..2c1dd52
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-gpio.service
+@@ -0,0 +1,9 @@
++[Unit]
++Description=Configure GPIOs for Yosemitev2
++
++[Service]
++Restart=no
++RemainAfterExit=true
++Type=oneshot
++ExecStart=/usr/sbin/setup_gpio.sh
++SyslogIdentifier=setup_gpio.sh
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweroff.service b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweroff.service
+new file mode 100644
+index 0000000..9c53f2e
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweroff.service
+@@ -0,0 +1,12 @@
++[Unit]
++Description=Shutdown Host Server
++Requires=host-gpio.service
++After=host-gpio.service
++
++[Service]
++Type=oneshot
++ExecStart=/usr/sbin/power-util 1 off
++ExecStart=/usr/sbin/power-util 2 off
++ExecStart=/usr/sbin/power-util 3 off
++ExecStart=/usr/sbin/power-util 4 off
++SyslogIdentifier=power-util
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweron.service b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweron.service
+new file mode 100644
+index 0000000..7f57107
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/host-poweron.service
+@@ -0,0 +1,15 @@
++[Unit]
++Description=Poweroff Host Server
++Requires=host-gpio.service
++After=host-gpio.service
++
++[Service]
++Type=oneshot
++ExecStart=/usr/sbin/power-util 1 on
++ExecStart=/usr/sbin/power-util 2 on
++ExecStart=/usr/sbin/power-util 3 on
++ExecStart=/usr/sbin/power-util 4 on
++SyslogIdentifier=power-util
++
++[Install]
++WantedBy=basic.target
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power-util b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power-util
+new file mode 100755
+index 0000000..8d42a93
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power-util
+@@ -0,0 +1,179 @@
++#!/bin/bash
++#
++# Copyright 2015-present Facebook. All Rights Reserved.
++#
++# This program file is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License as published by the
++# Free Software Foundation; version 2 of the License.
++#
++# This program is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++# for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program in a file named COPYING; if not, write to the
++# Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor,
++# Boston, MA 02110-1301 USA
++#
++
++. /usr/sbin/ast-functions
++
++PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
++
++prog="$0"
++
++usage() {
++    echo "Usage: $prog <slot#> <command> [command options]"
++    echo
++    echo "Commands:"
++    echo "  status: Get the current 1S server power status"
++    echo
++    echo "  on: Power on 1S server if not powered on already"
++    echo "    options:"
++    echo "      -f: Re-do power on sequence no matter if 1S server has "
++    echo "          been powered on or not."
++    echo
++    echo "  off: Power off 1S server ungracefully"
++    echo
++    echo
++}
++
++do_status() {
++    if [ $(is_server_prsnt $slot) == "0" ]; then
++      echo  "The given slot is Empty"
++      return 0
++    fi
++
++    if [[ $(get_slot_type $slot) == "1" || $(get_slot_type $slot) == "2" ]]; then
++      echo "The given slot type is not server"
++      return 0
++    fi
++
++    echo -n "1S Server power for slot#$slot is "
++    if [ $(fby2_is_server_on $slot) -eq 1 ] ; then
++        echo "on"
++    else
++        echo "off"
++    fi
++    return 0
++}
++
++do_on() {
++
++    if [ $(is_server_prsnt $slot) == "0" ]; then
++      echo "The given slot is Empty"
++      return 0
++    fi
++
++    if [[ $(get_slot_type $slot) == "1" || $(get_slot_type $slot) == "2" ]]; then
++      echo "The given slot type is not server"
++      return 0
++    fi
++
++    local force opt
++    force=0
++    while getopts "f" opt; do
++        case $opt in
++            f)
++                force=1
++                ;;
++            *)
++                usage
++                exit -1
++                ;;
++
++        esac
++    done
++    echo -n "Power on slot#$slot server ..."
++    if [ $force -eq 0 ]; then
++        # need to check if 1S Server is on or not
++        if [ $(fby2_is_server_on $slot) -eq 1 ]; then
++            echo " Already on. Skip!"
++            return 1
++        fi
++    fi
++
++    # first make sure, GPIO is high
++    gpio_set $gpio 1
++    # generate the power on pulse
++    gpio_set $gpio 0
++    sleep 1
++    gpio_set $gpio 1
++    sleep 1
++    # Turn on the power LED
++    /usr/sbin/power_led.sh $slot on
++
++    echo " Done"
++    return 0
++}
++
++do_off() {
++    if [ $(is_server_prsnt $slot) == "0" ]; then
++      echo "The given slot is Empty"
++      return 0
++    fi
++
++    if [[ $(get_slot_type $slot) == "1" || $(get_slot_type $slot) == "2" ]]; then
++      echo "The given slot type is no server"
++      return 0
++    fi
++
++    echo -n "Power off slot#$slot server ..."
++
++    # first make sure, GPIO is high
++    gpio_set $gpio 1
++    sleep 1
++    gpio_set $gpio 0
++    sleep 5
++    gpio_set $gpio 1
++    # Turn off the power LED
++    /usr/sbin/power_led.sh $slot off
++
++    echo " Done"
++    return 0
++}
++
++# Slot1: GPIOD1(25), Slot2: GPIOD3(27), Slot3: GPIOD5(29), Slot4: GPIOD7(31)
++slot=$1
++
++case $slot in
++  1)
++    gpio=D1
++    ;;
++  2)
++    gpio=D3
++    ;;
++  3)
++    gpio=D5
++    ;;
++  4)
++    gpio=D7
++    ;;
++  *)
++    gpio=D1
++    ;;
++esac
++
++command="$2"
++shift
++shift
++
++case "$command" in
++    status)
++        do_status $@
++        ;;
++    on)
++        do_on $@
++        ;;
++    off)
++        do_off $@
++        ;;
++    *)
++        usage
++        exit -1
++        ;;
++esac
++
++exit $?
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power_led.sh b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power_led.sh
+new file mode 100755
+index 0000000..ed1814a
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/power_led.sh
+@@ -0,0 +1,58 @@
++#!/bin/bash
++#
++# Copyright 2014-present Facebook. All Rights Reserved.
++#
++# This program file is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License as published by the
++# Free Software Foundation; version 2 of the License.
++#
++# This program is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
++# for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program in a file named COPYING; if not, write to the
++# Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor,
++# Boston, MA 02110-1301 USA
++#
++
++usage() {
++    echo "Usage: $1 <slot#> <on | off>"
++    exit -1
++}
++
++. /usr/sbin/ast-functions
++
++PATH=/sbin:/bin:/usr/sbin:/usr/bin
++
++set -e
++
++if [ $# != 2 ]; then
++    usage $0
++fi
++
++# Slot#1: GPIOM0(96),Slot#2: GPIOM1(97),Slot#3: GPIOM2(98),Slot#4: GPIOM3(99)
++if [ $1 = "1" ]; then
++    gpio=M0
++elif [ $1 = "2" ]; then
++    gpio=M1
++elif [ $1 = "3" ]; then
++    gpio=M2
++elif [ $1 = "4" ]; then
++    gpio=M3
++else
++    usage $0
++fi
++
++
++if [ $2 = "on" ]; then
++    val=1
++elif [ $2 = "off" ]; then
++    val=0
++else
++    usage $0
++fi
++
++gpio_set $gpio $val
+diff --git a/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/setup_gpio.sh b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/setup_gpio.sh
+new file mode 100755
+index 0000000..f0ad539
+--- /dev/null
++++ b/meta-facebook/recipes-fb/fb-powerctrl/files/yosemitev2/setup_gpio.sh
+@@ -0,0 +1,68 @@
++#!/bin/bash
++
++. /usr/sbin/ast-functions
++
++# SLOT1_PRSNT_N, GPIOAA0 (208)
++gpio_export AA0
++
++# SLOT2_PRSNT_N, GPIOAA1 (209)
++gpio_export AA1
++
++# SLOT3_PRSNT_N, GPIOAA2 (210)
++gpio_export AA2
++
++# SLOT4_PRSNT_N, GPIOAA3 (211)
++gpio_export AA3
++
++
++# PWR_SLOT1_BTN_N, 1S Server power out, on GPIO D1(25)
++gpio_set D1 1
++
++# PWR_SLOT2_BTN_N, 1S Server power out, on GPIO D3(27)
++# Make sure the Power Control Pin is Set properly
++gpio_set D3 1
++
++# PWR_SLOT3_BTN_N, 1S Server power out, on GPIO D5(29)
++gpio_set D5 1
++
++# PWR_SLOT4_BTN_N, 1S Server power out, on GPIO D7(31)
++gpio_set D7 1
++
++
++
++# Power LED for Slot#2:GPIOM0 (96)
++gpio_set M0 0
++
++# Power LED for Slot#1: GPIOM1 (97)
++gpio_set M1 0
++
++# Power LED for Slot#4: GPIOM2 (98)
++gpio_set M2 0
++
++# Power LED for Slot#3: GPIOM3 (99)
++gpio_set M3 0
++
++
++# SLOT1_POWER_EN: GPIOI0 (64)
++gpio_export I0
++
++# SLOT2_POWER_EN: GPIOI1 (65)
++gpio_export I1
++
++# SLOT3_POWER_EN: GPIOI2 (66)
++gpio_export I2
++
++# SLOT4_POWER_EN: GPIOI3 (67)
++gpio_export I3
++
++# DEBUG UART Controls
++# 4 signals: DEBUG_UART_SEL_0/1/2 and DEBUG_UART_RX_SEL_N
++# GPIOE0 (32), GPIOE1 (33), GPIOE2 (34) and GPIOE3 (35)
++
++gpio_export E0
++
++gpio_export E1
++
++gpio_export E2
++
++gpio_export E3
+-- 
+2.7.4
+
