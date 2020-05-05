@@ -1,0 +1,635 @@
+From 261fc7ff92cc1c6ca7eb3eaf80bdba96d60f2c58 Mon Sep 17 00:00:00 2001
+From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+Date: Mon, 4 May 2020 16:40:49 +0530
+Subject: [PATCH] dts-and-mellanox-ncsi-driver-support
+
+---
+ .../linux-aspeed/0001-Yosemite-device-tree.patch   | 294 +++++++++++++++++++++
+ ...-ncsi-Fix-gma-flag-setting-after-response.patch |  59 +++++
+ ...csi-Send-device-address-as-source-address.patch |  40 +++
+ ...ncsi-Support-for-multi-host-mellanox-card.patch | 187 +++++++++++++
+ .../recipes-kernel/linux/linux-aspeed_%.bbappend   |   4 +
+ 5 files changed, 584 insertions(+)
+ create mode 100644 meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0001-Yosemite-device-tree.patch
+ create mode 100644 meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0002-net-ncsi-Fix-gma-flag-setting-after-response.patch
+ create mode 100644 meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0003-net-ncsi-Send-device-address-as-source-address.patch
+ create mode 100644 meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0004-net-ncsi-Support-for-multi-host-mellanox-card.patch
+
+diff --git a/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0001-Yosemite-device-tree.patch b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0001-Yosemite-device-tree.patch
+new file mode 100644
+index 0000000..0f48260
+--- /dev/null
++++ b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0001-Yosemite-device-tree.patch
+@@ -0,0 +1,294 @@
++From 52483d951310187e3718c3155e408681f064ad6e Mon Sep 17 00:00:00 2001
++From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
++Date: Thu, 2 Apr 2020 17:18:26 +0530
++Subject: [PATCH v9] ARM: dts: aspeed: Adding Facebook Yosemite V2 BMC
++
++The Yosemite V2 is a facebook multi-node server
++platform that host four OCP server. The BMC
++in the Yosemite V2 platform based on AST2500 SoC.
++
++This patch adds linux device tree entry related to
++Yosemite V2 specific devices connected to BMC SoC.
++
++Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
++Acked-by     : Andrew Jeffery <andrew@aj.id.au>
++Reviewed-by  : Vijay Khemka <vkhemka@fb.com>
++---
++---      v9 - Added external i2c debug card support.
++---      v8 - Added dtb entry in Makefile as review comment.
++---           -Added IPMB bridge device details as review comment.
++---      v7 - Added multi-host SOL feature.
++---      v6 - Added device tree property for multi-host Mellanox NIC in the ncsi driver.
++---      v5 - Spell and contributor name correction.
++---           - License identifier changed to GPL-2.0-or-later.
++---           - aspeed-gpio.h removed.
++---           - FAN2 tacho channel changed.
++---      v4 - Bootargs removed.
++---      v3 - Uart1 Debug removed .
++---      v2 - LPC and VUART removed .
++---      v1 - Initial draft.
++---
++---
++ arch/arm/boot/dts/Makefile                         |   1 +
++ .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 237 +++++++++++++++++++++
++ 2 files changed, 238 insertions(+)
++ create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
++
++diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
++index fcd607f..00b6649 100644
++--- a/arch/arm/boot/dts/Makefile
+++++ b/arch/arm/boot/dts/Makefile
++@@ -1289,6 +1289,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
++ 	aspeed-bmc-facebook-wedge40.dtb \
++ 	aspeed-bmc-facebook-wedge100.dtb \
++ 	aspeed-bmc-facebook-yamp.dtb \
+++	aspeed-bmc-facebook-yosemitev2.dtb \
++ 	aspeed-bmc-ibm-rainier.dtb \
++ 	aspeed-bmc-intel-s2600wf.dtb \
++ 	aspeed-bmc-inspur-fp5280g2.dtb \
++diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
++new file mode 100644
++index 0000000..9fcafd7
++--- /dev/null
+++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
++@@ -0,0 +1,237 @@
+++// SPDX-License-Identifier: GPL-2.0-or-later
+++// Copyright (c) 2018 Facebook Inc.
+++/dts-v1/;
+++#include "aspeed-g5.dtsi"
+++#include <dt-bindings/i2c/i2c.h>
+++
+++/ {
+++	model = "Facebook Yosemitev2 BMC";
+++	compatible = "facebook,yosemitev2-bmc", "aspeed,ast2500";
+++	aliases {
+++		serial4 = &uart5;
+++	};
+++	chosen {
+++		stdout-path = &uart5;
+++	};
+++
+++	memory@80000000 {
+++		reg = <0x80000000 0x20000000>;
+++	};
+++
+++	iio-hwmon {
+++		// VOLATAGE SENSOR
+++		compatible = "iio-hwmon";
+++		io-channels = <&adc 0> , <&adc 1> , <&adc 2> ,  <&adc 3> ,
+++		<&adc 4> , <&adc 5> , <&adc 6> ,  <&adc 7> ,
+++		<&adc 8> , <&adc 9> , <&adc 10>, <&adc 11> ,
+++		<&adc 12> , <&adc 13> , <&adc 14> , <&adc 15> ;
+++	};
+++};
+++
+++&fmc {
+++	status = "okay";
+++	flash@0 {
+++		status = "okay";
+++		m25p,fast-read;
+++#include "openbmc-flash-layout.dtsi"
+++	};
+++};
+++
+++&spi1 {
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_spi1_default>;
+++	flash@0 {
+++		status = "okay";
+++		m25p,fast-read;
+++		label = "pnor";
+++	};
+++};
+++&uart1 {
+++	// Host1 Console
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_txd1_default
+++		     &pinctrl_rxd1_default>;
+++};
+++
+++&uart2 {
+++	// Host2 Console
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_txd2_default
+++		     &pinctrl_rxd2_default>;
+++
+++};
+++
+++&uart3 {
+++	// Host3 Console
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_txd3_default
+++		     &pinctrl_rxd3_default>;
+++};
+++
+++&uart4 {
+++	// Host4 Console
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_txd4_default
+++		     &pinctrl_rxd4_default>;
+++};
+++
+++&uart5 {
+++	// BMC Console
+++	status = "okay";
+++};
+++
+++&vuart {
+++	// Virtual UART
+++	status = "okay";
+++};
+++
+++&mac0 {
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_rmii1_default>;
+++	use-ncsi;
+++	mlx,multi-host;
+++};
+++
+++&adc {
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_adc0_default
+++			&pinctrl_adc1_default
+++			&pinctrl_adc2_default
+++			&pinctrl_adc3_default
+++			&pinctrl_adc4_default
+++			&pinctrl_adc5_default
+++			&pinctrl_adc6_default
+++			&pinctrl_adc7_default
+++			&pinctrl_adc8_default
+++			&pinctrl_adc9_default
+++			&pinctrl_adc10_default
+++			&pinctrl_adc11_default
+++			&pinctrl_adc12_default
+++			&pinctrl_adc13_default
+++			&pinctrl_adc14_default
+++			&pinctrl_adc15_default>;
+++};
+++
+++&i2c1 {
+++	//Host1 IPMB bus
+++	status = "okay";
+++	multi-master;
+++	ipmb1@10 {
+++		compatible = "ipmb-dev";
+++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
+++		i2c-protocol;
+++	};
+++};
+++
+++&i2c3 {
+++	//Host2 IPMB bus
+++	status = "okay";
+++	multi-master;
+++	ipmb3@10 {
+++		compatible = "ipmb-dev";
+++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
+++		i2c-protocol;
+++	};
+++};
+++
+++&i2c5 {
+++	//Host3 IPMB bus
+++	status = "okay";
+++	multi-master;
+++	ipmb5@10 {
+++		compatible = "ipmb-dev";
+++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
+++		i2c-protocol;
+++	};
+++};
+++
+++&i2c7 {
+++	//Host4 IPMB bus
+++	status = "okay";
+++	multi-master;
+++	ipmb7@10 {
+++		compatible = "ipmb-dev";
+++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
+++		i2c-protocol;
+++	};
+++};
+++
+++&i2c8 {
+++	status = "okay";
+++	//FRU EEPROM
+++	eeprom@51 {
+++		compatible = "atmel,24c64";
+++		reg = <0x51>;
+++		pagesize = <32>;
+++	};
+++};
+++
+++&i2c9 {
+++	status = "okay";
+++	tmp421@4e {
+++	//INLET TEMP
+++		compatible = "ti,tmp421";
+++		reg = <0x4e>;
+++	};
+++	//OUTLET TEMP
+++	tmp421@4f {
+++		compatible = "ti,tmp421";
+++		reg = <0x4f>;
+++	};
+++};
+++
+++&i2c10 {
+++	status = "okay";
+++	//HSC
+++	adm1278@40 {
+++		compatible = "adi,adm1278";
+++		reg = <0x40>;
+++	};
+++};
+++
+++&i2c11 {
+++	status = "okay";
+++	//MEZZ_TEMP_SENSOR
+++	tmp421@1f {
+++		compatible = "ti,tmp421";
+++		reg = <0x1f>;
+++	};
+++};
+++
+++&i2c12 {
+++	status = "okay";
+++	//MEZZ_FRU
+++	eeprom@51 {
+++		compatible = "atmel,24c64";
+++		reg = <0x51>;
+++		pagesize = <32>;
+++	};
+++};
+++
+++&i2c13 {
+++	// External Debug card
+++	status = "okay";	
+++};
+++
+++
+++&pwm_tacho {
+++	status = "okay";
+++	//FSC
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pinctrl_pwm0_default &pinctrl_pwm1_default>;
+++	fan@0 {
+++		reg = <0x00>;
+++		aspeed,fan-tach-ch = /bits/ 8 <0x00>;
+++	};
+++	fan@1 {
+++		reg = <0x01>;
+++		aspeed,fan-tach-ch = /bits/ 8 <0x01>;
+++	};
+++};
++-- 
++2.7.4
++
+diff --git a/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0002-net-ncsi-Fix-gma-flag-setting-after-response.patch b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0002-net-ncsi-Fix-gma-flag-setting-after-response.patch
+new file mode 100644
+index 0000000..0ebaeea
+--- /dev/null
++++ b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0002-net-ncsi-Fix-gma-flag-setting-after-response.patch
+@@ -0,0 +1,59 @@
++From f3b33c3f46cb4391c73b0d5fb40679c94a2a21da Mon Sep 17 00:00:00 2001
++From: Vijay Khemka <vijaykhemka@fb.com>
++Date: Fri, 27 Dec 2019 13:05:05 -0800
++Subject: [PATCH 2/4] net/ncsi: Fix gma flag setting after response
++
++gma_flag was set at the time of GMA command request but it should
++only be set after getting successful response. Movinng this flag
++setting in GMA response handler.
++
++This flag is used mainly for not repeating GMA command once
++received MAC address.
++
++Signed-off-by: Vijay Khemka <vijaykhemka@fb.com>
++---
++ net/ncsi/ncsi-manage.c | 3 ---
++ net/ncsi/ncsi-rsp.c    | 6 ++++++
++ 2 files changed, 6 insertions(+), 3 deletions(-)
++
++diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
++index 755aab66dcab..a7f2dee76917 100644
++--- a/net/ncsi/ncsi-manage.c
+++++ b/net/ncsi/ncsi-manage.c
++@@ -765,9 +765,6 @@ static int ncsi_gma_handler(struct ncsi_cmd_arg *nca, unsigned int mf_id)
++ 		return -1;
++ 	}
++ 
++-	/* Set the flag for GMA command which should only be called once */
++-	nca->ndp->gma_flag = 1;
++-
++ 	/* Get Mac address from NCSI device */
++ 	return nch->handler(nca);
++ }
++diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
++index d876bd55f356..4863f8e558f9 100644
++--- a/net/ncsi/ncsi-rsp.c
+++++ b/net/ncsi/ncsi-rsp.c
++@@ -627,6 +627,9 @@ static int ncsi_rsp_handler_oem_mlx_gma(struct ncsi_request *nr)
++ 	saddr.sa_family = ndev->type;
++ 	ndev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
++ 	memcpy(saddr.sa_data, &rsp->data[MLX_MAC_ADDR_OFFSET], ETH_ALEN);
+++	/* Set the flag for GMA command which should only be called once */
+++	ndp->gma_flag = 1;
+++
++ 	ret = ops->ndo_set_mac_address(ndev, &saddr);
++ 	if (ret < 0)
++ 		netdev_warn(ndev, "NCSI: 'Writing mac address to device failed\n");
++@@ -671,6 +674,9 @@ static int ncsi_rsp_handler_oem_bcm_gma(struct ncsi_request *nr)
++ 	if (!is_valid_ether_addr((const u8 *)saddr.sa_data))
++ 		return -ENXIO;
++ 
+++	/* Set the flag for GMA command which should only be called once */
+++	ndp->gma_flag = 1;
+++
++ 	ret = ops->ndo_set_mac_address(ndev, &saddr);
++ 	if (ret < 0)
++ 		netdev_warn(ndev, "NCSI: 'Writing mac address to device failed\n");
++-- 
++2.17.1
++
+diff --git a/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0003-net-ncsi-Send-device-address-as-source-address.patch b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0003-net-ncsi-Send-device-address-as-source-address.patch
+new file mode 100644
+index 0000000..99e927f
+--- /dev/null
++++ b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0003-net-ncsi-Send-device-address-as-source-address.patch
+@@ -0,0 +1,40 @@
++From 87da89033e0025d5db80207e141544e83d9494f5 Mon Sep 17 00:00:00 2001
++From: Vijay Khemka <vijaykhemka@fb.com>
++Date: Fri, 27 Dec 2019 15:02:23 -0800
++Subject: [PATCH 3/4] net/ncsi: Send device address as source address
++
++After receiving device mac address from device, send this as
++a source address for further commands instead of broadcast
++address.
++
++This will help in multi host NIC cards.
++
++Signed-off-by: Vijay Khemka <vijaykhemka@fb.com>
++---
++ net/ncsi/ncsi-cmd.c | 10 +++++++++-
++ 1 file changed, 9 insertions(+), 1 deletion(-)
++
++diff --git a/net/ncsi/ncsi-cmd.c b/net/ncsi/ncsi-cmd.c
++index 0187e65176c0..ba9ae482141b 100644
++--- a/net/ncsi/ncsi-cmd.c
+++++ b/net/ncsi/ncsi-cmd.c
++@@ -369,7 +369,15 @@ int ncsi_xmit_cmd(struct ncsi_cmd_arg *nca)
++ 	eh = skb_push(nr->cmd, sizeof(*eh));
++ 	eh->h_proto = htons(ETH_P_NCSI);
++ 	eth_broadcast_addr(eh->h_dest);
++-	eth_broadcast_addr(eh->h_source);
+++
+++	/* If mac address received from device then use it for
+++	 * source address as unicast address else use broadcast
+++	 * address as source address
+++	 */
+++	if (nca->ndp->gma_flag == 1)
+++		memcpy(eh->h_source, nca->ndp->ndev.dev->dev_addr, ETH_ALEN);
+++	else
+++		eth_broadcast_addr(eh->h_source);
++ 
++ 	/* Start the timer for the request that might not have
++ 	 * corresponding response. Given NCSI is an internal
++-- 
++2.17.1
++
+diff --git a/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0004-net-ncsi-Support-for-multi-host-mellanox-card.patch b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0004-net-ncsi-Support-for-multi-host-mellanox-card.patch
+new file mode 100644
+index 0000000..ef37550
+--- /dev/null
++++ b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed/0004-net-ncsi-Support-for-multi-host-mellanox-card.patch
+@@ -0,0 +1,187 @@
++From 3fbdb5c7c93e6d2814e9b237c9a6a0bfd695bf11 Mon Sep 17 00:00:00 2001
++From: Vijay Khemka <vijaykhemka@fb.com>
++Date: Fri, 27 Dec 2019 15:12:35 -0800
++Subject: [PATCH 4/4] net/ncsi: Support for multi host mellanox card
++
++Multi host Mellanox cards require MAC affinity to be set
++before receiving any config commands. All config commands
++should also have unicast address for source address in
++command header.
++
++Adding GMA and SMAF(Set Mac Affinity) for Mellanox card
++and call these in channel probe state machine if it is
++defined in device tree.
++
++Signed-off-by: Vijay Khemka <vijaykhemka@fb.com>
++---
++ net/ncsi/internal.h    | 20 +++++++++++++
++ net/ncsi/ncsi-manage.c | 68 ++++++++++++++++++++++++++++++++++++++++++
++ 2 files changed, 88 insertions(+)
++
++diff --git a/net/ncsi/internal.h b/net/ncsi/internal.h
++index 0b3f0673e1a2..77a94c2ffbdb 100644
++--- a/net/ncsi/internal.h
+++++ b/net/ncsi/internal.h
++@@ -64,6 +64,17 @@ enum {
++ 	NCSI_MODE_MAX
++ };
++ 
+++/* Supported media status bits for Mellanox Mac affinity command.
+++ * Bit (0-2) for different protocol support; Bit 1 for RBT support,
+++ * bit 1 for SMBUS support and bit 2 for PCIE support. Bit (3-5)
+++ * for different protocol availability. Bit 4 for RBT, bit 4 for
+++ * SMBUS and bit 5 for PCIE.
+++ */
+++enum {
+++	MLX_MC_RBT_SUPPORT  = 0x01, /* MC supports RBT         */
+++	MLX_MC_RBT_AVL      = 0x08, /* RBT medium is available */
+++};
+++
++ /* OEM Vendor Manufacture ID */
++ #define NCSI_OEM_MFR_MLX_ID             0x8119
++ #define NCSI_OEM_MFR_BCM_ID             0x113d
++@@ -72,9 +83,15 @@ enum {
++ /* Mellanox specific OEM Command */
++ #define NCSI_OEM_MLX_CMD_GMA            0x00   /* CMD ID for Get MAC */
++ #define NCSI_OEM_MLX_CMD_GMA_PARAM      0x1b   /* Parameter for GMA  */
+++#define NCSI_OEM_MLX_CMD_SMAF           0x01   /* CMD ID for Set MC Affinity */
+++#define NCSI_OEM_MLX_CMD_SMAF_PARAM     0x07   /* Parameter for SMAF         */
++ /* OEM Command payload lengths*/
++ #define NCSI_OEM_BCM_CMD_GMA_LEN        12
++ #define NCSI_OEM_MLX_CMD_GMA_LEN        8
+++#define NCSI_OEM_MLX_CMD_SMAF_LEN        60
+++/* Offset in OEM request */
+++#define MLX_SMAF_MAC_ADDR_OFFSET         8     /* Offset for MAC in SMAF    */
+++#define MLX_SMAF_MED_SUPPORT_OFFSET      14    /* Offset for medium in SMAF */
++ /* Mac address offset in OEM response */
++ #define BCM_MAC_ADDR_OFFSET             28
++ #define MLX_MAC_ADDR_OFFSET             8
++@@ -251,6 +268,8 @@ enum {
++ 	ncsi_dev_state_probe_deselect	= 0x0201,
++ 	ncsi_dev_state_probe_package,
++ 	ncsi_dev_state_probe_channel,
+++	ncsi_dev_state_probe_mlx_gma,
+++	ncsi_dev_state_probe_mlx_smaf,
++ 	ncsi_dev_state_probe_cis,
++ 	ncsi_dev_state_probe_gvi,
++ 	ncsi_dev_state_probe_gc,
++@@ -316,6 +335,7 @@ struct ncsi_dev_priv {
++ 	struct list_head    vlan_vids;       /* List of active VLAN IDs */
++ 
++ 	bool                multi_package;   /* Enable multiple packages   */
+++	bool                mlx_multi_host;  /* Enable multi host Mellanox */
++ 	u32                 package_whitelist; /* Packages to configure    */
++ };
++ 
++diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
++index a7f2dee76917..a44139c87202 100644
++--- a/net/ncsi/ncsi-manage.c
+++++ b/net/ncsi/ncsi-manage.c
++@@ -8,6 +8,8 @@
++ #include <linux/init.h>
++ #include <linux/netdevice.h>
++ #include <linux/skbuff.h>
+++#include <linux/of.h>
+++#include <linux/platform_device.h>
++ 
++ #include <net/ncsi.h>
++ #include <net/net_namespace.h>
++@@ -731,6 +733,34 @@ static int ncsi_oem_gma_handler_mlx(struct ncsi_cmd_arg *nca)
++ 	return ret;
++ }
++ 
+++static int ncsi_oem_smaf_mlx(struct ncsi_cmd_arg *nca)
+++{
+++	union {
+++		u8 data_u8[NCSI_OEM_MLX_CMD_SMAF_LEN];
+++		u32 data_u32[NCSI_OEM_MLX_CMD_SMAF_LEN / sizeof(u32)];
+++	} u;
+++	int ret = 0;
+++
+++	memset(&u, 0, sizeof(u));
+++	u.data_u32[0] = ntohl(NCSI_OEM_MFR_MLX_ID);
+++	u.data_u8[5] = NCSI_OEM_MLX_CMD_SMAF;
+++	u.data_u8[6] = NCSI_OEM_MLX_CMD_SMAF_PARAM;
+++	memcpy(&u.data_u8[MLX_SMAF_MAC_ADDR_OFFSET],
+++	       nca->ndp->ndev.dev->dev_addr,	ETH_ALEN);
+++	u.data_u8[MLX_SMAF_MED_SUPPORT_OFFSET] =
+++		(MLX_MC_RBT_AVL | MLX_MC_RBT_SUPPORT);
+++
+++	nca->payload = NCSI_OEM_MLX_CMD_SMAF_LEN;
+++	nca->data = u.data_u8;
+++
+++	ret = ncsi_xmit_cmd(nca);
+++	if (ret)
+++		netdev_err(nca->ndp->ndev.dev,
+++			   "NCSI: Failed to transmit cmd 0x%x during probe\n",
+++			   nca->type);
+++	return ret;
+++}
+++
++ /* OEM Command handlers initialization */
++ static struct ncsi_oem_gma_handler {
++ 	unsigned int	mfr_id;
++@@ -1313,8 +1343,37 @@ static void ncsi_probe_channel(struct ncsi_dev_priv *ndp)
++ 			break;
++ 		}
++ 		nd->state = ncsi_dev_state_probe_cis;
+++		if (IS_ENABLED(CONFIG_NCSI_OEM_CMD_GET_MAC) && (ndp->mlx_multi_host))
+++			nd->state = ncsi_dev_state_probe_mlx_gma;
+++
++ 		schedule_work(&ndp->work);
++ 		break;
+++#if IS_ENABLED(CONFIG_NCSI_OEM_CMD_GET_MAC)
+++	case ncsi_dev_state_probe_mlx_gma:
+++		ndp->pending_req_num = 1;
+++
+++		nca.type = NCSI_PKT_CMD_OEM;
+++		nca.package = ndp->active_package->id;
+++		nca.channel = 0;
+++		ret = ncsi_oem_gma_handler_mlx(&nca);
+++		if (ret)
+++			goto error;
+++
+++		nd->state = ncsi_dev_state_probe_mlx_smaf;
+++		break;
+++	case ncsi_dev_state_probe_mlx_smaf:
+++		ndp->pending_req_num = 1;
+++
+++		nca.type = NCSI_PKT_CMD_OEM;
+++		nca.package = ndp->active_package->id;
+++		nca.channel = 0;
+++		ret = ncsi_oem_smaf_mlx(&nca);
+++		if (ret)
+++			goto error;
+++
+++		nd->state = ncsi_dev_state_probe_cis;
+++		break;
+++#endif /* CONFIG_NCSI_OEM_CMD_GET_MAC */
++ 	case ncsi_dev_state_probe_cis:
++ 		ndp->pending_req_num = NCSI_RESERVED_CHANNEL;
++ 
++@@ -1688,6 +1747,8 @@ struct ncsi_dev *ncsi_register_dev(struct net_device *dev,
++ {
++ 	struct ncsi_dev_priv *ndp;
++ 	struct ncsi_dev *nd;
+++	struct platform_device *pdev;
+++	struct device_node *np;
++ 	unsigned long flags;
++ 	int i;
++ 
++@@ -1739,6 +1800,13 @@ struct ncsi_dev *ncsi_register_dev(struct net_device *dev,
++ 	/* Set up generic netlink interface */
++ 	ncsi_init_netlink(dev);
++ 
+++	pdev = to_platform_device(dev->dev.parent);
+++	if (pdev) {
+++		np = pdev->dev.of_node;
+++		if (np && of_get_property(np, "mlx,multi-host", NULL))
+++			ndp->mlx_multi_host = true;
+++	}
+++
++ 	return nd;
++ }
++ EXPORT_SYMBOL_GPL(ncsi_register_dev);
++-- 
++2.17.1
++
+diff --git a/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed_%.bbappend b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed_%.bbappend
+index 9020b66..ac31fa5 100644
+--- a/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed_%.bbappend
++++ b/meta-facebook/meta-yosemitev2/recipes-kernel/linux/linux-aspeed_%.bbappend
+@@ -1,2 +1,6 @@
+ FILESEXTRAPATHS_prepend := "${THISDIR}/linux-aspeed:"
+ SRC_URI += "file://yosemitev2.cfg"
++SRC_URI += "file://0001-Yosemite-device-tree.patch"
++SRC_URI += "file://0002-net-ncsi-Fix-gma-flag-setting-after-response.patch"
++SRC_URI += "file://0003-net-ncsi-Send-device-address-as-source-address.patch"
++SRC_URI += "file://0004-net-ncsi-Support-for-multi-host-mellanox-card.patch"
+-- 
+2.7.4
+
