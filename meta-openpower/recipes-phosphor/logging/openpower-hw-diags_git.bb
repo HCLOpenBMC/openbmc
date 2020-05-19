@@ -9,9 +9,9 @@ SRC_URI = "git://github.com/openbmc/openpower-hw-diags"
 
 SYSTEMD_SERVICE_${PN} = "attn_handler.service"
 PV = "0.1+git${SRCPV}"
-SRCREV = "d3cda742cbdd27e264600da3c59c17a48272d0d2"
+SRCREV = "b859d79ab0a59015b6671e25776945013475240e"
 
 S = "${WORKDIR}/git"
 
-DEPENDS = "boost libgpiod pdbg phosphor-logging sdbusplus"
+DEPENDS = "boost libgpiod pdbg phosphor-logging sdbusplus openpower-libhei"
 FILES_${PN} += "${UNITDIR}/attn_handler.service"
