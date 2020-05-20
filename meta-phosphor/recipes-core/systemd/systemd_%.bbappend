@@ -1,8 +1,7 @@
 FILES_${PN}-catalog-extralocales = \
             "${exec_prefix}/lib/systemd/catalog/*.*.catalog"
 PACKAGES =+ "${PN}-catalog-extralocales"
-
-PACKAGECONFIG = " \
+PACKAGECONFIG = "\
         coredump \
         hostnamed \
         kmod \
@@ -11,6 +10,7 @@ PACKAGECONFIG = " \
         randomseed \
         resolved \
         sysusers \
+        sysvinit \
         timedated \
         timesyncd \
         xz \
