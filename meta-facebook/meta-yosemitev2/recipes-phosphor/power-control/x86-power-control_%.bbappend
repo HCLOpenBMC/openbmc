@@ -2,6 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/${MACHINE}:"
 
 SRC_URI_append = " file://*.json"
 
+
 SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.Chassis.Control.Power@1.service \
                           xyz.openbmc_project.Chassis.Control.Power@2.service \
                           xyz.openbmc_project.Chassis.Control.Power@3.service \
