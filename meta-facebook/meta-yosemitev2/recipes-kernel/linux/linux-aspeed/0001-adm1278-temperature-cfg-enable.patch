@@ -1,0 +1,37 @@
+From 657e908873f834b51a88a9620fe66ad5d145372e Mon Sep 17 00:00:00 2001
+From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+Date: Sun, 24 May 2020 16:54:41 +0530
+Subject: [PATCH] adm1278 temperature cfg enable
+
+---
+ drivers/hwmon/pmbus/adm1275.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
+index 5caa37fb..c849aea 100644
+--- a/drivers/hwmon/pmbus/adm1275.c
++++ b/drivers/hwmon/pmbus/adm1275.c
+@@ -503,6 +503,20 @@ static int adm1275_probe(struct i2c_client *client,
+ 	if (config < 0)
+ 		return config;
+ 
++	config |= ADM1278_TEMP1_EN;
++	ret = i2c_smbus_write_byte_data(client,
++					ADM1275_PMON_CONFIG,
++					config);
++	if (ret < 0) {
++		dev_err(&client->dev,
++			"Failed to enable temperature config\n");
++		return -ENODEV;
++	}
++
++	config = i2c_smbus_read_byte_data(client, ADM1275_PMON_CONFIG);
++	if (config < 0)
++		return config;
++
+ 	device_config = i2c_smbus_read_byte_data(client, ADM1275_DEVICE_CONFIG);
+ 	if (device_config < 0)
+ 		return device_config;
+-- 
+2.7.4
+
