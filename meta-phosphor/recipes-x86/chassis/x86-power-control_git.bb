@@ -22,5 +22,5 @@ DEPENDS += " \
     libgpiod \
     sdbusplus \
     phosphor-logging \
-	nlohmann-json \
+    nlohmann-json \
   "
