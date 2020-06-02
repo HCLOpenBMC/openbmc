@@ -42,6 +42,7 @@ RDEPENDS_${PN}-system = " \
         dbus-sensors \
         phosphor-ipmi-ipmb \
         fb-ipmi-oem \
+        fb-ipmi \
         phosphor-hostlogger \
         phosphor-sel-logger \
         ipmitool \
