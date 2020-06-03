@@ -19,13 +19,15 @@ DEPENDS += "\
             sdbusplus \
             ${PYTHON_PN}-sdbus++-native \
             phosphor-dbus-interfaces \
+	    sdeventplus \
            "
 RDEPENDS_${PN} += "obmc-console"
 RRECOMMENDS_${PN} += "phosphor-debug-collector"
 
 # systemd service setup
 SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} = "hostlogger@.service"
+SYSTEMD_SERVICE_${PN} += "hostlogger.service"
+SYSTEMD_SERVICE_${PN} += "hostlogger@.service"
 
 # Host TTY setup
 OBMC_CONSOLE_HOST_TTY ?= "ttyVUART0"
