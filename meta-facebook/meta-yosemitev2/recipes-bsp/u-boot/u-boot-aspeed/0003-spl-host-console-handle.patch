@@ -14,7 +14,7 @@ index c3ce077..29daa7a 100644
 @@ -315,6 +315,58 @@ orr r1, r1, #0xC
  str r1, [r0]
  .endm
- 
+
 +  .macro console_slot1
 +  ldr r0, =0x1e780024
 +  ldr r1, [r0]
@@ -68,7 +68,7 @@ index c3ce077..29daa7a 100644
 +  .endm
 +
  .macro console_sel
- 
+
    // Disable SoL UARTs[1-4]
 @@ -354,28 +406,28 @@ dbg_card_pres\@:
    ldr r1, =0x00
@@ -136,6 +136,5 @@ index c3ce077..29daa7a 100644
     b case_end\@
  case_pos10\@:
     //Test for position#10
--- 
+--
 2.7.4
-
