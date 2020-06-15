@@ -3,6 +3,50 @@ From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
 Date: Wed, 10 Jun 2020 17:53:59 +0530
 Subject: [PATCH] spl-host-console-handle
 
+This patch adds four 1S server console through debug card
+connected to YosemiteV2 during boot.
+
+Handswitch in the adaptor card connected to AST2500 GPIOs as below,
+GPIOAA7 ---SW_ID8
+GPIOAA6 ---SW_ID4
+GPIOAA5 ---SW_ID2
+GPIOAA4 ---SW_ID1
+
+SW_ID8  SW_ID4  SW_ID2   SW_ID1   Position      Descritpion
+L	L        L        L        1		1s server slot1 select
+
+L	L        H        2        1s		server slot2 select
+
+L	L        H        L        3		1s server slot3 select
+
+L	L        H        H        4		1s server slot4 select
+
+L	H        L        L        5		BMC Debug port select
+
+L	H        L        H        6		1s server slot1 select
+
+L	H        H        L        7		1s server slot2 select
+
+L	H        H        H        8		1s server slot3 select
+
+H	L        L        L        9		1s server slot4 select
+
+H	L        L        H        10		BMC Debug port select
+
+BMC and Hosts UART control flow
+GPIOE0 --- DEBUG_UART_SEL_0
+GPIOE1 --- DEBUG_UART_SEL_1
+GPIOE2 --- DEBUG_UART_SEL_2
+GPIOE2 --- DEBUG_UART_RX_SEL_N
+
+SEL_2  SEL_1   SEL_0   RX_SEL_N  CONSOLE
+0	0	0	0	 SLOT1
+0 	0 	1 	0 	 SLOT2
+0 	1 	0 	0 	 SLOT3
+0 	1 	1 	0 	 SLOT4
+1 	0 	0 	1 	 BMC Debug
+
+Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
 ---
  arch/arm/mach-aspeed/platform_g5.S | 68 +++++++++++++++++++++++++++++++++-----
  1 file changed, 60 insertions(+), 8 deletions(-)
