@@ -2,7 +2,7 @@ SUMMARY = "Facebook Ipmi service to monitor and update GPIO's from Ipmi"
 DESCRIPTION = "Facebook Ipmi service to monitor and update GPIO's from Ipmi"
 
 SRC_URI = "git://github.com/HCLOpenBMC/fb-ipmi"
-SRCREV = "7d92d0c2f1e9db7d1ecdae36ee1936d2ced4fa82"
+SRCREV = "2e9cc22e2619c33163f246557e02d8f6d8dadb74"
 
 PV = "1.0+git${SRCPV}"
 
@@ -13,7 +13,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 inherit cmake systemd
 
-SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.Chassis.Control.Ipmi.service"
+SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.Chassis.Control.Misc.service"
 
 DEPENDS += " \
     boost \
