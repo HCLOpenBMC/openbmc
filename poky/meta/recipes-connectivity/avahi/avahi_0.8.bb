@@ -81,6 +81,11 @@ do_install() {
 	rm -rf ${D}${datadir}/dbus-1/interfaces
 	test -d ${D}${datadir}/dbus-1 && rmdir --ignore-fail-on-non-empty ${D}${datadir}/dbus-1
 	rm -rf ${D}${libdir}/avahi
+
+	# Move example service files out of /etc/avahi/services so we don't
+	# advertise ssh & sftp-ssh by default
+	install -d ${D}${docdir}/avahi
+	mv ${D}${sysconfdir}/avahi/services/* ${D}${docdir}/avahi
 }
 
 PACKAGES =+ "${@bb.utils.contains("PACKAGECONFIG", "libdns_sd", "libavahi-compat-libdnssd", "", d)}"
@@ -139,6 +144,7 @@ FILES_avahi-utils = "${bindir}/avahi-* ${bindir}/b* ${datadir}/applications/b*"
 
 RDEPENDS_${PN}-dev = "avahi-daemon (= ${EXTENDPKGV}) libavahi-core (= ${EXTENDPKGV})"
 RDEPENDS_${PN}-dev += "${@["", " libavahi-client (= ${EXTENDPKGV})"][bb.utils.contains('PACKAGECONFIG', 'dbus', 1, 0, d)]}"
+RDEPENDS_${PN}-dnsconfd = "${PN}-daemon"
 
 RRECOMMENDS_avahi-daemon_append_libc-glibc = " libnss-mdns"
 

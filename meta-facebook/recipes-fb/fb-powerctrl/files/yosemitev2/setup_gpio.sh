@@ -55,14 +55,42 @@ gpio_export I2
 # SLOT4_POWER_EN: GPIOI3 (67)
 gpio_export I3
 
-# DEBUG UART Controls
-# 4 signals: DEBUG_UART_SEL_0/1/2 and DEBUG_UART_RX_SEL_N
-# GPIOE0 (32), GPIOE1 (33), GPIOE2 (34) and GPIOE3 (35)
 
-gpio_export E0
+# LED POST CODES: 8 GPIO signals
 
-gpio_export E1
+# LED_POSTCODE_0: GPIOG0 (48)
+# To use GPIOG0, SCU84[0] must be 0
+#devmem_clear_bit $(scu_addr 84) 0
 
-gpio_export E2
+#gpio_set G0 0
 
-gpio_export E3
+# LED_POSTCODE_1: GPIOG1 (49)
+# To use GPIOG1, SCU84[1] must be 0
+#devmem_clear_bit $(scu_addr 84) 1
+
+#gpio_set G1 0
+
+# LED_POSTCODE_2: GPIOG2 (50)
+# To use GPIOG2, SCU84[2] must be 0
+#devmem_clear_bit $(scu_addr 84) 2
+
+#gpio_set G2 0
+
+# LED_POSTCODE_3: GPIOG3 (51)
+# To use GPIOG3, SCU84[3] must be 0
+#devmem_clear_bit $(scu_addr 84) 3
+
+#gpio_set G3 0
+
+# upper digt display
+# LED_POSTCODE_4: GPIOP4 (124)
+#gpio_set P4 0
+
+# LED_POSTCODE_5: GPIOP5 (125)
+#gpio_set P5 0
+
+# LED_POSTCODE_6: GPIOP6 (126)
+#gpio_set P6 0
+
+# LED_POSTCODE_7: GPIOP7 (127)
+#gpio_set P7 0

@@ -26,7 +26,7 @@ WARN_QA ?= " libdir xorg-driver-abi \
             textrel incompatible-license files-invalid \
             infodir build-deps src-uri-bad symlink-to-sysroot multilib \
             invalid-packageconfig host-user-contaminated uppercase-pn patch-fuzz \
-            mime mime-xdg \
+            mime mime-xdg unlisted-pkg-lics unhandled-features-check \
             "
 ERROR_QA ?= "dev-so debug-deps dev-deps debug-files arch pkgconfig la \
             perms dep-cmp pkgvarcheck perm-config perm-line perm-link \
@@ -898,6 +898,25 @@ def package_qa_check_expanded_d(package, d, messages):
                 sane = False
     return sane
 
+QAPKGTEST[unlisted-pkg-lics] = "package_qa_check_unlisted_pkg_lics"
+def package_qa_check_unlisted_pkg_lics(package, d, messages):
+    """
+    Check that all licenses for a package are among the licenses for the recipe.
+    """
+    pkg_lics = d.getVar('LICENSE_' + package)
+    if not pkg_lics:
+        return True
+
+    recipe_lics_set = oe.license.list_licenses(d.getVar('LICENSE'))
+    unlisted = oe.license.list_licenses(pkg_lics) - recipe_lics_set
+    if not unlisted:
+        return True
+
+    package_qa_add_message(messages, "unlisted-pkg-lics",
+                           "LICENSE_%s includes licenses (%s) that are not "
+                           "listed in LICENSE" % (package, ' '.join(unlisted)))
+    return False
+
 def package_qa_check_encoding(keys, encode, d):
     def check_encoding(key, enc):
         sane = True
@@ -961,6 +980,16 @@ def package_qa_check_src_uri(pn, d, messages):
         if re.search(r"github\.com/.+/.+/archive/.+", url):
             package_qa_handle_error("src-uri-bad", "%s: SRC_URI uses unstable GitHub archives" % pn, d)
 
+QARECIPETEST[unhandled-features-check] = "package_qa_check_unhandled_features_check"
+def package_qa_check_unhandled_features_check(pn, d, messages):
+    if not bb.data.inherits_class('features_check', d):
+        var_set = False
+        for kind in ['DISTRO', 'MACHINE', 'COMBINED']:
+            for var in ['ANY_OF_' + kind + '_FEATURES', 'REQUIRED_' + kind + '_FEATURES', 'CONFLICT_' + kind + '_FEATURES']:
+                if d.getVar(var) is not None or d.overridedata.get(var) is not None:
+                    var_set = True
+        if var_set:
+            package_qa_handle_error("unhandled-features-check", "%s: recipe doesn't inherit features_check" % pn, d)
 
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
