@@ -6,20 +6,15 @@ Subject: [PATCH v4] hwmon:(adm1275) Enable adm1278 ADM1278_TEMP1_EN
 The adm1278 temp attribute need it for openbmc platform .
 This feature not enabled by default, so PMON_CONFIG needs to enable it.
 
-v4:
----
-changes in conditional check to enable vout & temp1 by default.
-v3:
-----
-fix invalid signed-off.
-removed checkpath warnings.
-write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single line operation.
-v2:
-----
-add Signed-off-by.
-removed ADM1278_TEMP1_EN check.
-
 Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+---
+---    v4 -Reported-by: kernel test robot <lkp@intel.com>
+---    v3 -fix invalid signed-off.
+---       -removed checkpath warnings.
+---       -write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single line operation.
+---    v2 -add Signed-off-by.
+---       -removed ADM1278_TEMP1_EN check.
+---
 ---
  drivers/hwmon/pmbus/adm1275.c | 12 +++++-------
  1 file changed, 5 insertions(+), 7 deletions(-)
@@ -40,7 +35,7 @@ index 5caa37fb..d4e1925 100644
 -		if (!(config & ADM1278_VOUT_EN)) {
 -			config |= ADM1278_VOUT_EN;
 +		/* Enable VOUT & TEMP1 if not enabled (disabled by default) */
-+		if (config & (ADM1278_VOUT_EN | ADM1278_TEMP1_EN) != ADM1278_VOUT_EN | ADM1278_TEMP1_EN) {
++		if ((config & (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) != (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) {
 +			config |= ADM1278_VOUT_EN | ADM1278_TEMP1_EN;
  			ret = i2c_smbus_write_byte_data(client,
  							ADM1275_PMON_CONFIG,
