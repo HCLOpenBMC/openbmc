@@ -12,12 +12,13 @@ SRC_URI_append_class-native = " file://0001-conditionally-do-not-fetch-code-by-e
 
 SRC_URI += "file://0001-change-shebang-to-python3.patch"
 
-SRC_URI[md5sum] = "0c956eea142af9c2b02d72e3c042af30"
-SRC_URI[sha256sum] = "89c6e6011ec2f6d57d43a3f9296c4ef022c2cbf49bab26b407fe67992ae3397f"
+SRC_URI[md5sum] = "6e9de90b242fdd60ef59f497424ce13a"
+SRC_URI[sha256sum] = "145fa62b9d7bb544fce16e9b5a9bf4ab2032d2f758b7cd674af09a92736aff74"
 
 DEPENDS += "${PYTHON_PN}"
 
 RDEPENDS_${PN} = "\
+  ${PYTHON_PN}-2to3 \
   ${PYTHON_PN}-compile \
   ${PYTHON_PN}-compression \
   ${PYTHON_PN}-ctypes \
@@ -27,6 +28,7 @@ RDEPENDS_${PN} = "\
   ${PYTHON_PN}-json \
   ${PYTHON_PN}-netserver \
   ${PYTHON_PN}-numbers \
+  ${PYTHON_PN}-pickle \
   ${PYTHON_PN}-pkgutil \
   ${PYTHON_PN}-plistlib \
   ${PYTHON_PN}-shell \
@@ -46,6 +48,12 @@ BBCLASSEXTEND = "native nativesdk"
 # minimal distributions.
 PACKAGES =+ "${PYTHON_PN}-pkg-resources "
 FILES_${PYTHON_PN}-pkg-resources = "${PYTHON_SITEPACKAGES_DIR}/pkg_resources/*"
+RDEPENDS_${PYTHON_PN}-pkg-resources = "\
+  ${PYTHON_PN}-compression \
+  ${PYTHON_PN}-email \
+  ${PYTHON_PN}-plistlib \
+  ${PYTHON_PN}-pprint \
+"
 # Due to the way OE-Core implemented native recipes, the native class cannot
 # have a dependency on something that is not a recipe name. Work around that by
 # manually setting RPROVIDES.
