@@ -124,9 +124,6 @@ MACHINE_FEATURES += " \
 
 DISTRO_EXTRA_RDEPENDS_remove_qemuarm = "packagegroup-core-device-devel"
 
-# TODO: openbmc/openbmc#12345 - Upgrade to pygobject-3.
-PREFERRED_VERSION_python-pygobject = "2.%"
-
 include conf/distro/include/openbmc-phosphor/${MACHINE}.inc
 
 KERNEL_FEATURES_append = " phosphor-gpio-keys"
@@ -146,3 +143,9 @@ BAD_RECOMMENDATIONS += "shared-mime-info"
 LAYER_CONF_VERSION ?= "8"
 
 KERNEL_CLASSES_append = " obmc-phosphor-kernel-version"
+
+# Some packages have directory trees of YAML files arranged based on
+# canonical organization names.  'xyz/openbmc_project' should be used
+# everywhere in phosphor, but some layers may append this with their
+# own organization(s).
+OBMC_ORG_YAML_SUBDIRS += " xyz/openbmc_project"

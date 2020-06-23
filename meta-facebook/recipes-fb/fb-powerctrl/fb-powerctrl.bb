@@ -17,6 +17,7 @@ SRC_URI_append_tiogapass = "file://setup_gpio.sh \
 SRC_URI_append_yosemitev2 = "file://setup_gpio.sh \
            file://power-util \
            file://power_led.sh \
+           file://post_led.sh \
            file://ast-functions \
            file://host-gpio.service \
            file://host-poweroff.service \
@@ -40,5 +41,6 @@ do_install_append_yosemitev2(){
     install -m 0755 ${S}setup_gpio.sh ${D}/${sbindir}/
     install -m 0755 ${S}power-util ${D}/${sbindir}/
     install -m 0755 ${S}power_led.sh ${D}/${sbindir}/
+    install -m 0755 ${S}post_led.sh ${D}/${sbindir}/
     install -m 0755 ${S}ast-functions ${D}/${sbindir}/
 }
