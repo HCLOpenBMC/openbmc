@@ -16,9 +16,10 @@ DEPENDS += "systemd"
 DEPENDS += "autoconf-archive-native"
 DEPENDS += "sdbusplus ${PYTHON_PN}-sdbus++-native"
 DEPENDS += "sdeventplus"
-DEPENDS += "phosphor-dbus-interfaces phosphor-dbus-interfaces-native"
+DEPENDS += "phosphor-dbus-interfaces"
 DEPENDS += "phosphor-logging"
 DEPENDS += "libnl"
+DEPENDS += "stdplus"
 
 PACKAGECONFIG ??= "uboot-env"
 
