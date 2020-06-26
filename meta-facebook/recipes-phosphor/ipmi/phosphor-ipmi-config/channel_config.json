@@ -1,6 +1,6 @@
 {
   "0" : {
-    "name" : "IPMB",
+    "name" : "Ipmb0",
     "is_valid" : true,
     "active_sessions" : 0,
     "max_transfer_size" : 256,
@@ -12,6 +12,42 @@
     }
   },
   "1" : {
+    "name" : "Ipmb1",
+    "is_valid" : true,
+    "active_sessions" : 0,
+    "max_transfer_size" : 256,
+    "channel_info" : {
+      "medium_type" : "ipmb",
+      "protocol_type" : "ipmb-1.0",
+      "session_supported" : "session-less",
+      "is_ipmi" : true
+    }
+  },
+  "2" : {
+    "name" : "Ipmb2",
+    "is_valid" : true,
+    "active_sessions" : 0,
+    "max_transfer_size" : 256,
+    "channel_info" : {
+      "medium_type" : "ipmb",
+      "protocol_type" : "ipmb-1.0",
+      "session_supported" : "session-less",
+      "is_ipmi" : true
+    }
+  },
+  "3" : {
+    "name" : "Ipmb3",
+    "is_valid" : true,
+    "active_sessions" : 0,
+    "max_transfer_size" : 256,
+    "channel_info" : {
+      "medium_type" : "ipmb",
+      "protocol_type" : "ipmb-1.0",
+      "session_supported" : "session-less",
+      "is_ipmi" : true
+    }
+  },
+  "7" : {
     "name" : "eth0",
     "is_valid" : true,
     "active_sessions" : 0,
