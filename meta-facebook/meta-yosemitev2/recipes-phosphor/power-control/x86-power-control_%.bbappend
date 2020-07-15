@@ -10,12 +10,8 @@ SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.Chassis.Control.Power@1.service \
 "
 
 do_install_append() {
-    install -m 0755 -d ${D}/usr/share/power-control
+    install -m 0755 -d ${D}/${datadir}/${BPN}
     install -m 0644 -D ${WORKDIR}/*.json \
-                   ${D}/usr/share/power-control
+                   ${D}/${datadir}/${BPN}/
 }
-FILES_${PN} += "/usr/share/power-control/power-config1.json"
-FILES_${PN} += "/usr/share/power-control/power-config2.json"
-FILES_${PN} += "/usr/share/power-control/power-config3.json"
-FILES_${PN} += "/usr/share/power-control/power-config4.json"
 
