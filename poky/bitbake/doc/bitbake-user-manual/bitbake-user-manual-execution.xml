@@ -618,12 +618,12 @@
         <para>
             Tasks can be either a shell task or a Python task.
             For shell tasks, BitBake writes a shell script to
-            <filename>${</filename><link linkend='var-bb-T'><filename>T</filename></link><filename>}/run.do_taskname.pid</filename>
+            <filename>${</filename><link linkend='var-bb-T'><filename>T</filename></link><filename>}/run.do_taskname.<replaceable>pid</replaceable></filename>
             and then executes the script.
             The generated shell script contains all the exported variables,
             and the shell functions with all variables expanded.
             Output from the shell script goes to the file
-            <filename>${T}/log.do_taskname.pid</filename>.
+            <filename>${T}/log.do_taskname.<replaceable>pid</replaceable></filename>.
             Looking at the expanded shell functions in the run file and
             the output in the log files is a useful debugging technique.
         </para>
@@ -765,7 +765,7 @@
             the concept:
             <literallayout class='monospaced'>
      BB_HASHBASE_WHITELIST ?= "TMPDIR FILE PATH PWD BB_TASKHASH BBPATH DL_DIR \
-         SSTATE_DIR THISDIR FILESEXTRAPATHS FILE_DIRNAME HOME LOGNAME SHELL TERM \
+         SSTATE_DIR THISDIR FILESEXTRAPATHS FILE_DIRNAME HOME LOGNAME SHELL \
          USER FILESPATH STAGING_DIR_HOST STAGING_DIR_TARGET COREBASE PRSERV_HOST \
          PRSERV_DUMPDIR PRSERV_DUMPFILE PRSERV_LOCKDOWN PARALLEL_MAKE \
          CCACHE_DIR EXTERNAL_TOOLCHAIN CCACHE CCACHE_DISABLE LICENSE_PATH SDKPKGSUFFIX"

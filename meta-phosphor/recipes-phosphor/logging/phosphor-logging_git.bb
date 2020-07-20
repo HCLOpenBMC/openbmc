@@ -20,12 +20,11 @@ DEPENDS += "${PYTHON_PN}-pyyaml-native"
 DEPENDS += "${PYTHON_PN}-native"
 DEPENDS += "${PYTHON_PN}-sdbus++-native"
 DEPENDS += "sdbusplus"
-DEPENDS += "phosphor-dbus-interfaces phosphor-dbus-interfaces-native"
+DEPENDS += "phosphor-dbus-interfaces"
 DEPENDS += "virtual/phosphor-logging-callouts"
-DEPENDS += "phosphor-logging-error-logs-native"
-DEPENDS += "phosphor-logging-native"
 DEPENDS += "libcereal"
 DEPENDS += "sdeventplus"
+DEPENDS_append_class-target = " packagegroup-obmc-yaml-providers"
 
 PACKAGE_BEFORE_PN = "${PN}-test"
 FILES_${PN}-test = "${bindir}/*-test"
@@ -56,7 +55,7 @@ FILES_phosphor-rsyslog-config += " \
 "
 
 SRC_URI += "git://github.com/openbmc/phosphor-logging"
-SRCREV = "f2fe6b4718a9159f2c4a7876bd6092e4d1736fb3"
+SRCREV = "f61f2921312b6d47a7252ebb0c52da184578c33d"
 
 S = "${WORKDIR}/git"
 
@@ -98,7 +97,7 @@ PACKAGECONFIG[openpower-pels] = " \
         --enable-openpower-pel-extension, \
         --disable-openpower-pel-extension, \
         nlohmann-json nlohmann-fifo cli11 pldm, \
-        , \
+        python3, \
         "
 
 # Enable install_scripts during native and native SDK build
@@ -109,7 +108,7 @@ PACKAGECONFIG_add_class-nativesdk = "install_scripts"
 PACKAGECONFIG_remove_class-target = "install_scripts"
 
 EXTRA_OECONF = " \
-        YAML_DIR=${STAGING_DIR_NATIVE}${yaml_dir} \
+        YAML_DIR=${STAGING_DIR_TARGET}${yaml_dir} \
         CALLOUTS_YAML=${STAGING_DIR_NATIVE}${callouts_datadir}/callouts.yaml \
         "
 

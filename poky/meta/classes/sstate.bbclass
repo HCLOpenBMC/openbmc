@@ -355,6 +355,9 @@ def sstate_installpkg(ss, d):
     d.setVar('SSTATE_INSTDIR', sstateinst)
 
     if bb.utils.to_boolean(d.getVar("SSTATE_VERIFY_SIG"), False):
+        if not os.path.isfile(sstatepkg + '.sig'):
+            bb.warn("No signature file for sstate package %s, skipping acceleration..." % sstatepkg)
+            return False
         signer = get_signer(d, 'local')
         if not signer.verify(sstatepkg + '.sig'):
             bb.warn("Cannot verify signature on sstate package %s, skipping acceleration..." % sstatepkg)
@@ -690,7 +693,10 @@ def sstate_package(ss, d):
     if not os.path.exists(siginfo):
         bb.siggen.dump_this_task(siginfo, d)
     else:
-        os.utime(siginfo, None)
+        try:
+            os.utime(siginfo, None)
+        except PermissionError:
+            pass
 
     return
 
@@ -730,10 +736,11 @@ def pstaging_fetch(sstatefetch, d):
         localdata.setVar('SRC_URI', srcuri)
         try:
             fetcher = bb.fetch2.Fetch([srcuri], localdata, cache=False)
+            fetcher.checkstatus()
             fetcher.download()
 
         except bb.fetch2.BBFetchException:
-            break
+            pass
 
 def sstate_setscene(d):
     shared_state = sstate_state_fromvars(d)
@@ -776,7 +783,7 @@ sstate_task_postfunc[dirs] = "${WORKDIR}"
 sstate_create_package () {
 	# Exit early if it already exists
 	if [ -e ${SSTATE_PKG} ]; then
-		touch ${SSTATE_PKG}
+		[ ! -w ${SSTATE_PKG} ] || touch ${SSTATE_PKG}
 		return
 	fi
 
@@ -810,7 +817,7 @@ sstate_create_package () {
 	else
 		rm $TFILE
 	fi
-	touch ${SSTATE_PKG}
+	[ ! -w ${SSTATE_PKG} ] || touch ${SSTATE_PKG}
 }
 
 python sstate_sign_package () {
@@ -1122,7 +1129,11 @@ python sstate_eventhandler() {
         if not os.path.exists(siginfo):
             bb.siggen.dump_this_task(siginfo, d)
         else:
-            os.utime(siginfo, None)
+            try:
+                os.utime(siginfo, None)
+            except PermissionError:
+                pass
+
 }
 
 SSTATE_PRUNE_OBSOLETEWORKDIR ?= "1"

@@ -7,16 +7,10 @@ SRC_URI = "git://github.com/openbmc/host-error-monitor"
 DEPENDS = "boost sdbusplus libgpiod libpeci"
 
 PV = "0.1+git${SRCPV}"
-SRCREV = "53099c49b89c22cfe09c7217679ae1fb20e019eb"
+SRCREV = "2fbb9eadeda2ae8a77ac53346b53f2d0a72f3e74"
 
 S = "${WORKDIR}/git"
 
 SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.HostErrorMonitor.service"
-SECURITY_CFLAGS_pn-host-error-monitor  = "${SECURITY_NOPIE_CFLAGS}"
 
-# linux-libc-headers guides this way to include custom uapi headers
-CFLAGS_append = " -I ${STAGING_KERNEL_DIR}/include/uapi"
-CFLAGS_append = " -I ${STAGING_KERNEL_DIR}/include"
-CXXFLAGS_append = " -I ${STAGING_KERNEL_DIR}/include/uapi"
-CXXFLAGS_append = " -I ${STAGING_KERNEL_DIR}/include"
-do_configure[depends] += "virtual/kernel:do_shared_workdir"
+EXTRA_OECMAKE = "-DYOCTO=1"

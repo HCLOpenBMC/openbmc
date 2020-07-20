@@ -68,6 +68,9 @@ def meson_operating_system(var, d):
     os = d.getVar(var)
     if "mingw" in os:
         return "windows"
+    # avoid e.g 'linux-gnueabi'
+    elif "linux" in os:
+        return "linux"
     else:
         return os
 
@@ -164,7 +167,8 @@ meson_do_configure_prepend_class-native() {
 python meson_do_qa_configure() {
     import re
     warn_re = re.compile(r"^WARNING: Cross property (.+) is using default value (.+)$", re.MULTILINE)
-    log = open(d.expand("${B}/meson-logs/meson-log.txt")).read()
+    with open(d.expand("${B}/meson-logs/meson-log.txt")) as logfile:
+        log = logfile.read()
     for (prop, value) in warn_re.findall(log):
         bb.warn("Meson cross property %s used without explicit assignment, defaulting to %s" % (prop, value))
 }

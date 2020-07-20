@@ -805,8 +805,6 @@ class RpmPM(PackageManager):
         open(platformconfdir + "macros", 'w').write("%_transaction_color 7\n")
         if self.d.getVar('RPM_PREFER_ELF_ARCH'):
             open(platformconfdir + "macros", 'a').write("%%_prefer_color %s" % (self.d.getVar('RPM_PREFER_ELF_ARCH')))
-        else:
-            open(platformconfdir + "macros", 'a').write("%_prefer_color 7")
 
         if self.d.getVar('RPM_SIGN_PACKAGES') == '1':
             signer = get_signer(self.d, self.d.getVar('RPM_GPG_BACKEND'))
@@ -1802,7 +1800,7 @@ class DpkgPM(OpkgDpkgPM):
     def fix_broken_dependencies(self):
         os.environ['APT_CONFIG'] = self.apt_conf_file
 
-        cmd = "%s %s -f install" % (self.apt_get_cmd, self.apt_args)
+        cmd = "%s %s --allow-unauthenticated -f install" % (self.apt_get_cmd, self.apt_args)
 
         try:
             subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT)

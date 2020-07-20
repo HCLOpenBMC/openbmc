@@ -34,10 +34,16 @@ SYSTEMD_OVERRIDE_phosphor-fan-control_witherspoon += "fan-watchdog-monitor.conf:
 SYSTEMD_OVERRIDE_phosphor-fan-control_witherspoon += "fan-watchdog-monitor.conf:phosphor-fan-control@0.service.d/fan-watchdog-monitor.conf"
 SYSTEMD_OVERRIDE_phosphor-fan-monitor_witherspoon += "fan-watchdog-monitor.conf:phosphor-fan-monitor-init@0.service.d/fan-watchdog-monitor.conf"
 SYSTEMD_OVERRIDE_phosphor-fan-monitor_witherspoon += "fan-watchdog-monitor.conf:phosphor-fan-monitor@0.service.d/fan-watchdog-monitor.conf"
+SYSTEMD_OVERRIDE_phosphor-fan-control_rainier += "fan-watchdog-monitor.conf:phosphor-fan-control-init@0.service.d/fan-watchdog-monitor.conf"
+SYSTEMD_OVERRIDE_phosphor-fan-control_rainier += "fan-watchdog-monitor.conf:phosphor-fan-control@0.service.d/fan-watchdog-monitor.conf"
+SYSTEMD_OVERRIDE_phosphor-fan-monitor_rainier += "fan-watchdog-monitor.conf:phosphor-fan-monitor-init@0.service.d/fan-watchdog-monitor.conf"
+SYSTEMD_OVERRIDE_phosphor-fan-monitor_rainier += "fan-watchdog-monitor.conf:phosphor-fan-monitor@0.service.d/fan-watchdog-monitor.conf"
 
 #These services need to be stopped when watchdog expires
 SYSTEMD_OVERRIDE_phosphor-fan-control_witherspoon += "fan-watchdog-conflicts.conf:phosphor-fan-control@0.service.d/fan-watchdog-conflicts.conf"
 SYSTEMD_OVERRIDE_phosphor-fan-monitor_witherspoon += "fan-watchdog-conflicts.conf:phosphor-fan-monitor@0.service.d/fan-watchdog-conflicts.conf"
+SYSTEMD_OVERRIDE_phosphor-fan-control_rainier += "fan-watchdog-conflicts.conf:phosphor-fan-control@0.service.d/fan-watchdog-conflicts.conf"
+SYSTEMD_OVERRIDE_phosphor-fan-monitor_rainier += "fan-watchdog-conflicts.conf:phosphor-fan-monitor@0.service.d/fan-watchdog-conflicts.conf"
 
 # Witherspoon fan control service linking
 # Link fan control init service
@@ -52,6 +58,7 @@ SYSTEMD_LINK_${PN}-control_witherspoon += "${@compose_list(d, 'FMT_CONTROL_PWRON
 # Enable the use of JSON on the fan applications that support it
 EXTRA_OECONF_append_witherspoon = " --enable-json"
 RDEPENDS_${PN}-presence-tach_append_witherspoon = " phosphor-fan-presence-config"
+RDEPENDS_${PN}-monitor_append_witherspoon = " phosphor-fan-monitor-config"
 
 # Set the appropriate i2c address used within the overridden phosphor-fan-control@.service
 # file that's used for witherspoon type(including witherspoon-tacoma) machines

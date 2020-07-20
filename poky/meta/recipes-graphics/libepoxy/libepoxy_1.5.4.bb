@@ -19,8 +19,6 @@ UPSTREAM_CHECK_URI = "https://github.com/anholt/libepoxy/releases"
 inherit meson pkgconfig features_check
 
 REQUIRED_DISTRO_FEATURES = "opengl"
-REQUIRED_DISTRO_FEATURES_class-native = ""
-REQUIRED_DISTRO_FEATURES_class-nativesdk = ""
 
 PACKAGECONFIG[egl] = "-Degl=yes, -Degl=no, virtual/egl"
 PACKAGECONFIG[x11] = "-Dglx=yes, -Dglx=no -Dx11=false, virtual/libx11 virtual/libgl"
@@ -33,11 +31,3 @@ PACKAGECONFIG_class-nativesdk = "egl x11"
 
 BBCLASSEXTEND = "native nativesdk"
 
-# This will ensure that dlopen will attempt only GL libraries provided by host
-do_install_append_class-native() {
-	chrpath --delete ${D}${libdir}/*.so
-}
-
-do_install_append_class-nativesdk() {
-	chrpath --delete ${D}${libdir}/*.so
-}
