@@ -5,28 +5,28 @@
       "slave-path": "/dev/ipmb-1",
       "bmc-addr": 32,
       "remote-addr": 64,
-      "channelId": 0
+      "channelIdx": 0
     },
     {
       "type": "ipmb",
       "slave-path": "/dev/ipmb-3",
       "bmc-addr": 32,
       "remote-addr": 64,
-      "channelId": 1
+      "channelIdx": 1
     },
     {
       "type": "ipmb",
       "slave-path": "/dev/ipmb-5",
       "bmc-addr": 32,
       "remote-addr": 64,
-      "channelId": 2
+      "channelIdx": 2
     },
     {
       "type": "ipmb",
       "slave-path": "/dev/ipmb-7",
       "bmc-addr": 32,
       "remote-addr": 64,
-      "channelId": 3
+      "channelIdx": 3
     }
   ]
 }
