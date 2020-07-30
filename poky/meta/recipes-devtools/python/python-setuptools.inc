@@ -1,5 +1,5 @@
 SUMMARY = "Download, build, install, upgrade, and uninstall Python packages"
-HOMEPAGE = "https://pypi.python.org/pypi/setuptools"
+HOMEPAGE = "https://pypi.org/project/setuptools"
 SECTION = "devel/python"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;beginline=1;endline=19;md5=9a33897f1bca1160d7aad3835152e158"
@@ -12,8 +12,7 @@ SRC_URI_append_class-native = " file://0001-conditionally-do-not-fetch-code-by-e
 
 SRC_URI += "file://0001-change-shebang-to-python3.patch"
 
-SRC_URI[md5sum] = "6e9de90b242fdd60ef59f497424ce13a"
-SRC_URI[sha256sum] = "145fa62b9d7bb544fce16e9b5a9bf4ab2032d2f758b7cd674af09a92736aff74"
+SRC_URI[sha256sum] = "843037738d1e34e8b326b5e061f474aca6ef9d7ece41329afbc8aac6195a3920"
 
 DEPENDS += "${PYTHON_PN}"
 

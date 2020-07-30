@@ -27,23 +27,20 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
            file://0008-linux-user-Fix-webkitgtk-hangs-on-32-bit-x86-target.patch \
            file://0009-Fix-webkitgtk-builds.patch \
            file://0010-configure-Add-pkg-config-handling-for-libgcrypt.patch \
-           file://0011-hw-i386-pc-fix-regression-in-parsing-vga-cmdline-par.patch \
-           file://CVE-2019-15890.patch \
-           file://CVE-2020-1711.patch \
-           file://CVE-2020-7039-1.patch \
-           file://CVE-2020-7039-2.patch \
-           file://CVE-2020-7039-3.patch \
            file://0001-Add-enable-disable-udev.patch \
-	   file://CVE-2020-7211.patch \
 	   file://0001-qemu-Do-not-include-file-if-not-exists.patch \
-           file://CVE-2020-11102.patch \
-	   file://CVE-2020-11869.patch \
 	   file://CVE-2020-13361.patch \
+	   file://find_datadir.patch \
+	   file://CVE-2020-10761.patch \
+	   file://CVE-2020-13362.patch \
+	   file://CVE-2020-13659.patch \
+	   file://CVE-2020-13800.patch \
+	   file://CVE-2020-13791.patch \
 	   "
 UPSTREAM_CHECK_REGEX = "qemu-(?P<pver>\d+(\.\d+)+)\.tar"
 
-SRC_URI[md5sum] = "278eeb294e4b497e79af7a57e660cb9a"
-SRC_URI[sha256sum] = "d3481d4108ce211a053ef15be69af1bdd9dde1510fda80d92be0f6c3e98768f0"
+SRC_URI[md5sum] = "ede6005d7143fe994dd089d31dc2cf6c"
+SRC_URI[sha256sum] = "2f13a92a0fa5c8b69ff0796b59b86b080bbb92ebad5d301a7724dd06b5e78cb6"
 
 COMPATIBLE_HOST_mipsarchn32 = "null"
 COMPATIBLE_HOST_mipsarchn64 = "null"
@@ -87,6 +84,7 @@ EXTRA_OECONF = " \
     --disable-strip \
     --disable-werror \
     --extra-cflags='${CFLAGS}' \
+    --extra-ldflags='${LDFLAGS}' \
     --with-git=/bin/false \
     --disable-git-update \
     ${PACKAGECONFIG_CONFARGS} \
@@ -146,7 +144,7 @@ PACKAGECONFIG_remove_darwin = "kvm virglrenderer glx gtk+"
 PACKAGECONFIG_remove_mingw32 = "kvm virglrenderer glx gtk+"
 
 PACKAGECONFIG[sdl] = "--enable-sdl,--disable-sdl,libsdl2"
-PACKAGECONFIG[virtfs] = "--enable-virtfs --enable-attr,--disable-virtfs,libcap attr,"
+PACKAGECONFIG[virtfs] = "--enable-virtfs --enable-attr --enable-cap-ng,--disable-virtfs,libcap-ng attr,"
 PACKAGECONFIG[aio] = "--enable-linux-aio,--disable-linux-aio,libaio,"
 PACKAGECONFIG[xfs] = "--enable-xfsctl,--disable-xfsctl,xfsprogs,"
 PACKAGECONFIG[xen] = "--enable-xen,--disable-xen,xen-tools,xen-tools-libxenstore xen-tools-libxenctrl xen-tools-libxenguest"
@@ -170,7 +168,6 @@ PACKAGECONFIG[lzo] = "--enable-lzo,--disable-lzo,lzo"
 PACKAGECONFIG[numa] = "--enable-numa,--disable-numa,numactl"
 PACKAGECONFIG[gnutls] = "--enable-gnutls,--disable-gnutls,gnutls"
 PACKAGECONFIG[bzip2] = "--enable-bzip2,--disable-bzip2,bzip2"
-PACKAGECONFIG[bluez] = "--enable-bluez,--disable-bluez,bluez5"
 PACKAGECONFIG[libiscsi] = "--enable-libiscsi,--disable-libiscsi"
 PACKAGECONFIG[kvm] = "--enable-kvm,--disable-kvm"
 PACKAGECONFIG[virglrenderer] = "--enable-virglrenderer,--disable-virglrenderer,virglrenderer"
@@ -179,10 +176,15 @@ PACKAGECONFIG[spice] = "--enable-spice,--disable-spice,spice"
 # usbredir will be in meta-networking layer
 PACKAGECONFIG[usb-redir] = "--enable-usb-redir,--disable-usb-redir,usbredir"
 PACKAGECONFIG[snappy] = "--enable-snappy,--disable-snappy,snappy"
-PACKAGECONFIG[glusterfs] = "--enable-glusterfs,--disable-glusterfs"
+PACKAGECONFIG[glusterfs] = "--enable-glusterfs,--disable-glusterfs,glusterfs"
 PACKAGECONFIG[xkbcommon] = "--enable-xkbcommon,--disable-xkbcommon,libxkbcommon"
 PACKAGECONFIG[libudev] = "--enable-libudev,--disable-libudev,eudev"
 PACKAGECONFIG[libxml2] = "--enable-libxml2,--disable-libxml2,libxml2"
+PACKAGECONFIG[attr] = "--enable-attr,--disable-attr,attr,"
+PACKAGECONFIG[rbd] = "--enable-rbd,--disable-rbd,ceph,ceph"
+PACKAGECONFIG[vhost] = "--enable-vhost-net,--disable-vhost-net,,"
+PACKAGECONFIG[ust] = "--enable-trace-backend=ust,--enable-trace-backend=nop,lttng-ust,"
+PACKAGECONFIG[pie] = "--enable-pie,--disable-pie,,"
 
 INSANE_SKIP_${PN} = "arch"
 

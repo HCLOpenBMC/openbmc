@@ -25,6 +25,8 @@ PITFT35r="${@bb.utils.contains("MACHINE_FEATURES", "pitft35r", "1", "0", d)}"
 
 VC4GRAPHICS="${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "1", "0", d)}"
 VC4DTBO ?= "vc4-kms-v3d"
+GPIO_IR ?= "18"
+GPIO_IR_TX ?= "17"
 
 inherit deploy nopackages
 
@@ -161,6 +163,13 @@ do_deploy() {
         echo "enable_uart=1" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
 
+    # Infrared support
+    if [ "${ENABLE_IR}" = "1" ]; then
+        echo "# Enable infrared" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
+        echo "dtoverlay=gpio-ir,gpio_pin=${GPIO_IR}" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
+        echo "dtoverlay=gpio-ir-tx,gpio_pin=${GPIO_IR_TX}" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
+    fi
+
     # VC4 Graphics support
     if [ "${VC4GRAPHICS}" = "1" ]; then
         echo "# Enable VC4 Graphics" >> ${DEPLOYDIR}/bcm2835-bootfiles/config.txt
@@ -189,8 +198,13 @@ do_deploy() {
         echo "dtoverlay=at86rf233,speed=3000000" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
 
+    # ENABLE DUAL CAN
+    if [ "${ENABLE_DUAL_CAN}" = "1" ]; then
+        echo "# Enable DUAL CAN" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
+        echo "dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
+        echo "dtoverlay=mcp2515-can1,oscillator=16000000,interrupt=24" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     # ENABLE CAN
-    if [ "${ENABLE_CAN}" = "1" ]; then
+    elif [ "${ENABLE_CAN}" = "1" ]; then
         echo "# Enable CAN" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
         echo "dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
