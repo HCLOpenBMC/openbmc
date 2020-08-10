@@ -15,6 +15,7 @@ inherit cmake systemd
 inherit obmc-phosphor-dbus-service
 
 SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.Chassis.Control.Power.service \
+                         xyz.openbmc_project.Chassis.Control.Power@.service \
                          chassis-system-reset.service \
                          chassis-system-reset.target"
 
@@ -25,4 +26,5 @@ DEPENDS += " \
     nlohmann-json \
     sdbusplus \
     phosphor-logging \
+    nlohmann-json \
   "
