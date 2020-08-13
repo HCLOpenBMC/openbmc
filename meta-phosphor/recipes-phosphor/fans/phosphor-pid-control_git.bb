@@ -8,13 +8,12 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 inherit autotools pkgconfig
 
-inherit phosphor-pid-control
 inherit obmc-phosphor-ipmiprovider-symlink
 inherit systemd
 
 S = "${WORKDIR}/git"
 SRC_URI = "git://github.com/openbmc/phosphor-pid-control"
-SRCREV = "6fc301fbc3775730a0e69f215110ec93bd9026f3"
+SRCREV = "f3b04fd3634f2ef36ba23e9081c041c15e75d6f5"
 
 # Each platform will need a service file that starts
 # at an appropriate time per system.  For instance, if
