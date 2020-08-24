@@ -1,0 +1,57 @@
+From 845e8bd7f7b55a975885604a185eac49ce95a200 Mon Sep 17 00:00:00 2001
+From: Priyatharshan P <priyatharshanp@hcl.com>
+Date: Wed, 15 Jul 2020 13:45:24 +0530
+Subject: [PATCH v1] Yv2_Gpio_Changes
+
+---
+ .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 34 ++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
+index 9fcafd7..d4b8f40 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
+@@ -119,6 +119,40 @@
+ 			&pinctrl_adc15_default>;
+ };
+ 
++&gpio {
++        status = "okay";
++        gpio-line-names =
++        /*A0-A7*/   "","","","","","","","",
++        /*B0-B7*/   "","","","","","","","",
++        /*C0-C7*/   "","","","","","","","",
++        /*D0-D7*/   "","POWER_OUT1","","POWER_OUT2","","POWER_OUT3","","POWER_OUT4",
++        /*E0-E7*/   "","","","","","","","",
++        /*F0-F7*/   "","","","","","","","",
++        /*G0-G7*/   "","","MULTI_HOST_RESET_BUTTON","","","","","",
++        /*H0-H7*/   "","","","","","","","",
++        /*I0-I7*/   "SLOT1_POWER","SLOT2_POWER","SLOT3_POWER","SLOT4_POWER","","","","",
++        /*J0-J7*/   "","","","","","","","",
++        /*K0-K7*/   "","","","","","","","",
++        /*L0-L7*/   "","","","","","","","",
++        /*M0-M7*/   "","","","","","","","",
++        /*N0-N7*/   "","","","","","","","",
++        /*O0-O7*/   "","","","","","","","",
++        /*P0-P7*/   "","","","","","MULTI_HOST_POWER_BUTTON","","",
++        /*Q0-Q7*/   "","","","","","","","",
++        /*R0-R7*/   "","","","","","","","",
++        /*S0-S7*/   "RESET_OUT1","RESET_OUT2","RESET_OUT3","RESET_OUT4","","","","",
++        /*T0-T7*/   "","","","","","","","",
++        /*U0-U7*/   "","","","","","","","",
++        /*V0-V7*/   "","","","","","","","",
++        /*W0-W7*/   "","","","","","","","",
++        /*X0-X7*/   "","","","","","","","",
++        /*Y0-Y7*/   "","","","","","","","",
++        /*Z0-Z7*/   "","","","","","","","",
++        /*AA0-AA7*/ "","","","","HAND_SW1","HAND_SW2","HAND_SW3","HAND_SW4",
++        /*AB0-AB7*/ "","","","","","","","",
++        /*AC0-AC7*/ "","","","","","","","";
++    };
++
+ &i2c1 {
+ 	//Host1 IPMB bus
+ 	status = "okay";
+-- 
+2.7.4
+
