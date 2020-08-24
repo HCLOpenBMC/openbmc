@@ -9,17 +9,20 @@ PACKAGES = " \
         ${PN}-fans \
         ${PN}-flash \
         ${PN}-system \
+        ${PN}-monitor \
         "
 
 PROVIDES += "virtual/obmc-chassis-mgmt"
 PROVIDES += "virtual/obmc-fan-mgmt"
 PROVIDES += "virtual/obmc-flash-mgmt"
 PROVIDES += "virtual/obmc-system-mgmt"
+PROVIDES += "virtual/obmc-gpio-mgmt"
 
 RPROVIDES_${PN}-chassis += "virtual-obmc-chassis-mgmt"
 RPROVIDES_${PN}-fans += "virtual-obmc-fan-mgmt"
 RPROVIDES_${PN}-flash += "virtual-obmc-flash-mgmt"
 RPROVIDES_${PN}-system += "virtual-obmc-system-mgmt"
+RPROVIDES_${PN}-monitor += "virtual-obmc-gpio-mgmt"
 
 SUMMARY_${PN}-chassis = "Facebook Chassis"
 RDEPENDS_${PN}-chassis = " \
@@ -43,7 +46,6 @@ RDEPENDS_${PN}-system = " \
         fb-powerctrl \
         phosphor-ipmi-ipmb \
         fb-ipmi-oem \
-        phosphor-gpio-monitor \
         phosphor-hostlogger \
         phosphor-sel-logger \
         ipmitool \
@@ -51,3 +53,8 @@ RDEPENDS_${PN}-system = " \
         phosphor-host-postd \
         phosphor-nvme \
         "
+SUMMARY_${PN}-monitor = "Facebook Gpio"
+RDEPENDS_${PN}-monitor = " \
+        phosphor-gpio-monitor \
+        "
+
