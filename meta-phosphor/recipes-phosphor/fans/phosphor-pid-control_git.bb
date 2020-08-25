@@ -1,4 +1,5 @@
 SUMMARY = "Phosphor PID Fan Control"
+
 DESCRIPTION = "Fan Control"
 HOMEPAGE = "github.com/openbmc/phosphor-pid-control"
 PR = "r1"

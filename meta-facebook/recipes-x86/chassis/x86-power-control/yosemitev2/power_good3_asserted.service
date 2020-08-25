@@ -1,0 +1,7 @@
+[Unit]
+Description=Power Good 3 Asserted  Service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/env toggle_power_good3.sh
