@@ -1,0 +1,11 @@
+{
+  "NMIOut": "NMI_OUT1",
+  "PostComplete": "POST_COMPLETE1",
+  "PwrButton": "POWER_BUTTON1",
+  "PwrOK": "SLOT1_POWER_OK",
+  "PwrOut": "POWER_OUT1",
+  "RstButton": "RESET_BUTTON1",
+  "RstOut": "RESET_OUT1"
+
+}
+
