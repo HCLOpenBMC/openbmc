@@ -13,7 +13,7 @@ inherit systemd
 
 S = "${WORKDIR}/git"
 SRC_URI = "git://github.com/openbmc/phosphor-pid-control"
-SRCREV = "f3b04fd3634f2ef36ba23e9081c041c15e75d6f5"
+SRCREV = "a5cf20865a6f4e9e0195f8d600d70dc6864f4781"
 
 # Each platform will need a service file that starts
 # at an appropriate time per system.  For instance, if
@@ -49,3 +49,8 @@ FILES_${PN}_append = " ${libdir}/net-ipmid/lib*${SOLIBS}"
 FILES_${PN}-dev_append = " ${libdir}/ipmid-providers/lib*${SOLIBSDEV} ${libdir}/ipmid-providers/*.la"
 
 HOSTIPMI_PROVIDER_LIBRARY += "libmanualcmds.so"
+
+config_datadir="${datadir}/swampd/"
+# config_path is the location swampd expects to find a json configuration.
+# the file is expected to be named config.json
+config_path="${config_datadir}config.json"
