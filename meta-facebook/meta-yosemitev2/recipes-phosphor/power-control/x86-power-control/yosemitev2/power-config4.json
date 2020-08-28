@@ -1,8 +1,8 @@
 {
   "node": 4,
-  "power-out": "POWER_OUT3",
-  "reset-out": "RESET_OUT3",
-  "power-ok": "PS_PWROK3",
+  "power-out": "POWER_OUT4",
+  "reset-out": "RESET_OUT4",
+  "power-ok": "SLOT4_POWER_OK",
   "nmi-out": "",
   "post-complete": "",
   "sio-pwrgd": "",
