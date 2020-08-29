@@ -56,6 +56,44 @@ gpio_export I2
 gpio_export I3
 
 
+# Set all output GPIOs as such and drive them with reasonable values.
+function set_gpio_active_low() {
+  if [ $# -ne 2 ]; then
+    echo "set_gpio_active_low: need both GPIO# and initial level";
+    return;
+  fi
+
+  echo $1 > /sys/class/gpio/export
+  echo $2 > /sys/class/gpio/gpio$1/direction
+}
+
+GPIO_BASE=$(cat /sys/class/gpio/gpio*/base)
+
+mknod -m 660 /dev/mem c 1 1
+
+
+set_gpio_active_low $((${GPIO_BASE} + 139)) high
+
+
+set_gpio_active_low $((${GPIO_BASE} + 32)) high
+
+set_gpio_active_low $((${GPIO_BASE} + 33)) high
+
+set_gpio_active_low $((${GPIO_BASE} + 34)) high
+
+set_gpio_active_low $((${GPIO_BASE} + 35)) high
+
+
+
+set_gpio_active_low $((${GPIO_BASE} + 106)) high
+
+set_gpio_active_low $((${GPIO_BASE} + 107)) high
+
+set_gpio_active_low $((${GPIO_BASE} + 108)) high
+
+set_gpio_active_low $((${GPIO_BASE} + 109)) high
+
+
 # LED POST CODES: 8 GPIO signals
 
 # LED_POSTCODE_0: GPIOG0 (48)

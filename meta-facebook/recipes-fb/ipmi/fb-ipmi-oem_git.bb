@@ -14,7 +14,8 @@ DEPENDS = "boost phosphor-ipmi-host phosphor-logging systemd "
 
 inherit cmake obmc-phosphor-ipmiprovider-symlink
 
-EXTRA_OECMAKE="-DENABLE_TEST=0 -DYOCTO=1"
+EXTRA_OECMAKE="-DENABLE_TEST=0 -DYOCTO=1 -DYMACHINE=${MACHINE}"
+EXTRA_OECMAKE_append_yosemitev2 ="-DBIC=1"
 
 LIBRARY_NAMES = "libzfboemcmds.so"
 

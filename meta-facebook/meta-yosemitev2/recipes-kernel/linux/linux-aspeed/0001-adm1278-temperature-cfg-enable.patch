@@ -1,20 +1,29 @@
 From 84bbcd4390610463ba1d6d473402b9ac15250ec9 Mon Sep 17 00:00:00 2001
 From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
 Date: Tue, 9 Jun 2020 20:14:37 +0530
-Subject: [PATCH v4] hwmon:(adm1275) Enable adm1278 ADM1278_TEMP1_EN
+Subject: [PATCH v6] hwmon:(adm1275) Enable adm1278 ADM1278_TEMP1_EN
 
 The adm1278 temp attribute need it for openbmc platform .
 This feature not enabled by default, so PMON_CONFIG needs to enable it.
 
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
 ---
----    v4 -Reported-by: kernel test robot <lkp@intel.com>
----    v3 -fix invalid signed-off.
----       -removed checkpath warnings.
----       -write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single line operation.
----    v2 -add Signed-off-by.
----       -removed ADM1278_TEMP1_EN check.
----
+v6: 
+add Reported-by in commit log
+align to canonical patch format.
+v5: 
+align commit and change log. 
+v4: 
+kernel test robot CI warning
+v3: 
+fix invalid signed-off.
+removed checkpath warnings.
+v4: 
+write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single line operation.
+v2: 
+add Signed-off-by.
+removed ADM1278_TEMP1_EN check.
 ---
  drivers/hwmon/pmbus/adm1275.c | 12 +++++-------
  1 file changed, 5 insertions(+), 7 deletions(-)

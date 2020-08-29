@@ -40,7 +40,7 @@ gpio_name2value() {
 gpio_export() {
     local gpio
     gpio=$(gpio_name2value $1)
-    gpio=$((gpio280))
+    gpio=$((gpio792))
     echo $gpio
     dir=$(gpio_dir $gpio)
     echo $dir
@@ -53,7 +53,7 @@ gpio_set() {
     local gpio
     local val
     gpio=$(gpio_name2value $1)
-    gpio=$((gpio+280))
+    gpio=$((gpio+792))
     val=$2
     dir=$(gpio_dir $gpio)
     if [ ! -d ${dir} ]; then
@@ -71,7 +71,7 @@ gpio_get() {
     local gpio
     local val
     gpio=$(gpio_name2value $1)
-    gpio=$((gpio+280))
+    gpio=$((gpio+792))
     dir=$(gpio_dir $gpio)
     if [ ! -d ${dir} ]; then
         echo $gpio > $GPIOEXPORT
