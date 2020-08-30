@@ -1,0 +1,9 @@
+[
+  {
+    "Name" : "PowerButton",
+    "LineName": "MULTI_HOST_POWER_BUTTON",
+    "GpioNum": 125,
+    "ChipId": "gpiochip0",
+    "EventMon": "BOTH"
+  }
+]
