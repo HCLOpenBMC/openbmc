@@ -1,9 +1,19 @@
 [
   {
+    "Type": "GPIO",
     "Name" : "PowerButton",
     "LineName": "MULTI_HOST_POWER_BUTTON",
     "GpioNum": 125,
     "ChipId": "gpiochip0",
-    "EventMon": "BOTH"
+    "EventMon": "BOTH",
+    "Continue": true,
+    "Target": "phosphor-multi-gpio-monitor.service"
+  },
+  {
+    "Type": "IPMI",
+    "Host": 0,
+    "Netfn": 0x38,
+    "Cmd": 3,
+    "CmdData": { 0x15,0xa0,0 }
   }
 ]
