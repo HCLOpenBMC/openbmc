@@ -50,4 +50,5 @@ RDEPENDS_${PN}-system = " \
         phosphor-host-postd \
         phosphor-nvme \
         virtual/obmc-gpio-monitor \
+        fb-yv2-misc \
         "
