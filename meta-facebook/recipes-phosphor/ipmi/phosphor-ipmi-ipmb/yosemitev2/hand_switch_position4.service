@@ -1,0 +1,7 @@
+[Unit]
+Description=Hand Switch Position 4 Service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/env hand_switch_position.sh  4
