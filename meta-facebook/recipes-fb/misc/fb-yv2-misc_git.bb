@@ -2,7 +2,7 @@ SUMMARY = "Facebook Ipmi service to monitor and update GPIO's from Ipmi"
 DESCRIPTION = "Facebook Ipmi service to monitor and update GPIO's from Ipmi"
 
 SRC_URI = "git://github.com/HCLOpenBMC/fb-yv2-misc.git"
-SRCREV = "f89a85c20b6c505a5f1289527e95d802953e42f7"
+SRCREV = "1bec6c1254acbaf66a07133237918ccd372752d4"
 
 PV = "1.0+git${SRCPV}"
 
