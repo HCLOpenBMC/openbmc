@@ -1,11 +1,47 @@
-{
-  "NMIOut": "NMI_OUT1",
-  "PostComplete": "POST_COMPLETE1",
-  "PwrButton": "POWER_BUTTON1",
-  "PwrOK": "SLOT1_POWER_OK",
-  "PwrOut": "POWER_OUT1",
-  "RstButton": "RESET_BUTTON1",
-  "RstOut": "RESET_OUT1"
+[
+    {
+        "Name" : "PostComplete",
+        "LineName" : "POST_COMPLETE",
+        "Type" : "GPIO"
+    },
 
-}
+    {
+        "Name" : "PowerButton",
+        "DbusName" : "xyz.openbmc_project.Chassis.Event",
+        "Path" : "/xyz/openbmc_project/Chassis/Event",
+        "Interface" : "xyz.openbmc_project.Chassis.Event",
+        "Property" : "PowerButton_Host1",
+        "Type" : "DBUS"
+    },
 
+    {
+        "Name" : "PowerOk",
+        "DbusName" : "xyz.openbmc_project.Chassis.Event",
+        "Path" : "/xyz/openbmc_project/Chassis/Event",
+        "Interface" : "xyz.openbmc_project.Chassis.Event",
+        "Property" : "Power_Good_Host1",
+        "Type" : "DBUS"
+    },
+
+
+    {
+        "Name" : "ResetButton",
+        "DbusName" : "xyz.openbmc_project.Chassis.Event",
+        "Path" : "/xyz/openbmc_project/Chassis/Event",
+        "Interface" : "xyz.openbmc_project.Chassis.Event",
+        "Property" : "ResetButton_Host1",
+        "Type" : "DBUS"
+    },
+
+    {
+        "Name" : "PowerOut",
+        "LineName" : "POWER_OUT1",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "ResetOut",
+        "LineName" : "RESET_OUT1",
+        "Type" : "GPIO"
+    }
+]
