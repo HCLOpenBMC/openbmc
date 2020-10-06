@@ -16,17 +16,17 @@ gpio_export AA3
 
 
 # PWR_SLOT1_BTN_N, 1S Server power out, on GPIO D1(25)
-gpio_set D1 1
+#gpio_set D1 1
 
 # PWR_SLOT2_BTN_N, 1S Server power out, on GPIO D3(27)
 # Make sure the Power Control Pin is Set properly
-gpio_set D3 1
+#gpio_set D3 1
 
 # PWR_SLOT3_BTN_N, 1S Server power out, on GPIO D5(29)
-gpio_set D5 1
+#gpio_set D5 1
 
 # PWR_SLOT4_BTN_N, 1S Server power out, on GPIO D7(31)
-gpio_set D7 1
+#gpio_set D7 1
 
 
 
@@ -44,16 +44,16 @@ gpio_set M3 0
 
 
 # SLOT1_POWER_EN: GPIOI0 (64)
-gpio_export I0
+#gpio_export I0
 
 # SLOT2_POWER_EN: GPIOI1 (65)
-gpio_export I1
+#gpio_export I1
 
 # SLOT3_POWER_EN: GPIOI2 (66)
-gpio_export I2
+#gpio_export I2
 
 # SLOT4_POWER_EN: GPIOI3 (67)
-gpio_export I3
+#gpio_export I3
 
 
 # LED POST CODES: 8 GPIO signals

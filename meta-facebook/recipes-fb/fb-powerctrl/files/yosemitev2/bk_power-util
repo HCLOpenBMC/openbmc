@@ -52,13 +52,11 @@ do_status() {
     fi
 
     echo -n "1S Server power for slot#$slot is "
-    st=$(busctl get-property xyz.openbmc_project.State.Chassis$slot /xyz/openbmc_project/state/chassis0 xyz.openbmc_project.State.Chassis CurrentPowerState | cut -d"." -f6)
-    if [ "$st" == "On\"" ]; then
+    if [ $(fby2_is_server_on $slot) -eq 1 ] ; then
         echo "on"
     else
         echo "off"
     fi
-
     return 0
 }
 
@@ -74,11 +72,36 @@ do_on() {
       return 0
     fi
 
+    local force opt
+    force=0
+    while getopts "f" opt; do
+        case $opt in
+            f)
+                force=1
+                ;;
+            *)
+                usage
+                exit -1
+                ;;
+
+        esac
+    done
     echo -n "Power on slot#$slot server ..."
+    if [ $force -eq 0 ]; then
+        # need to check if 1S Server is on or not
+        if [ $(fby2_is_server_on $slot) -eq 1 ]; then
+            echo " Already on. Skip!"
+            return 1
+        fi
+    fi
 
-    #call busctl command
-    busctl set-property xyz.openbmc_project.State.Chassis$slot /xyz/openbmc_project/state/chassis0 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.On
-
+    # first make sure, GPIO is high
+    gpio_set $gpio 1
+    # generate the power on pulse
+    gpio_set $gpio 0
+    sleep 1
+    gpio_set $gpio 1
+    sleep 1
     # Turn on the power LED
     /usr/sbin/power_led.sh $slot on
 
@@ -99,9 +122,12 @@ do_off() {
 
     echo -n "Power off slot#$slot server ..."
 
-    #call busctl command
-    busctl set-property xyz.openbmc_project.State.Chassis$slot /xyz/openbmc_project/state/chassis0 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.Off
-
+    # first make sure, GPIO is high
+    gpio_set $gpio 1
+    sleep 1
+    gpio_set $gpio 0
+    sleep 5
+    gpio_set $gpio 1
     # Turn off the power LED
     /usr/sbin/power_led.sh $slot off
 
