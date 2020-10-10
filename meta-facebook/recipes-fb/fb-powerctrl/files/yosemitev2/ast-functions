@@ -71,7 +71,7 @@ gpio_get() {
     local gpio
     local val
     gpio=$(gpio_name2value $1)
-    gpio=$((gpio+280))
+    gpio=$((gpio+792))
     dir=$(gpio_dir $gpio)
     if [ ! -d ${dir} ]; then
         echo $gpio > $GPIOEXPORT
