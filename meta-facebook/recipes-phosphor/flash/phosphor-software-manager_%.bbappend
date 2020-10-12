@@ -1,5 +1,4 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/${MACHINE}:"
 SRC_URI += "file://bios-update.sh"
 
 PACKAGECONFIG_append = " flash_bios"
