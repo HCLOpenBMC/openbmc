@@ -154,7 +154,7 @@
   sensorType: 0x02
   path: /xyz/openbmc_project/sensors/voltage/p1v8_stby
   sensorReadingType: 0x01
-  multiplierM: 235
+  multiplierM: 78
   offsetB: 0
   bExp: 0
   rExp: -4
@@ -216,21 +216,21 @@
   <<: *voltage
   entityInstance: 0x07
   path: /xyz/openbmc_project/sensors/voltage/pwrgd_pvpp
-  multiplierM: 157
+  multiplierM: 235
   rExp: -4
 
 0x38:
   <<: *voltage
   entityInstance: 0x08
   path: /xyz/openbmc_project/sensors/voltage/pwrgd_pvddio
-  multiplierM: 157
+  multiplierM: 235
   rExp: -4
 
 0x39:
   <<: *voltage
   entityInstance: 0x09
   path: /xyz/openbmc_project/sensors/voltage/pwrgd_cpuvr
-  multiplierM: 157
+  multiplierM: 235
   rExp: -4
 
 0x3A:
@@ -295,7 +295,7 @@
   sensorType: 0x03
   path: /xyz/openbmc_project/sensors/current/vddcr_cpu_in
   sensorReadingType: 0x01
-  multiplierM: 78
+  multiplierM: 86
   rExp: -3
   unit: xyz.openbmc_project.Sensor.Value.Unit.Amperes
   mutability: Mutability::Read
@@ -313,8 +313,13 @@
   <<: *current
   entityInstance: 0x15
   path: /xyz/openbmc_project/sensors/current/vddcr_cpu_out
-  multiplierM: 98
-  rExp: -2
+  multiplierM: 1
+  rExp: 0
+
+0x27:
+  <<: *temperature
+  entityInstance: 0x28
+  path: /xyz/openbmc_project/sensors/temperature/vddcr_cpu
 
 # PVDDCR_SOC0
 0x3E:
@@ -345,7 +350,12 @@
   multiplierM: 345
   rExp: -3
 
-# PVDDQ_ABCD
+0x28:
+  <<: *temperature
+  entityInstance: 0x29
+  path: /xyz/openbmc_project/sensors/temperature/vddcr_soc
+
+# PVDDIO_ABCD
 0x40:
   <<: *voltage
   entityInstance: 0x10
@@ -374,7 +384,12 @@
   multiplierM: 345
   rExp: -3
 
-# PVDDQ_EFGH
+0x29:
+  <<: *temperature
+  entityInstance: 0x2a
+  path: /xyz/openbmc_project/sensors/temperature/vddio_abcd
+
+# PVDDIO_EFGH
 0x42:
   <<: *voltage
   entityInstance: 0x12
@@ -402,6 +417,11 @@
   path: /xyz/openbmc_project/sensors/current/vddio_efgh_out
   multiplierM: 345
   rExp: -3
+
+0x2A:
+  <<: *temperature
+  entityInstance: 0x2b
+  path: /xyz/openbmc_project/sensors/temperature/vddio_efgh
 
 # P12V_1
 0x47:
@@ -432,6 +452,11 @@
   multiplierM: 59
   rExp: -2
 
+0x2B:
+  <<: *temperature
+  entityInstance: 0x2c
+  path: /xyz/openbmc_project/sensors/temperature/p12v_mobo
+
 # P12V_2
 0x49:
   <<: *voltage
@@ -461,6 +486,11 @@
   multiplierM: 59
   rExp: -2
 
+0x2C:
+  <<: *temperature
+  entityInstance: 0x2d
+  path: /xyz/openbmc_project/sensors/temperature/p12v_fan
+
 # Hotswap controller
 0x44:
   <<: *voltage
@@ -483,7 +513,7 @@
   entityID: 0x0E
   entityInstance: 0x02
   path: /xyz/openbmc_project/sensors/current/hotswap_iout
-  multiplierM: 353
+  multiplierM: 216
   rExp: -3
 
 0x70:
@@ -507,6 +537,11 @@
         Offsets:
           0xFF:
             type: double
+
+0x2D:
+  <<: *temperature
+  entityInstance: 0x2e
+  path: /xyz/openbmc_project/sensors/temperature/hotswap
 
 # fan/pwm mapping
 # fan0/1 on Mobo, fb_fan0/1/2 on fan board
@@ -883,7 +918,7 @@
 0xC0: &nvme_power
   entityID: 0x04
   entityInstance: 0x40
-  sensorType: 0x00
+  sensorType: 0xC0
   path: /xyz/openbmc_project/control/nvme/u2_0_pwr_dis
   sensorReadingType: 0x03
   mutability: Mutability::Write|Mutability::Read
