@@ -1,6 +1,9 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/${MACHINE}:"
 
-SRC_URI_append = " file://power-config-host*.json"
+SRC_URI_append = " file://power-config-host1.json"
+SRC_URI_append = " file://power-config-host2.json"
+SRC_URI_append = " file://power-config-host3.json"
+SRC_URI_append = " file://power-config-host4.json"
 
 	
 SYSTEMD_SERVICE_${PN} += "xyz.openbmc_project.Chassis.Control.Power@1.service"
