@@ -95,7 +95,6 @@ DISTRO_FEATURES_BACKFILL_CONSIDERED = " \
         "
 
 DISTRO_FEATURES_OBMC = " \
-        ipmi-fru \
         obmc-host-ctl \
         obmc-host-ipmi \
         obmc-phosphor-chassis-mgmt \
@@ -108,8 +107,6 @@ DISTRO_FEATURES_DEFAULT = " \
         avahi \
         ipv4 \
         ipv6 \
-        ldap \
-        libc-inet-anl \
         pam \
         slp \
         systemd \
