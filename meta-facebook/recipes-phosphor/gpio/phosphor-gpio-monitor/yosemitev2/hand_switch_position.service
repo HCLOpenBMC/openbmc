@@ -1,0 +1,10 @@
+[Unit]
+Description=Hand Switch Position Service
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/env hand_switch_position.sh  
+
+[Install]
+WantedBy=multi-user.target 
