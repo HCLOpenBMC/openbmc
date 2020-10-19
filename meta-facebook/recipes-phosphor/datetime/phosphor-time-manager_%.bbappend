@@ -1,8 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI += "file://SetTimeBmc.sh"
-#SRC_URI += "file://time-manager-bmc-set-time.service"
 SYSTEMD_SERVICE_${PN} += "time-manager-bmc-set-time.service"
-SYSTEMD_AUTO_ENABLE ?= "disable"
 
 RDEPENDS_${PN} += "bash"
 do_install_append(){
