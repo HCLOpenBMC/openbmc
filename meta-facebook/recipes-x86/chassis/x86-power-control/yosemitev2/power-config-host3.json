@@ -1,0 +1,37 @@
+[
+    {
+        "Name" : "PostComplete",
+        "DbusName" : "xyz.openbmc_project.IpmbSensor",
+        "Path" : "/xyz/openbmc_project/sensors/volt/4_GPIO_Status",
+        "Interface" : "xyz.openbmc_project.Gpio.Status",
+        "Property" : "BIOS_Post_Complete",
+        "Type" : "DBUS"
+    },
+
+    {
+        "Name" : "SlotPower",
+        "LineName" : "SLOT3_POWER",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "PowerOk",
+        "DbusName" : "xyz.openbmc_project.IpmbSensor",
+        "Path" : "/xyz/openbmc_project/sensors/volt/4_GPIO_Status",
+        "Interface" : "xyz.openbmc_project.Gpio.Status",
+        "Property" : "CPU_Power_Good",
+        "Type" : "DBUS"
+    },
+
+    {
+        "Name" : "PowerOut",
+        "LineName" : "POWER_OUT3",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "ResetOut",
+        "LineName" : "RESET_OUT3",
+        "Type" : "GPIO"
+    }
+]
