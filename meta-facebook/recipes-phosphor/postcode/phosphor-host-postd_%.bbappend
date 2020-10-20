@@ -1,14 +1,8 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/${MACHINE}:"
+FILESEXTRAPATHS_prepend_yosemitev2 := "${THISDIR}/${PN}/${MACHINE}:"
 
-SERVICE_FILE = "lpcsnoop.service"
-SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} += "${SERVICE_FILE}"
+SRC_URI_append_yosemitev2 = " file://lpcsnoop.service"
+SYSTEMD_SERVICE_${PN}_yosemitev2= "lpcsnoop.service"
 
-NUMBER_OF_HOST ?= "4"
-
-#EXTRA_OEMESON += "-Dpost-code-bytes=false "
-
-
-
-
-
+do_install_append_yosemitev2() {
+    install -m 0644 ${WORKDIR}/lpcsnoop.service ${D}${systemd_system_unitdir}
+}
