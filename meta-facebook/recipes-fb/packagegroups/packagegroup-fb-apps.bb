@@ -49,4 +49,6 @@ RDEPENDS_${PN}-system = " \
         phosphor-post-code-manager \
         phosphor-host-postd \
         phosphor-nvme \
+        virtual/obmc-gpio-monitor \
+        phosphor-gpio-monitor \
         "
