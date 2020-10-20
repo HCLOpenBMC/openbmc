@@ -53,4 +53,5 @@ RDEPENDS_${PN}-system = " \
         obmc-phosphor-buttons \
         obmc-phosphor-buttons-handler \
         obmc-phosphor-buttons-signals \
+		phosphor-time-manager \
         "
