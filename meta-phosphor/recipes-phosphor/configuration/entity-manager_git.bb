@@ -3,7 +3,7 @@ DESCRIPTION = "Entity Manager provides d-bus configuration data \
 and configures system sensors"
 
 SRC_URI = "git://github.com/HCLOpenBMC/entity-manager.git;protocol=http;branch=YV2-Demo-22Oct file://blocklist.json"
-SRCREV = "69c67437ec88e77d96e69fb2d3db448abdde6997"
+SRCREV = "79ef996c1e63d9aaaa56e8472e62e15db712eb89"
 PV = "0.1+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
