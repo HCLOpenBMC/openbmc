@@ -51,4 +51,7 @@ RDEPENDS_${PN}-system = " \
         phosphor-nvme \
         virtual/obmc-gpio-monitor \
         phosphor-gpio-monitor \
+        obmc-phosphor-buttons \
+        obmc-phosphor-buttons-handler \
+        obmc-phosphor-buttons-signals \
         "
