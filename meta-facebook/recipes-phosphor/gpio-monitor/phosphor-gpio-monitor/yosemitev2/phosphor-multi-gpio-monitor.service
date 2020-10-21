@@ -1,5 +1,6 @@
 [Unit]
 Description=Phosphor Multi GPIO monitor
+StartLimitIntervalSec=0
 After=hand_switch_position_update.service
 
 [Service]

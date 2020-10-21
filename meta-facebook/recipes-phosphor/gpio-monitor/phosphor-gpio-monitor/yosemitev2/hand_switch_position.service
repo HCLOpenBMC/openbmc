@@ -1,6 +1,7 @@
 [Unit]
 Description=Hand Switch Position Service
 StartLimitIntervalSec=0
+After=phosphor-multi-gpio-monitor.service
 
 [Service]
 Type=oneshot

@@ -1,6 +1,6 @@
 [Unit]
 Description=Hand Switch Position  Service
-After=phosphor-button-handler.service xyz.openbmc_project.Chassis.Buttons.service hand_switch_position.service
+After=phosphor-button-handler.service xyz.openbmc_project.Chassis.Buttons.service 
 
 
 [Service]
