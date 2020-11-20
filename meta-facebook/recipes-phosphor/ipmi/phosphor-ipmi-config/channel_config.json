@@ -1,6 +1,6 @@
 {
   "0" : {
-    "name" : "IPMB",
+    "name" : "ipmb",
     "is_valid" : true,
     "active_sessions" : 0,
     "max_transfer_size" : 256,
