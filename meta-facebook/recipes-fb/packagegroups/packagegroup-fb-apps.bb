@@ -49,5 +49,4 @@ RDEPENDS_${PN}-system = " \
         phosphor-post-code-manager \
         phosphor-host-postd \
         phosphor-nvme \
-        phosphor-node-manager-proxy \
         "
