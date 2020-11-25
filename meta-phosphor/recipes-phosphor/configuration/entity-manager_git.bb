@@ -3,7 +3,7 @@ DESCRIPTION = "Entity Manager provides d-bus configuration data \
 and configures system sensors"
 
 SRC_URI = "git://github.com/openbmc/entity-manager.git file://blocklist.json"
-SRCREV = "2a7e3954e6ffaef88392c2f95a5281034078fe86"
+SRCREV = "c61ae35c3aa09960d816a8acc4f931274ac104db"
 PV = "0.1+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
@@ -14,7 +14,7 @@ DEPENDS = "boost \
            sdbusplus \
            valijson"
 
-S = "${WORKDIR}/git/"
+S = "${WORKDIR}/git"
 inherit meson systemd
 
 EXTRA_OEMESON = "-Dtests=disabled"
@@ -33,8 +33,10 @@ do_install_append() {
 }
 
 FILES_fru-device = "${bindir}/fru-device ${datadir}/${BPN}/blacklist.json"
+FILES_fru-device = "/lib/systemd/system/xyz.openbmc_project.Ipmb.FruDevice.service"
 
 SYSTEMD_PACKAGES = "${PN} ${EXTRA_ENTITY_MANAGER_PACKAGES}"
 SYSTEMD_SERVICE_${PN} = "xyz.openbmc_project.EntityManager.service"
 SYSTEMD_SERVICE_fru-device = "xyz.openbmc_project.FruDevice.service"
 SYSTEMD_AUTO_ENABLE_fru-device_ibm-power-cpu = "disable"
+SYSTEMD_SERVICE_fru-device += "xyz.openbmc_project.Ipmb.FruDevice.service"

@@ -10,6 +10,7 @@ repos:
       meta-tpm:
       meta-integrity:
       meta-security-compliance:
+      meta-hardening:
 
   poky:
     url: https://git.yoctoproject.org/git/poky
@@ -42,8 +43,7 @@ local_conf_header:
     INHERIT += "testimage"
     TEST_QEMUBOOT_TIMEOUT = "1500"
     EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
-    DISTRO_FEATURES_remove = " ptest"
-    PACKAGE_CLASSES = "package_rpm"
+    PACKAGE_CLASSES = "package_ipk"
 
 
   diskmon: |

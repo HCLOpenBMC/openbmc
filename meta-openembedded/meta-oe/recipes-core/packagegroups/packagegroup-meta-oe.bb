@@ -186,6 +186,7 @@ RDEPENDS_packagegroup-meta-oe-core_remove_riscv32 = "safec"
 RDEPENDS_packagegroup-meta-oe-crypto ="\
     botan \
     cryptsetup \
+    fsverity-utils \
     libkcapi \
     libmcrypt \
     libsodium \
@@ -206,6 +207,7 @@ RDEPENDS_packagegroup-meta-oe-dbs ="\
 
 RDEPENDS_packagegroup-meta-oe-devtools ="\
     abseil-cpp \
+    apitrace \
     breakpad \
     bootchart \
     android-tools-conf \
@@ -273,6 +275,7 @@ RDEPENDS_packagegroup-meta-oe-devtools ="\
     python3-distutils-extra \
     rapidjson \
     sip3 \
+    squashfs-tools-ng \
     uftrace \
     libxerces-c \
     xerces-c-samples \
@@ -284,6 +287,7 @@ RDEPENDS_packagegroup-meta-oe-devtools_append_x86 = " cpuid msr-tools pmtools"
 RDEPENDS_packagegroup-meta-oe-devtools_append_x86-64 = " cpuid msr-tools pcimem pmtools"
 RDEPENDS_packagegroup-meta-oe-devtools_append_arm = " pcimem"
 RDEPENDS_packagegroup-meta-oe-devtools_append_aarch64 = " pcimem"
+RDEPENDS_packagegroup-meta-oe-devtools_append_libc-musl = " musl-nscd"
 
 RDEPENDS_packagegroup-meta-oe-devtools_remove_arm = "concurrencykit"
 RDEPENDS_packagegroup-meta-oe-devtools_remove_armv5 = "uftrace nodejs"
@@ -838,6 +842,7 @@ RDEPENDS_packagegroup-meta-oe-support ="\
     tbb \
     satyr \
     pcsc-lite \
+    pcsc-tools \
     sharutils \
     ${@bb.utils.contains("DISTRO_FEATURES", "x11", "toscoterm", "", d)} \
     sg3-utils \
@@ -886,6 +891,7 @@ RDEPENDS_packagegroup-meta-oe-support_remove_powerpc = "ssiapi"
 
 RDEPENDS_packagegroup-meta-oe-test ="\
     bats \
+    cmocka \
     cppunit \
     cukinia \
     cunit \
@@ -916,6 +922,7 @@ RDEPENDS_packagegroup-meta-oe-ptest-packages = "\
     uthash-ptest \
     libee-ptest \
     poco-ptest \
+    cmocka-ptest \
 "
 RDEPENDS_packagegroup-meta-oe-ptest-packages_append_x86 = " mcelog-ptest"
 RDEPENDS_packagegroup-meta-oe-ptest-packages_append_x86-64 = " mcelog-ptest"

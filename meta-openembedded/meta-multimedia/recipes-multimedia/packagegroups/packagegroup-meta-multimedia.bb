@@ -21,6 +21,7 @@ RDEPENDS_packagegroup-meta-multimedia = "\
 
 RDEPENDS_packagegroup-meta-multimedia = "\
     alsa-equal \
+    aom \
     caps \
     cdparanoia \
     dcadec \
@@ -29,8 +30,7 @@ RDEPENDS_packagegroup-meta-multimedia = "\
     dleyna-renderer \
     dleyna-server \
     dvb-apps \
-    ${@bb.utils.contains("LICENSE_FLAGS_WHITELIST", "commercial", "faac", "", d)} \
-    fdk-aac \
+    ${@bb.utils.contains("LICENSE_FLAGS_WHITELIST", "commercial", "faac fdk-aac mpd", "", d)} \
     gerbera \
     libao \
     libavc1394 \
@@ -42,7 +42,6 @@ RDEPENDS_packagegroup-meta-multimedia = "\
     libmusicbrainz \
     libmpdclient \
     mpc \
-    mpd \
     ncmpc \
     libmpd \
     ${@bb.utils.contains("LICENSE_FLAGS_WHITELIST", "commercial", "opencore-amr vo-aacenc vo-amrwbenc", "", d)} \
@@ -60,6 +59,7 @@ RDEPENDS_packagegroup-meta-multimedia = "\
     vorbis-tools \
     libdvbcsa \
     libopenmpt \
+    libuvc \
     mimic \
     ${@bb.utils.contains("LICENSE_FLAGS_WHITELIST", "commercial", "minidlna", "", d)} \
     mycroft \
