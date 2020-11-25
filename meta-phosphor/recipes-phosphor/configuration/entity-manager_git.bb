@@ -33,8 +33,10 @@ do_install_append() {
 }
 
 FILES_fru-device = "${bindir}/fru-device ${datadir}/${BPN}/blacklist.json"
+FILES_fru-device = "/lib/systemd/system/xyz.openbmc_project.Ipmb.FruDevice.service"
 
 SYSTEMD_PACKAGES = "${PN} ${EXTRA_ENTITY_MANAGER_PACKAGES}"
 SYSTEMD_SERVICE_${PN} = "xyz.openbmc_project.EntityManager.service"
 SYSTEMD_SERVICE_fru-device = "xyz.openbmc_project.FruDevice.service"
 SYSTEMD_AUTO_ENABLE_fru-device_ibm-power-cpu = "disable"
+SYSTEMD_SERVICE_fru-device += "xyz.openbmc_project.Ipmb.FruDevice.service"
