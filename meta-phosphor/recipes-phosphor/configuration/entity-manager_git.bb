@@ -3,7 +3,7 @@ DESCRIPTION = "Entity Manager provides d-bus configuration data \
 and configures system sensors"
 
 SRC_URI = "git://github.com/openbmc/entity-manager.git file://blocklist.json"
-SRCREV = "def29274907ef77187b02ae19d55bb9888413892"
+SRCREV = "c61ae35c3aa09960d816a8acc4f931274ac104db"
 PV = "0.1+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
@@ -14,7 +14,7 @@ DEPENDS = "boost \
            sdbusplus \
            valijson"
 
-S = "${WORKDIR}/git/"
+S = "${WORKDIR}/git"
 inherit meson systemd
 
 EXTRA_OEMESON = "-Dtests=disabled"
