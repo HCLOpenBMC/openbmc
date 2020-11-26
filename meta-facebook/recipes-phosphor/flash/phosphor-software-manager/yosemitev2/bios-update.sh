@@ -9,8 +9,11 @@ set -e
 POWER_CMD="/usr/sbin/power-util "                                                      
                                                                                        
 # Get the Slot_id and the bin file path                                            
-SLOT_ID=$1                                                                              
-BIN_FILE_PATH=$2/bios.bin                                                                       
+DATA=1    
+SLOT_ID=$2                  
+SLOT_NUM=$((SLOT_ID - DATA))
+CMD_ID=$3                                                                              
+BIN_FILE_PATH=$1/bios.bin                                                                       
                                                                                   
 # Check whether the slot is not empty                                                  
                                                                                        
@@ -28,7 +31,7 @@ then
 fi                                                                                
 echo "Powered-Off Slot#"$SLOT_ID 
 
-fb-yv2-misc $BIN_FILE_PATH $SLOT_ID
+fb-yv2-misc $BIN_FILE_PATH $SLOT_NUM $CMD_ID
 
 # Power on the slot
 echo "Power-on the slot#"$SLOT_ID
