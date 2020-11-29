@@ -128,9 +128,9 @@ For general questions, please use the openbmc tag on
 Please review the [discussion](https://meta.stackexchange.com/questions/272956/a-new-code-license-the-mit-this-time-with-attribution-required?cb=1)
 on Stack Overflow licensing before posting any code.
 
-For technical discussions, please see [contact info](#contact) below for IRC and
-mailing list information. Please don't file an issue to ask a question. You'll
-get faster results by using the mailing list or IRC.
+For technical discussions, please see [contact info](#contact) below for
+Discord and mailing list information. Please don't file an issue to ask a
+question. You'll get faster results by using the mailing list or Discord.
 
 ## Features of OpenBMC
 
@@ -174,5 +174,6 @@ The Technical Steering Committee (TSC) guides the project. Members are:
 
 ## Contact
 - Mail: openbmc@lists.ozlabs.org [https://lists.ozlabs.org/listinfo/openbmc](https://lists.ozlabs.org/listinfo/openbmc)
+- Discord: https://discord.gg/69Km47zH98
 - IRC: #openbmc on freenode.net
 - Riot: [#openbmc:matrix.org](https://riot.im/app/#/room/#openbmc:matrix.org)

@@ -1,4 +1,4 @@
-.. SPDX-License-Identifier: CC-BY-2.0-UK
+.. SPDX-License-Identifier: CC-BY-SA-2.0-UK
 
 *************************************
 Preparing for Application Development
@@ -107,7 +107,7 @@ the tarball using either of these methods:
       configuration information.
 
    $ cd ~ $ git clone git://git.yoctoproject.org/poky $ cd poky $ git
-   checkout -b DISTRO_NAME origin/DISTRO_NAME $ source OE_INIT_FILE $
+   checkout -b DISTRO_NAME origin/DISTRO_NAME $ source oe-init-build-env $
    bitbake adt-installer
 
 Configuring and Running the ADT Installer Script
