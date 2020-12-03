@@ -1,0 +1,31 @@
+[
+    {
+        "Name" : "PostComplete",
+        "LineName" : "POST_COMPLETE3",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "SlotPower",
+        "LineName" : "SLOT3_POWER",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "PowerOk",
+        "LineName" : "SLOT3_POWER_OK",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "PowerOut",
+        "LineName" : "POWER_OUT3",
+        "Type" : "GPIO"
+    },
+
+    {
+        "Name" : "ResetOut",
+        "LineName" : "RESET_OUT3",
+        "Type" : "GPIO"
+    }
+]
