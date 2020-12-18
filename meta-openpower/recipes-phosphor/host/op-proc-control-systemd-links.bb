@@ -17,8 +17,13 @@ pkg_postinst_${PN}() {
 	mkdir -p $D$systemd_system_unitdir/obmc-host-startmin@0.target.requires
 	mkdir -p $D$systemd_system_unitdir/obmc-host-diagnostic-mode@0.target.requires
 	mkdir -p $D$systemd_system_unitdir/obmc-chassis-poweron@0.target.requires
+	mkdir -p $D$systemd_system_unitdir/obmc-host-quiesce@0.target.wants
 
 	LINK="$D$systemd_system_unitdir/obmc-host-stop@0.target.wants/op-stop-instructions@0.service"
+	TARGET="../op-stop-instructions@.service"
+	ln -s $TARGET $LINK
+
+	LINK="$D$systemd_system_unitdir/obmc-host-quiesce@0.target.wants/op-stop-instructions@0.service"
 	TARGET="../op-stop-instructions@.service"
 	ln -s $TARGET $LINK
 
@@ -52,6 +57,10 @@ pkg_postinst_${PN}() {
 		LINK="$D$systemd_system_unitdir/obmc-host-start@0.target.requires/phal-reinit-devtree.service"
 		TARGET="../phal-reinit-devtree.service"
 		ln -s $TARGET $LINK
+
+		LINK="$D$systemd_system_unitdir/obmc-chassis-poweroff@0.target.requires/proc-pre-poweroff@0.service"
+		TARGET="../proc-pre-poweroff@.service"
+		ln -s $TARGET $LINK
 	fi
 }
 
@@ -75,6 +84,9 @@ pkg_prerm_${PN}() {
 	# Only phal reinit service if phal enabled
 	if [ "${@bb.utils.filter('OBMC_MACHINE_FEATURES', 'phal', d)}" = phal ]; then
 		LINK="$D$systemd_system_unitdir/obmc-host-start@0.target.requires/phal-reinit-devtree.service"
+		rm $LINK
+
+		LINK="$D$systemd_system_unitdir/obmc-chassis-poweroff@0.target.requires/proc-pre-poweroff@0.service"
 		rm $LINK
 	fi
 }
