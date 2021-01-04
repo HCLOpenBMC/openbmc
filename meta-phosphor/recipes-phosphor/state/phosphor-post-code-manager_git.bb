@@ -30,5 +30,5 @@ DEPENDS += " \
     phosphor-logging \
     "
 
-FILES_${PN}  += " /lib/systemd/system/xyz.openbmc_project.State.Boot.PostCode@.service"
-FILES_${PN}  += " /lib/systemd/system/xyz.openbmc_project.State.Boot.PostCode.service"
+FILES_${PN}  += "${systemd_system_unitdir}/xyz.openbmc_project.State.Boot.PostCode@.service"
+FILES_${PN}  += "${systemd_system_unitdir}/xyz.openbmc_project.State.Boot.PostCode.service"
