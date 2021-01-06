@@ -1,35 +1,83 @@
 {
     "leds": [
        {
-            "group": "power_led",
+            "group": "enclosure_identify",
+            "members": [
+                {
+                    "Name": "system1",
+                    "Action": "Blink",
+                    "DutyOn": 50,
+                    "Period": 200
+                },
+                {
+                    "Name": "system2",
+                    "Action": "Blink",
+                    "DutyOn": 50,
+                    "Period": 200
+                },
+                {
+                    "Name": "system3",
+                    "Action": "Blink",
+                    "DutyOn": 50,
+                    "Period": 200
+                },
+                {
+                    "Name": "system4",
+                    "Action": "Blink",
+                    "DutyOn": 50,
+                    "Period": 200
+                }
+
+            ]
+       },
+       {
+            "group": "power_led0",
             "members": [
                 {
                     "Name": "power1",
                     "Action": "Blink",
                     "DutyOn": 50,
-                    "Period": 500,
-                    "Color": "Blue"
+                    "Period": 500
                 },
                 {
                     "Name": "power2",
                     "Action": "Blink",
                     "DutyOn": 50,
-                    "Period": 500,
-                    "Color": "Blue"
+                    "Period": 500
                 },
                 {
                     "Name": "power3",
                     "Action": "Blink",
                     "DutyOn": 50,
-                    "Period": 500,
-                    "Color": "Blue"
+                    "Period": 500
                 },
                 {
                     "Name": "power4",
                     "Action": "Blink",
                     "DutyOn": 50,
-                    "Period": 500,
-                    "Color": "Blue"
+                    "Period": 500
+                }
+            ]
+
+       },
+       {
+            "group": "power_led1",
+            "members": [
+                {
+                    "Name": "power1",
+                    "Action": "On"
+                },
+                {
+                    "Name": "power2",
+                    "Action": "On"
+                },
+                {
+                    "Name": "power3",
+                    "Action": "On"
+                },
+                {
+                    "Name": "power4",
+                    "Action": "On"
                 }
             ]
 
@@ -41,8 +89,7 @@
                     "Name": "power1",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Blue"
+                    "Period": 900
                 }
             ]
         },
@@ -53,8 +100,7 @@
                     "Name": "power2",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Blue"
+                    "Period": 900
                 }
             ]
         },
@@ -65,8 +111,7 @@
                     "Name": "power3",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Blue"
+                    "Period": 900
                 }
              ]
         },
@@ -77,8 +122,7 @@
                     "Name": "power4",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Blue"
+                    "Period": 900
                 }
             ]
         },
@@ -89,8 +133,7 @@
                     "Name": "power1",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Blue"
+                    "Period": 100
                 }
             ]
         },
@@ -101,8 +144,7 @@
                     "Name": "power2",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Blue"
+                    "Period": 100
                 }
             ]
         },
@@ -113,8 +155,7 @@
                     "Name": "power3",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Blue"
+                    "Period": 100
                 }
              ]
         },
@@ -125,8 +166,7 @@
                     "Name": "power4",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Blue"
+                    "Period": 100
                 }
             ]
         },
@@ -137,8 +177,7 @@
                     "Name": "system1",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Yellow"
+                    "Period": 900
                 }
             ]
         },
@@ -149,8 +188,7 @@
                     "Name": "system2",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Yellow"
+                    "Period": 900
                 }
            ]
         },
@@ -161,8 +199,7 @@
                     "Name": "system3",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Yellow"
+                    "Period": 900
                 }
           ]
         },
@@ -173,8 +210,7 @@
                     "Name": "system4",
                     "Action": "Blink",
                     "DutyOn": 90,
-                    "Period": 900,
-                    "Color": "Yellow"
+                    "Period": 900
                 }
            ]
         },
@@ -185,8 +221,7 @@
                     "Name": "system1",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Yellow"
+                    "Period": 100
                 }
             ]
         },
@@ -197,8 +232,7 @@
                     "Name": "system2",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Yellow"
+                    "Period": 100
                 }
            ]
         },
@@ -209,8 +243,7 @@
                     "Name": "system3",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Yellow"
+                    "Period": 100
                 }
           ]
         },
@@ -218,13 +251,12 @@
            "group": "system_off_led4",
            "members": [
                 {
-                    "Name": "system3",
+                    "Name": "system4",
                     "Action": "Blink",
                     "DutyOn": 10,
-                    "Period": 100,
-                    "Color": "Yellow"
+                    "Period": 100
                 }
-          ]
+           ]
         }
     ]
 }

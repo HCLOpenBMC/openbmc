@@ -1,220 +1,177 @@
 #!/bin/sh
 
-#POWER_STATUS_SERVICE="xyz.openbmc_project.State.Chassis$1"
-#POWER_STATUS_OBJPATH="/xyz/openbmc_project/state/chassis$1"
-#POWER_STATUS_INTERFACE="xyz.openbmc_project.State.Chassis"
-#POWER_STATUS_PROPERTY="CurrentPowerState"
-
-POWER_STATUS1_SERVICE="xyz.openbmc_project.State.Chassis1"
-POWER_STATUS1_OBJPATH="/xyz/openbmc_project/state/chassis1"
-
-POWER_STATUS2_SERVICE="xyz.openbmc_project.State.Chassis2"
-POWER_STATUS2_OBJPATH="/xyz/openbmc_project/state/chassis2"
-
-POWER_STATUS3_SERVICE="xyz.openbmc_project.State.Chassis3"
-POWER_STATUS3_OBJPATH="/xyz/openbmc_project/state/chassis3"
-
-POWER_STATUS4_SERVICE="xyz.openbmc_project.State.Chassis4"
-POWER_STATUS4_OBJPATH="/xyz/openbmc_project/state/chassis4"
-
+POWER_STATUS_SERVICE="xyz.openbmc_project.State.Chassis"
+POWER_STATUS_OBJPATH="/xyz/openbmc_project/state/chassis"
 POWER_STATUS_INTERFACE="xyz.openbmc_project.State.Chassis"
 POWER_STATUS_PROPERTY="CurrentPowerState"
 
 LED_SERVICE="xyz.openbmc_project.LED.GroupManager"
 LED_POWER_OBJPATH="/xyz/openbmc_project/led/groups/power_led"
-LED_SYSTEM_OBJPATH="/xyz/openbmc_project/led/groups/system_led"
+LED_ENCLOSURE_IDENTIFY="/xyz/openbmc_project/led/groups/enclosure_identify"
 LED_INTERFACE="xyz.openbmc_project.Led.Group"
 LED_PROPERTY="Asserted"
 
-LED1_POWER_ON_OBJPATH="/xyz/openbmc_project/led/groups/power_on_led1"
-LED2_POWER_ON_OBJPATH="/xyz/openbmc_project/led/groups/power_on_led2"
-LED3_POWER_ON_OBJPATH="/xyz/openbmc_project/led/groups/power_on_led3"
-LED4_POWER_ON_OBJPATH="/xyz/openbmc_project/led/groups/power_on_led4"
-
-LED1_POWER_OFF_OBJPATH="/xyz/openbmc_project/led/groups/power_off_led1"
-LED2_POWER_OFF_OBJPATH="/xyz/openbmc_project/led/groups/power_off_led2"
-LED3_POWER_OFF_OBJPATH="/xyz/openbmc_project/led/groups/power_off_led3"
-LED4_POWER_OFF_OBJPATH="/xyz/openbmc_project/led/groups/power_off_led4"
-
-LED1_SYSTEM_ON_OBJPATH="/xyz/openbmc_project/led/groups/system_on_led1"
-LED2_SYSTEM_ON_OBJPATH="/xyz/openbmc_project/led/groups/system_on_led2"
-LED3_SYSTEM_ON_OBJPATH="/xyz/openbmc_project/led/groups/system_on_led3"
-LED4_SYSTEM_ON_OBJPATH="/xyz/openbmc_project/led/groups/system_on_led4"
-
-LED1_SYSTEM_OFF_OBJPATH="/xyz/openbmc_project/led/groups/system_off_led1"
-LED2_SYSTEM_OFF_OBJPATH="/xyz/openbmc_project/led/groups/system_off_led2"
-LED3_SYSTEM_OFF_OBJPATH="/xyz/openbmc_project/led/groups/system_off_led3"
-LED4_SYSTEM_OFF_OBJPATH="/xyz/openbmc_project/led/groups/system_off_led4"
+LED_POWER_ON_OBJPATH="/xyz/openbmc_project/led/groups/power_on_led"
+LED_POWER_OFF_OBJPATH="/xyz/openbmc_project/led/groups/power_off_led"
+LED_SYSTEM_ON_OBJPATH="/xyz/openbmc_project/led/groups/system_on_led"
+LED_SYSTEM_OFF_OBJPATH="/xyz/openbmc_project/led/groups/system_off_led"
 
 KNOB_SELECTOR_SERVICE="xyz.openbmc_project.Chassis.Buttons"
 KNOB_SELECTOR_OBJPATH="/xyz/openbmc_project/Chassis/Buttons/Selector0"
 KNOB_SELECTOR_INTERFACE="xyz.openbmc_project.Chassis.Buttons.Selector"
 KNOB_SELECTOR_PROPERTY="Position"
 
-echo /sys/class/gpio/gpio792
+OBJECT_MAPPER_NAME="xyz.openbmc_project.ObjectMapper"
+OBJECT_MAPPER_PATH="/xyz/openbmc_project/object_mapper"
+OBJECT_MAPPER_INTERFACE="xyz.openbmc_project.ObjectMapper"
+
+SENSOR_PATH="/xyz/openbmc_project/sensors"
+SENSOR_OBJECT="xyz.openbmc_project.IpmbSensor"
+SENSOR_INTERFACE="xyz.openbmc_project.Sensor.Threshold.Critical"
+SENSOR_HIGH_PROPERTY="CriticalAlarmHigh"
+SENSOR_LOW_PROPERTY="CriticalAlarmLow"
 
 echo 792 > /sys/class/gpio/export
-
 echo low > /sys/class/gpio/gpio792/direction
+
+health() {
+
+    health_status="Good"
+    sensor=$(busctl call $OBJECT_MAPPER_NAME $OBJECT_MAPPER_PATH $OBJECT_MAPPER_INTERFACE GetSubTreePaths sias $SENSOR_PATH 0 1 $SENSOR_INTERFACE)
+
+    for i in $sensor;
+    do
+      host=$( echo $i | grep -o "/$1_*")
+      if [ "$host" ]
+      then
+           path=$( echo $i | cut -d'"' -f2)
+           critical_low=$(busctl get-property $SENSOR_OBJECT $path $SENSOR_INTERFACE $SENSOR_LOW_PROPERTY |  awk '{print $NF;}')
+           critical_high=$(busctl get-property $SENSOR_OBJECT $path $SENSOR_INTERFACE $SENSOR_HIGH_PROPERTY |  awk '{print $NF;}')
+
+           if [ "$critical_low" = "true" ] || [ "$critical_high" = "true" ]
+           then
+                health_status="Bad"
+           fi
+      fi
+    done
+
+}
+
+power() {
+
+    power_status=$(busctl get-property $POWER_STATUS_SERVICE$1 $POWER_STATUS_OBJPATH$1 $POWER_STATUS_INTERFACE $POWER_STATUS_PROPERTY | cut -d'"' -f2 | cut -d"." -f6)
+}
+
+led() {
+
+    busctl set-property $LED_SERVICE $1$2 $LED_INTERFACE $LED_PROPERTY b $3
+}
+
 
 while true; do
 
-    position=$(busctl get-property $KNOB_SELECTOR_SERVICE $KNOB_SELECTOR_OBJPATH $KNOB_SELECTOR_INTERFACE $KNOB_SELECTOR_PROPERTY \
-              |  awk '{print $NF;}')
+    sled_identify=$(busctl get-property $LED_SERVICE $LED_ENCLOSURE_IDENTIFY $LED_INTERFACE $LED_PROPERTY | awk '{print $NF;}')
+    echo "SLED IDENTIFY : $sled_identify"
 
-    echo "Knob Position : $position"
-
-    if [ "$position" = "5" ]
+    if [ "$sled_identify" = "true" ]
     then
-         busctl set-property $LED_SERVICE $LED_POWER_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
+         led $LED_POWER_OBJPATH 0 false
+         led $LED_POWER_OBJPATH 1 true
 
-         echo " $LED_POWER_OBJPATH is Asserted"
+         led $LED_POWER_ON_OBJPATH 1 false
+         led $LED_POWER_ON_OBJPATH 2 false
+         led $LED_POWER_ON_OBJPATH 3 false
+         led $LED_POWER_ON_OBJPATH 4 false
+         led $LED_POWER_OFF_OBJPATH 1 false
+         led $LED_POWER_OFF_OBJPATH 2 false
+         led $LED_POWER_OFF_OBJPATH 3 false
+         led $LED_POWER_OFF_OBJPATH 4 false
 
-         busctl set-property $LED_SERVICE $LED1_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-         busctl set-property $LED_SERVICE $LED2_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-         busctl set-property $LED_SERVICE $LED3_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-         busctl set-property $LED_SERVICE $LED4_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
+         led $LED_SYSTEM_ON_OBJPATH 1 false
+         led $LED_SYSTEM_ON_OBJPATH 2 false
+         led $LED_SYSTEM_ON_OBJPATH 3 false
+         led $LED_SYSTEM_ON_OBJPATH 4 false
+         led $LED_SYSTEM_OFF_OBJPATH 1 false
+         led $LED_SYSTEM_OFF_OBJPATH 2 false
+         led $LED_SYSTEM_OFF_OBJPATH 3 false
+         led $LED_SYSTEM_OFF_OBJPATH 4 false
 
-         busctl set-property $LED_SERVICE $LED1_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-         busctl set-property $LED_SERVICE $LED2_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-         busctl set-property $LED_SERVICE $LED3_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-         busctl set-property $LED_SERVICE $LED4_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
+    else
 
-    elif [ "$position" = "1" ]
-    then
+         position=$(busctl get-property $KNOB_SELECTOR_SERVICE $KNOB_SELECTOR_OBJPATH $KNOB_SELECTOR_INTERFACE $KNOB_SELECTOR_PROPERTY \
+                    |  awk '{print $NF;}')
 
-         power=$(busctl get-property $POWER_STATUS1_SERVICE $POWER_STATUS1_OBJPATH $POWER_STATUS_INTERFACE $POWER_STATUS_PROPERTY \
-              | cut  -d'"' -f2 |  cut -d"." -f6)
+         echo "Knob Position : $position"
 
-         echo "Power status 1 : $power"
 
-         busctl set-property $LED_SERVICE $LED_POWER_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-
-         health=Good
-
-         if [ "$power" = "On" ] && [ "$health" = "Good" ]
-         then 
-              busctl set-property $LED_SERVICE $LED1_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED1_POWER_ON_OBJPATH is Asserted"
-
-         elif [ "$power" = "Off" ] && [ "$health" = "Good" ]
+         if [ "$position" = "5" ]
          then
-              busctl set-property $LED_SERVICE $LED1_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED1_POWER_OFF_OBJPATH is Asserted"
+              led $LED_POWER_ON_OBJPATH 1 false
+              led $LED_POWER_ON_OBJPATH 2 false
+              led $LED_POWER_ON_OBJPATH 3 false
+              led $LED_POWER_ON_OBJPATH 4 false
+              led $LED_POWER_OFF_OBJPATH 1 false
+              led $LED_POWER_OFF_OBJPATH 2 false
+              led $LED_POWER_OFF_OBJPATH 3 false
+              led $LED_POWER_OFF_OBJPATH 4 false
 
-         elif [ "$power" = "On" ] && [ "$health" = "Bad" ]
+              led $LED_SYSTEM_ON_OBJPATH 1 false
+              led $LED_SYSTEM_ON_OBJPATH 2 false
+              led $LED_SYSTEM_ON_OBJPATH 3 false
+              led $LED_SYSTEM_ON_OBJPATH 4 false
+              led $LED_SYSTEM_OFF_OBJPATH 1 false
+              led $LED_SYSTEM_OFF_OBJPATH 2 false
+              led $LED_SYSTEM_OFF_OBJPATH 3 false
+              led $LED_SYSTEM_OFF_OBJPATH 4 false
+              led $LED_POWER_OBJPATH 1 false
+   
+              led $LED_POWER_OBJPATH 0 true
+
+
+         elif [ "$position" = "1" ] || [ "$position" = "2" ] || [ "$position" = "3" ] || [ "$position" = "4" ]
          then
-              busctl set-property $LED_SERVICE $LED1_SYSTEM_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED1_SYSTEM_ON_OBJPATH is Asserted"
 
-         elif [ "$power" = "Off" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED1_SYSTEM_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED1_SYSTEM_OFF_OBJPATH is Asserted"
+              power $position
+              echo "Power status $position : $power_status"
 
-         fi
+              led $LED_POWER_OBJPATH 0 false
+              led $LED_POWER_OBJPATH 1 true
 
-    elif [ "$position" = "2" ]
-    then
+              health $position
+              echo "Health status $position : $health_status"
 
-         power=$(busctl get-property $POWER_STATUS2_SERVICE $POWER_STATUS2_OBJPATH $POWER_STATUS_INTERFACE $POWER_STATUS_PROPERTY \
-              | cut  -d'"' -f2 |  cut -d"." -f6)
+              if [ "$power_status" = "On" ] && [ "$health_status" = "Good" ]
+              then 
+                   led $LED_POWER_OFF_OBJPATH $position false
+                   led $LED_SYSTEM_ON_OBJPATH $position false
+                   led $LED_SYSTEM_OFF_OBJPATH $position false
 
-         echo "Power status 2 : $power"
+                   led $LED_POWER_ON_OBJPATH $position true
 
-         busctl set-property $LED_SERVICE $LED_POWER_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
+              elif [ "$power_status" = "Off" ] && [ "$health_status" = "Good" ]
+              then
+                   led $LED_POWER_ON_OBJPATH $position false
+                   led $LED_SYSTEM_ON_OBJPATH $position false
+                   led $LED_SYSTEM_OFF_OBJPATH $position false
 
-         health=Bad
+                   led $LED_POWER_OFF_OBJPATH $position true
 
-         if [ "$power" = "On" ] && [ "$health" = "Good" ]
-         then
-              busctl set-property $LED_SERVICE $LED2_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED2_POWER_ON_OBJPATH is Asserted"
+              elif [ "$power_status" = "On" ] && [ "$health_status" = "Bad" ]
+              then
+                   led $LED_POWER_ON_OBJPATH $position false
+                   led $LED_POWER_OFF_OBJPATH $position false
+                   led $LED_SYSTEM_OFF_OBJPATH $position false
 
-         elif [ "$power" = "Off" ] && [ "$health" = "Good" ]
-         then
-              busctl set-property $LED_SERVICE $LED2_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-              echo " $LED2_POWER_OFF_OBJPATH is Asserted"
+                   led $LED_SYSTEM_ON_OBJPATH $position true
 
-         elif [ "$power" = "On" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED2_SYSTEM_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED2_SYSTEM_ON_OBJPATH is Asserted"
+              elif [ "$power_status" = "Off" ] && [ "$health_status" = "Bad" ]
+              then
+                   led $LED_POWER_ON_OBJPATH $position false
+                   led $LED_POWER_OFF_OBJPATH $position false
+                   led $LED_SYSTEM_ON_OBJPATH $position false
 
-         elif [ "$power" = "Off" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED2_SYSTEM_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED2_SYSTEM_OFF_OBJPATH is Asserted"
-
-         fi
-
-    elif [ "$position" = "3" ]
-    then
-
-         power=$(busctl get-property $POWER_STATUS3_SERVICE $POWER_STATUS3_OBJPATH $POWER_STATUS_INTERFACE $POWER_STATUS_PROPERTY \
-              | cut  -d'"' -f2 |  cut -d"." -f6)
-
-         echo "Power status 3 : $power"
-
-         busctl set-property $LED_SERVICE $LED_POWER_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-
-         health=Good
-
-
-         if [ "$power" = "On" ] && [ "$health" = "Good" ]
-         then
-              busctl set-property $LED_SERVICE $LED3_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED3_POWER_ON_OBJPATH is Asserted"
-
-         elif [ "$power" = "Off" ] && [ "$health" = "Good" ]
-         then
-              busctl set-property $LED_SERVICE $LED3_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-              echo " $LED3_POWER_OFF_OBJPATH is Asserted"
-
-         elif [ "$power" = "On" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED3_SYSTEM_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED3_SYSTEM_ON_OBJPATH is Asserted"
-
-         elif [ "$power" = "Off" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED3_SYSTEM_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED3_SYSTEM_OFF_OBJPATH is Asserted"
-
-         fi
-
-    elif [ "$position" = "4" ]
-    then
-
-         power=$(busctl get-property $POWER_STATUS4_SERVICE $POWER_STATUS4_OBJPATH $POWER_STATUS_INTERFACE $POWER_STATUS_PROPERTY \
-              | cut  -d'"' -f2 |  cut -d"." -f6)
-
-         echo "Power status 4 : $power"
-
-         busctl set-property $LED_SERVICE $LED_POWER_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-
-         health=Bad
-
-         if [ "$power" = "On" ] && [ "$health" = "Good" ]
-         then
-              busctl set-property $LED_SERVICE $LED4_POWER_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED4_POWER_ON_OBJPATH is Asserted"
-
-         elif [ "$power" = "Off" ] && [ "$health" = "Good" ]
-         then
-              busctl set-property $LED_SERVICE $LED4_POWER_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b false
-              echo " $LED4_POWER_ON_OBJPATH is Asserted"
-
-         elif [ "$power" = "On" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED4_SYSTEM_ON_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED4_SYSTEM_ON_OBJPATH is Asserted"
-
-         elif [ "$power" = "Off" ] && [ "$health" = "Bad" ]
-         then
-              busctl set-property $LED_SERVICE $LED4_SYSTEM_OFF_OBJPATH $LED_INTERFACE $LED_PROPERTY b true
-              echo " $LED4_SYSTEM_OFF_OBJPATH is Asserted"
-
+                   led $LED_SYSTEM_OFF_OBJPATH $position true
+              fi
          fi
     fi
 done
