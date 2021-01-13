@@ -3,7 +3,7 @@
 		"Desc" :
 		{
 			"Name" : "Virtual_CFM_Sensor",
-			"SensorType" : "temperature"
+			"SensorType" : "airflow"
 		},
 		"Threshold" :
 		{
