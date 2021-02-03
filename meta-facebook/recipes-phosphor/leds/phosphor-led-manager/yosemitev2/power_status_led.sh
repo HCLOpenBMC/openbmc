@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 POWER_STATUS_SERVICE="xyz.openbmc_project.State.Chassis"
 POWER_STATUS_OBJPATH="/xyz/openbmc_project/state/chassis"
@@ -31,13 +31,11 @@ SENSOR_INTERFACE="xyz.openbmc_project.Sensor.Threshold.Critical"
 SENSOR_HIGH_PROPERTY="CriticalAlarmHigh"
 SENSOR_LOW_PROPERTY="CriticalAlarmLow"
 
-echo 792 > /sys/class/gpio/export
-echo low > /sys/class/gpio/gpio792/direction
-
 health() {
 
     health_status="Good"
-    sensor=$(busctl call $OBJECT_MAPPER_NAME $OBJECT_MAPPER_PATH $OBJECT_MAPPER_INTERFACE GetSubTreePaths sias $SENSOR_PATH 0 1 $SENSOR_INTERFACE)
+    sensor=$(busctl call $OBJECT_MAPPER_NAME $OBJECT_MAPPER_PATH $OBJECT_MAPPER_INTERFACE \
+             GetSubTreePaths sias $SENSOR_PATH 0 1 $SENSOR_INTERFACE)
 
     for i in $sensor;
     do
@@ -45,8 +43,10 @@ health() {
       if [ "$host" ]
       then
            path=$( echo $i | cut -d'"' -f2)
-           critical_low=$(busctl get-property $SENSOR_OBJECT $path $SENSOR_INTERFACE $SENSOR_LOW_PROPERTY |  awk '{print $NF;}')
-           critical_high=$(busctl get-property $SENSOR_OBJECT $path $SENSOR_INTERFACE $SENSOR_HIGH_PROPERTY |  awk '{print $NF;}')
+           critical_low=$(busctl get-property $SENSOR_OBJECT $path $SENSOR_INTERFACE $SENSOR_LOW_PROPERTY \
+                          |  awk '{print $NF;}')
+           critical_high=$(busctl get-property $SENSOR_OBJECT $path $SENSOR_INTERFACE $SENSOR_HIGH_PROPERTY \
+                           |  awk '{print $NF;}')
 
            if [ "$critical_low" = "true" ] || [ "$critical_high" = "true" ]
            then
@@ -59,7 +59,8 @@ health() {
 
 power() {
 
-    power_status=$(busctl get-property $POWER_STATUS_SERVICE$1 $POWER_STATUS_OBJPATH$1 $POWER_STATUS_INTERFACE $POWER_STATUS_PROPERTY | cut -d'"' -f2 | cut -d"." -f6)
+    power_status=$(busctl get-property $POWER_STATUS_SERVICE$1 $POWER_STATUS_OBJPATH$1 $POWER_STATUS_INTERFACE \
+                   $POWER_STATUS_PROPERTY | cut -d'"' -f2 | cut -d"." -f6)
 }
 
 led() {
@@ -70,7 +71,8 @@ led() {
 
 while true; do
 
-    sled_identify=$(busctl get-property $LED_SERVICE $LED_ENCLOSURE_IDENTIFY $LED_INTERFACE $LED_PROPERTY | awk '{print $NF;}')
+    sled_identify=$(busctl get-property $LED_SERVICE $LED_ENCLOSURE_IDENTIFY $LED_INTERFACE $LED_PROPERTY \
+                    | awk '{print $NF;}')
     echo "SLED IDENTIFY : $sled_identify"
 
     if [ "$sled_identify" = "true" ]

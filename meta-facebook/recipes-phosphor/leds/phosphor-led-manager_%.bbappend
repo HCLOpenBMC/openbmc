@@ -8,6 +8,7 @@ SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE_${PN}_append_yosemitev2 = "power_status_led.service"
 
 EXTRA_OECONF += " --enable-use-json"
+RDEPENDS_${PN} += "bash"
 
 do_install_append_yosemitev2() {
 

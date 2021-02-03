@@ -45,6 +45,7 @@ RDEPENDS_${PN}-system = " \
         phosphor-hostlogger \
         phosphor-sel-logger \
         ipmitool \
+        mctp \
         phosphor-post-code-manager \
         phosphor-host-postd \
         phosphor-nvme \
