@@ -15,6 +15,7 @@ SRCREV = "b4ae00b9f822f1d136f4684e039057521a30ac47"
 CONFFILES_${PN} = "${sysconfdir}/default/mctp"
 
 DEPENDS += "autoconf-archive-native \
+            libnl \
             systemd \
             "
 
