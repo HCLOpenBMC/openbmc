@@ -2,7 +2,7 @@ SUMMARY = "dbus-sensors"
 DESCRIPTION = "Dbus Sensor Services Configured from D-Bus"
 
 SRC_URI = "git://github.com/openbmc/dbus-sensors.git"
-SRCREV = "a3e8f2a391f389ffb2c379ca0c181e67de43824e"
+SRCREV = "6736d4b2a77cec00a8919f26035176c8b8025a4d"
 
 PV = "0.1+git${SRCPV}"
 
@@ -19,6 +19,7 @@ PACKAGECONFIG ??= " \
     ipmbsensor \
     mcutempsensor \
     psusensor \
+    pldmsensor \
     "
 
 PACKAGECONFIG[adcsensor] = "-DDISABLE_ADC=OFF, -DDISABLE_ADC=ON"
@@ -30,6 +31,7 @@ PACKAGECONFIG[intrusionsensor] = "-DDISABLE_INTRUSION=OFF, -DDISABLE_INTRUSION=O
 PACKAGECONFIG[ipmbsensor] = "-DDISABLE_IPMB=OFF, -DDISABLE_IPMB=ON"
 PACKAGECONFIG[mcutempsensor] = "-DDISABLE_MCUTEMP=OFF, -DDISABLE_MCUTEMP=ON"
 PACKAGECONFIG[psusensor] = "-DDISABLE_PSU=OFF, -DDISABLE_PSU=ON"
+PACKAGECONFIG[pldmsensor] = "-DDISABLE_PLDM=OFF, -DDISABLE_PLDM=ON"
 
 SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'adcsensor', \
                                                'xyz.openbmc_project.adcsensor.service', \
@@ -58,8 +60,11 @@ SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'mcutempsensor',
 SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'psusensor', \
                                                'xyz.openbmc_project.psusensor.service', \
                                                '', d)}"
+SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'pldmsensor', \
+                                               'xyz.openbmc_project.pldmsensor.service', \
+                                               '', d)}"
 
-DEPENDS = "boost nlohmann-json sdbusplus i2c-tools libgpiod"
+DEPENDS = "boost nlohmann-json sdbusplus i2c-tools libgpiod pldm libnl"
 inherit cmake systemd
 
 S = "${WORKDIR}/git"
