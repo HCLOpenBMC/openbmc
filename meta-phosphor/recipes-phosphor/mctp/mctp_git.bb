@@ -11,10 +11,11 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=0d30807bb7a4f16d36e96b78f9ed8fae"
 SRC_URI = "git://github.com/openbmc/libmctp \
 	   file://default"
-SRCREV = "96d5449211228c141b65dbe60a121c23f6c79cfb"
+SRCREV = "b4ae00b9f822f1d136f4684e039057521a30ac47"
 CONFFILES_${PN} = "${sysconfdir}/default/mctp"
 
 DEPENDS += "autoconf-archive-native \
+            libnl \
             systemd \
             "
 

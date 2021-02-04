@@ -55,6 +55,7 @@ FLASH_UBI_RWFS_TXT_SIZE ?= "6MiB"
 FLASH_UBI_RWFS_TXT_SIZE_flash-131072 ?= "32MiB"
 
 # eMMC sizes in KB unless otherwise noted.
+MMC_UBOOT_SIZE ?= "1024"
 MMC_BOOT_PARTITION_SIZE ?= "65536"
 
 SIGNING_KEY ?= "${STAGING_DIR_NATIVE}${datadir}/OpenBMC.priv"
@@ -102,6 +103,12 @@ mk_empty_image() {
 	image_size_kb=$2
 	dd if=/dev/zero bs=1k count=$image_size_kb \
 		| tr '\000' '\377' > $image_dst
+}
+
+mk_empty_image_zeros() {
+	image_dst="$1"
+	image_size_kb=$2
+	dd if=/dev/zero of=$image_dst bs=1k count=$image_size_kb
 }
 
 clean_rwfs() {
@@ -181,7 +188,7 @@ do_generate_ubi[dirs] = "${S}/ubi"
 do_generate_ubi[depends] += " \
         ${PN}:do_image_${@d.getVar('FLASH_UBI_BASETYPE', True).replace('-', '_')} \
         virtual/kernel:do_deploy \
-        u-boot:do_populate_sysroot \
+        u-boot:do_deploy \
         mtd-utils-native:do_populate_sysroot \
         "
 
@@ -216,7 +223,7 @@ do_make_ubi[dirs] = "${S}/ubi"
 do_make_ubi[depends] += " \
         ${PN}:do_image_${@d.getVar('FLASH_UBI_BASETYPE', True).replace('-', '_')} \
         virtual/kernel:do_deploy \
-        u-boot:do_populate_sysroot \
+        u-boot:do_deploy \
         mtd-utils-native:do_populate_sysroot \
         "
 
@@ -316,7 +323,7 @@ do_generate_static[dirs] = "${S}/static"
 do_generate_static[depends] += " \
         ${PN}:do_image_${@d.getVar('IMAGE_BASETYPE', True).replace('-', '_')} \
         virtual/kernel:do_deploy \
-        u-boot:do_populate_sysroot \
+        u-boot:do_deploy \
         "
 
 make_signatures() {
@@ -325,6 +332,14 @@ make_signatures() {
 		openssl dgst -sha256 -sign ${SIGNING_KEY} -out "${file}.sig" $file
 		signature_files="${signature_files} ${file}.sig"
 	done
+
+	if [ -n "$signature_files" ]; then
+		sort_signature_files=`echo "$signature_files" | tr ' ' '\n' | sort | tr '\n' ' '`
+		cat $sort_signature_files > image-full
+		openssl dgst -sha256 -sign ${SIGNING_KEY} -out image-full.sig image-full
+		signature_files="${signature_files} image-full.sig"
+		rm -rf image-full
+	fi
 }
 
 do_generate_static_alltar() {
@@ -397,7 +412,7 @@ do_generate_static_tar[dirs] = " ${S}/static"
 do_generate_static_tar[depends] += " \
         ${PN}:do_image_${@d.getVar('IMAGE_BASETYPE', True).replace('-', '_')} \
         virtual/kernel:do_deploy \
-        u-boot:do_populate_sysroot \
+        u-boot:do_deploy \
         openssl-native:do_populate_sysroot \
         ${SIGNING_KEY_DEPENDS} \
         ${PN}:do_copy_signing_pubkey \
@@ -415,7 +430,7 @@ do_generate_ubi_tar[dirs] = " ${S}/ubi"
 do_generate_ubi_tar[depends] += " \
         ${PN}:do_image_${@d.getVar('FLASH_UBI_BASETYPE', True).replace('-', '_')} \
         virtual/kernel:do_deploy \
-        u-boot:do_populate_sysroot \
+        u-boot:do_deploy \
         openssl-native:do_populate_sysroot \
         ${SIGNING_KEY_DEPENDS} \
         ${PN}:do_copy_signing_pubkey \
@@ -423,13 +438,14 @@ do_generate_ubi_tar[depends] += " \
 
 do_generate_ext4_tar() {
 	# Generate the U-Boot image
+	mk_empty_image_zeros image-u-boot ${MMC_UBOOT_SIZE}
 	do_generate_image_uboot_file image-u-boot
 
 	# Generate a compressed ext4 filesystem with the fitImage file in it to be
 	# flashed to the boot partition of the eMMC
 	install -d boot-image
 	install -m 644 ${DEPLOY_DIR_IMAGE}/${FLASH_KERNEL_IMAGE} boot-image/fitImage
-	mk_empty_image boot-image.${FLASH_EXT4_BASETYPE} ${MMC_BOOT_PARTITION_SIZE}
+	mk_empty_image_zeros boot-image.${FLASH_EXT4_BASETYPE} ${MMC_BOOT_PARTITION_SIZE}
 	mkfs.ext4 -F -i 4096 -d boot-image boot-image.${FLASH_EXT4_BASETYPE}
 	# Error codes 0-3 indicate successfull operation of fsck
 	fsck.ext4 -pvfD boot-image.${FLASH_EXT4_BASETYPE} || [ $? -le 3 ]
@@ -459,11 +475,11 @@ do_generate_ext4_tar[depends] += " \
         zstd-native:do_populate_sysroot \
         ${PN}:do_image_${FLASH_EXT4_BASETYPE} \
         virtual/kernel:do_deploy \
-        u-boot:do_populate_sysroot \
+        u-boot:do_deploy \
         openssl-native:do_populate_sysroot \
         ${SIGNING_KEY_DEPENDS} \
         ${PN}:do_copy_signing_pubkey \
-        phosphor-hostfw-image:do_populate_sysroot \
+        phosphor-hostfw-image:do_deploy \
         "
 
 def get_pubkey_basedir(d):

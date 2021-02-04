@@ -26,14 +26,14 @@ QEMU, you should now have these lines in ``local.conf``:
 Minimum Git version
 -------------------
 
-The minimum :ref:`overview-manual/overview-manual-development-environment:git`
+The minimum :ref:`overview-manual/development-environment:git`
 version required on the
 build host is now 1.7.8 because the ``--list`` option is now required by
 BitBake's Git fetcher. As always, if your host distribution does not
 provide a version of Git that meets this requirement, you can use the
-``buildtools-tarball`` that does. See the "`Required Git, tar, Python
-and gcc Versions <#required-git-tar-python-and-gcc-versions>`__" section
-for more information.
+``buildtools-tarball`` that does. See the
+":ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`"
+section for more information.
 
 .. _migration-1.7-autotools-class-changes:
 
@@ -66,8 +66,8 @@ occurred:
    foreign mode themselves, the option is mostly superfluous. However,
    some recipes will need patches for this change. You can easily make
    the change by patching ``configure.ac`` so that it passes "foreign"
-   to ``AM_INIT_AUTOMAKE()``. See `this
-   commit <http://cgit.openembedded.org/openembedded-core/commit/?id=01943188f85ce6411717fb5bf702d609f55813f2>`__
+   to ``AM_INIT_AUTOMAKE()``. See :oe_git:`this
+   commit </openembedded-core/commit/?id=01943188f85ce6411717fb5bf702d609f55813f2>`
    for an example showing how to make the patch.
 
 .. _migration-1.7-binary-configuration-scripts-disabled:
@@ -157,7 +157,7 @@ The following changes have occurred to the QA check process:
    added in order to verify that file dependencies are satisfied (e.g.
    package contains a script requiring ``/bin/bash``) and build-time
    dependencies are declared, respectively. For more information, please
-   see the "`QA Error and Warning Messages <#ref-qa-checks>`__" chapter.
+   see the ":doc:`/ref-manual/qa-checks`" chapter.
 
 -  Package QA checks are now performed during a new
    :ref:`ref-tasks-package_qa` task rather than being
@@ -202,9 +202,7 @@ The following recipes have been removed:
    for version 3.17 has been added.
 
 -  ``eglibc`` has been removed in favor of ``glibc``. See the
-   "```eglibc 2.19`` Replaced with
-   ``glibc 2.20`` <#migration-1.7-glibc-replaces-eglibc>`__" section for
-   more information.
+   ":ref:`migration-1.7-glibc-replaces-eglibc`" section for more information.
 
 .. _migration-1.7-miscellaneous-changes:
 
@@ -219,7 +217,7 @@ The following miscellaneous change occurred:
    should manually remove old "build-id" files from your existing build
    history repositories to avoid confusion. For information on the build
    history feature, see the
-   ":ref:`dev-manual/dev-manual-common-tasks:maintaining build output quality`"
+   ":ref:`dev-manual/common-tasks:maintaining build output quality`"
    section in the Yocto Project Development Tasks Manual.
 
 

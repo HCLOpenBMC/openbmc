@@ -1,8 +1,14 @@
-.. SPDX-License-Identifier: CC-BY-2.0-UK
+.. SPDX-License-Identifier: CC-BY-SA-2.0-UK
 
 =========================
  Current Release Manuals
 =========================
+
+*******************************
+3.2 'gatesgarth' Release Series
+*******************************
+
+- :yocto_docs:`3.2 Documentation </3.2>`
 
 ****************************
 3.1 'dunfell' Release Series
@@ -11,6 +17,8 @@
 - :yocto_docs:`3.1 Documentation </3.1>`
 - :yocto_docs:`3.1.1 Documentation </3.1.1>`
 - :yocto_docs:`3.1.2 Documentation </3.1.2>`
+- :yocto_docs:`3.1.3 Documentation </3.1.3>`
+- :yocto_docs:`3.1.4 Documentation </3.1.4>`
 
 ==========================
  Previous Release Manuals

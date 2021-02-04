@@ -853,11 +853,6 @@ def runfetchcmd(cmd, d, quiet=False, cleanup=None, log=None, workdir=None):
         if val:
             cmd = 'export ' + var + '=\"%s\"; %s' % (val, cmd)
 
-    # Ensure that a _PYTHON_SYSCONFIGDATA_NAME value set by a recipe
-    # (for example via python3native.bbclass since warrior) is not set for
-    # host Python (otherwise tools like git-make-shallow will fail)
-    cmd = 'unset _PYTHON_SYSCONFIGDATA_NAME; ' + cmd
-
     # Disable pseudo as it may affect ssh, potentially causing it to hang.
     cmd = 'export PSEUDO_DISABLED=1; ' + cmd
 
@@ -1461,6 +1456,10 @@ class FetchMethod(object):
                 cmd = '7z x -so %s | tar x --no-same-owner -f -' % file
             elif file.endswith('.7z'):
                 cmd = '7za x -y %s 1>/dev/null' % file
+            elif file.endswith('.tzst') or file.endswith('.tar.zst'):
+                cmd = 'zstd --decompress --stdout %s | tar x --no-same-owner -f -' % file
+            elif file.endswith('.zst'):
+                cmd = 'zstd --decompress --stdout %s > %s' % (file, efile)
             elif file.endswith('.zip') or file.endswith('.jar'):
                 try:
                     dos = bb.utils.to_boolean(urldata.parm.get('dos'), False)

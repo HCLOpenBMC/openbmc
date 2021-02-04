@@ -181,10 +181,15 @@ PACKAGECONFIG[ubifs-workaround] = " \
        -Dubifs-workaround=disabled \
 "
 
-PACKAGECONFIG[host-dump-offload-pldm] = " \
-        -Dhost-dump-offload-transport=pldm,, \
+PACKAGECONFIG[host-dump-transport-pldm] = " \
+        -Dhost-transport=pldm,, \
         pldm \
         "
+
+PACKAGECONFIG[openpower-dumps-extension] = " \
+       -Dopenpower-dumps-extension=enabled, \
+       -Dopenpower-dumps-extension=disabled  \
+"
 
 do_install[postfuncs] += "install_dreport"
 do_install[postfuncs] += "install_dreport_conf_file"

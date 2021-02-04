@@ -6,6 +6,7 @@ inherit packagegroup
 PROVIDES = "${PACKAGES}"
 PACKAGES = " \
         ${PN}-chassis \
+        ${PN}-extras \
         ${PN}-fans \
         ${PN}-flash \
         ${PN}-system \
@@ -26,6 +27,9 @@ RDEPENDS_${PN}-chassis = " \
         x86-power-control \
         "
 
+SUMMARY_${PN}-extras_tiogapass = "Extra features for tiogapass"
+RDEPENDS_${PN}-extras_tiogapass = "phosphor-nvme"
+
 SUMMARY_${PN}-fans = "Facebook Fans"
 RDEPENDS_${PN}-fans = " \
         phosphor-pid-control \
@@ -45,7 +49,8 @@ RDEPENDS_${PN}-system = " \
         phosphor-hostlogger \
         phosphor-sel-logger \
         ipmitool \
+        pldm \
+        mctp \
         phosphor-post-code-manager \
         phosphor-host-postd \
-        phosphor-nvme \
         "

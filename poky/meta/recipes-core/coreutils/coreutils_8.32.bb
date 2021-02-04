@@ -158,7 +158,7 @@ BBCLASSEXTEND = "native nativesdk"
 
 inherit ptest
 
-RDEPENDS_${PN}-ptest += "bash findutils gawk liberror-perl libmodule-build-perl make perl perl-module-file-stat python3-core sed shadow"
+RDEPENDS_${PN}-ptest += "bash findutils gawk liberror-perl make perl perl-modules python3-core sed shadow"
 
 # -dev automatic dependencies fails as we don't want libmodule-build-perl-dev, its too heavy
 # may need tweaking if DEPENDS changes
@@ -199,3 +199,6 @@ do_install_ptest () {
 }
 
 FILES_${PN}-ptest += "${bindir}/getlimits"
+
+# These are specific to Opensuse
+CVE_WHITELIST += "CVE-2013-0221 CVE-2013-0222 CVE-2013-0223"

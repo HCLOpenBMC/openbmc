@@ -7,17 +7,16 @@ LIC_FILES_CHKSUM = "file://${S}/${LICFILENAME};md5=39ab6ab638f4d1836ba994ec6852d
 # We should move to an actual SRCREV eventually
 include conf/xilinx/esw-srcrev.inc
 
-EMBEDDEDSW_SRCREV ?= "${AUTOREV}"
-SRCREV = "${EMBEDDEDSW_SRCREV}"
+SRCREV ?= "${AUTOREV}"
 PV = "${XILINX_RELEASE_VERSION}+git${SRCPV}"
-EMBEDDEDSW_REPO ?= "git://github.com/xilinx/embeddedsw.git;protocol=https"
-EMBEDDEDSW_BRANCH ?= "master"
-SRC_URI = "${EMBEDDEDSW_REPO};branch=${EMBEDDEDSW_BRANCH}"
+REPO ?= "git://github.com/xilinx/embeddedsw.git;protocol=https"
+BRANCH ?= "master"
+SRC_URI = "${REPO};branch=${BRANCH}"
 
 SRCREV_FORMAT = "src_decouple"
 
-S = "${WORKDIR}/git/"
-B = "${WORKDIR}/build/"
+S = "${WORKDIR}/git"
+B = "${WORKDIR}/build"
 OECMAKE_SOURCEPATH = "${S}/${ESW_COMPONENT_SRC}"
 
 SPECFILE_PATH_arm = "${S}/scripts/specs/arm/Xilinx.spec"

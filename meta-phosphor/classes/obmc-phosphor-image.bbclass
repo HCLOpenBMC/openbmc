@@ -32,6 +32,8 @@
 # - obmc-debug-collector              - OpenBMC debug collector
 
 inherit core-image
+inherit obmc-phosphor-utils
+inherit phosphor-deploy-ssh-keys
 
 FEATURE_PACKAGES_obmc-bmc-state-mgmt ?= "packagegroup-obmc-apps-bmc-state-mgmt"
 FEATURE_PACKAGES_obmc-bmcweb ?= "packagegroup-obmc-apps-bmcweb"
@@ -82,11 +84,6 @@ CORE_IMAGE_EXTRA_INSTALL += "${OBMC_IMAGE_BASE_INSTALL}"
 
 remove_etc_version() {
         rm ${IMAGE_ROOTFS}${sysconfdir}/version
-}
-
-disable_systemd_pager() {
-        echo "SYSTEMD_PAGER=" >> ${IMAGE_ROOTFS}${sysconfdir}/profile
-        echo "export SYSTEMD_PAGER" >> ${IMAGE_ROOTFS}${sysconfdir}/profile
 }
 
 enable_ldap_nsswitch() {

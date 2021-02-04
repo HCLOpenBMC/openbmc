@@ -73,6 +73,12 @@ CHIPS_witherspoon-tacoma = " \
                bus@1e78a000/i2c-bus@300/ir35221@71 \
                bus@1e78a000/i2c-bus@500/tmp275@4a \
                "
+
+CHIPS_rainier = " \
+               bus@1e78a000/i2c-bus@400/max31785@52 \
+               bus@1e78a000/i2c-bus@780/i2c-switch@70/i2c@3/max31785@52 \
+               "
+
 ITEMSFMT = "ahb/apb/{0}.conf"
 ITEMS = "${@compose_list(d, 'ITEMSFMT', 'CHIPS')}"
 ITEMS_append_mihawk += " iio-hwmon-vdd0.conf"
@@ -104,7 +110,10 @@ SYSTEMD_ENVIRONMENT_FILE_${PN}_append_ibm-ac-server = " ${@compose_list(d, 'ENVS
 SYSTEMD_ENVIRONMENT_FILE_${PN}_append_ibm-ac-server = " ${@compose_list(d, 'ENVS', 'OCCITEMS')}"
 SYSTEMD_ENVIRONMENT_FILE_${PN}_append_mihawk = " ${@compose_list(d, 'ENVS', 'ITEMS')}"
 SYSTEMD_ENVIRONMENT_FILE_${PN}_append_mihawk = " ${@compose_list(d, 'ENVS', 'OCCITEMS')}"
+SYSTEMD_ENVIRONMENT_FILE_${PN}_append_rainier = " ${@compose_list(d, 'ENVS', 'ITEMS')}"
 
+# Enable and install the max31785-msl package
+PACKAGECONFIG_append_ibm-ac-server = " max31785-msl"
 SYSTEMD_ENVIRONMENT_FILE_max31785-msl_append_ibm-ac-server = " obmc/hwmon-max31785/max31785.conf"
 SYSTEMD_LINK_max31785-msl_append_ibm-ac-server = " ../phosphor-max31785-msl@.service:multi-user.target.wants/phosphor-max31785-msl@${MACHINE}.service"
 
@@ -112,7 +121,7 @@ SYSTEMD_SERVICE_${PN}_append_ibm-ac-server = " max31785-hwmon-helper@.service"
 
 do_install_append_ibm-ac-server() {
     install -d ${D}/${base_libdir}/udev/rules.d/
-    install ${WORKDIR}/70-max31785-hwmon.rules ${D}/${base_libdir}/udev/rules.d/
+    install -m 0644 ${WORKDIR}/70-max31785-hwmon.rules ${D}/${base_libdir}/udev/rules.d/
 
     install -d ${D}${bindir}
     install -m 0755 ${WORKDIR}/start_max31785_hwmon.sh ${D}${bindir}

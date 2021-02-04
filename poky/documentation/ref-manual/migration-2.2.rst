@@ -16,8 +16,7 @@ the minimum kernel version is 3.19.
 
 .. note::
 
-   For x86 and x86_64, you can reset
-   OLDEST_KERNEL
+   For x86 and x86_64, you can reset :term:`OLDEST_KERNEL`
    to anything down to 2.6.32 if desired.
 
 .. _migration-2.2-staging-directories-in-sysroot-simplified:
@@ -79,7 +78,9 @@ particular areas of interest:
 
   - the syntax for octal values changed
 
-  - the ``iter*()`` functions changed name \* iterators now return views, not lists
+  - the ``iter*()`` functions changed name
+
+  - iterators now return views, not lists
 
   - changed names for Python modules
 
@@ -224,9 +225,7 @@ follows and run ``runqemu``:
 
 .. note::
 
-   For command-line syntax, use
-   runqemu help
-   .
+   For command-line syntax, use ``runqemu help``.
 
 ::
 
@@ -293,9 +292,9 @@ The following changes took place for BitBake:
    functionality. These changes will affect external tools that use
    BitBake's tinfoil module. For information on these changes, see the
    changes made to the scripts supplied with OpenEmbedded-Core:
-   `1 <http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id=189371f8393971d00bca0fceffd67cc07784f6ee>`__
+   :yocto_git:`1 </poky/commit/?id=189371f8393971d00bca0fceffd67cc07784f6ee>`
    and
-   `2 <http://git.yoctoproject.org/cgit/cgit.cgi/poky/commit/?id=4a5aa7ea4d07c2c90a1654b174873abb018acc67>`__.
+   :yocto_git:`2 </poky/commit/?id=4a5aa7ea4d07c2c90a1654b174873abb018acc67>`.
 
 -  The task management code has been rewritten to avoid using ID
    indirection in order to improve performance. This change is unlikely
@@ -369,7 +368,7 @@ The following recipes have been removed:
 -  ``sato-icon-theme``: Became obsolete.
 
 -  ``swabber-native``: Swabber has been removed. See the `entry on
-   Swabber <#migration-2.2-swabber-has-been-removed>`__.
+   Swabber <#swabber-has-been-removed>`__.
 
 -  ``tslib``: No longer needed and has been moved to ``meta-oe``.
 
@@ -395,7 +394,7 @@ The following classes have been removed:
 -  ``sip``: Mostly unused.
 
 -  ``swabber``: See the `entry on
-   Swabber <#migration-2.2-swabber-has-been-removed>`__.
+   Swabber <#swabber-has-been-removed>`__.
 
 .. _migration-2.2-minor-packaging-changes:
 

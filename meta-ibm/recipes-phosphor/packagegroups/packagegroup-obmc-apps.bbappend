@@ -7,8 +7,12 @@ POWER_SERVICE_PACKAGES_AC_SERVER = " \
     phosphor-power \
 "
 
+# Rainier does not need/want the old PSU monitor
 POWER_SERVICE_PACKAGES_RAINIER = " \
-    ${POWER_SERVICE_PACKAGES_AC_SERVER} \
+    phosphor-power-sequencer \
+    phosphor-power-systemd-links-sequencer \
+    phosphor-power-utils \
+    phosphor-power \
     phosphor-power-regulators \
     phosphor-power-psu-monitor \
 "
@@ -24,7 +28,7 @@ RDEPENDS_${PN}-inventory_append_mihawk = " openpower-fru-vpd openpower-occ-contr
 RDEPENDS_${PN}-fan-control_append_ibm-ac-server = " fan-watchdog"
 RDEPENDS_${PN}-fan-control_append_rainier = " fan-watchdog"
 RDEPENDS_${PN}-extras_append_ibm-ac-server = " ${POWER_SERVICE_PACKAGES_AC_SERVER} witherspoon-power-supply-sync phosphor-webui"
-RDEPENDS_${PN}-extras_append_rainier = " ${POWER_SERVICE_PACKAGES_RAINIER} webui-vue"
+RDEPENDS_${PN}-extras_append_rainier = " ${POWER_SERVICE_PACKAGES_RAINIER} webui-vue dbus-sensors phosphor-virtual-sensor"
 RDEPENDS_${PN}-extras_append_mihawk = " phosphor-webui phosphor-image-signing wistron-ipmi-oem ${POWER_SERVICE_PACKAGES_AC_SERVER}"
 RDEPENDS_${PN}-extras_append_witherspoon-tacoma = " pldm srvcfg-manager webui-vue"
 
