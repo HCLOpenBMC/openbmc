@@ -30,17 +30,8 @@ RDEPENDS_${PN} = "bash"
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE_${PN} = "host-gpio.service host-poweron.service host-poweroff.service"
 
-do_install_append_tiogapass(){
+do_install(){
     install -d ${D}/usr/sbin
     install -m 0755 ${S}setup_gpio.sh ${D}/${sbindir}/
     install -m 0755 ${S}power-util ${D}/${sbindir}/
-}
-
-do_install_append_yosemitev2(){
-    install -d ${D}/usr/sbin
-    install -m 0755 ${S}setup_gpio.sh ${D}/${sbindir}/
-    install -m 0755 ${S}power-util ${D}/${sbindir}/
-    install -m 0755 ${S}power_led.sh ${D}/${sbindir}/
-    install -m 0755 ${S}post_led.sh ${D}/${sbindir}/
-    install -m 0755 ${S}ast-functions ${D}/${sbindir}/
 }
