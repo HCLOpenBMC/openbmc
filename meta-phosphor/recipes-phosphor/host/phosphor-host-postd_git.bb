@@ -17,10 +17,14 @@ DEPENDS += "sdbusplus"
 DEPENDS += "sdeventplus"
 DEPENDS += "phosphor-dbus-interfaces"
 DEPENDS += "systemd"
+DEPENDS += "libgpiod"
 
 S = "${WORKDIR}/git"
-SRC_URI = "git://github.com/openbmc/phosphor-host-postd"
-SRCREV = "c80e59fefb265eba9108bcf1356627b181c00926"
+#SRC_URI = "git://github.com/openbmc/phosphor-host-postd"
+#SRCREV = "c80e59fefb265eba9108bcf1356627b181c00926"
+
+SRC_URI = "git://github.com/HCLOpenBMC/phosphor-host-postd.git;protocol=http;branch=YV2-Demo-22Oct"
+SRCREV = "2437d0c33ccd9fa639d66473932a9472acb3b44a"
 
 SNOOP_DEVICE ?= "aspeed-lpc-snoop0"
 POST_CODE_BYTES ?= "1"
