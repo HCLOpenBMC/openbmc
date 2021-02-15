@@ -4,9 +4,11 @@ DESCRIPTION = "Facebook OEM IPMI commands"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=9e69ba356fa59848ffd865152a3ccc13"
 
-SRC_URI = "git://github.com/openbmc/fb-ipmi-oem"
-SRCREV = "5f8e343516c0db488e977084ca7810a6c9fafae8"
+#SRC_URI = "git://github.com/openbmc/fb-ipmi-oem"
+#SRCREV = "5f8e343516c0db488e977084ca7810a6c9fafae8"
 
+SRC_URI = "git://github.com/HCLOpenBMC/fb-ipmi-oem.git;protocol=http;branch=Demo2-yv2"
+SRCREV = "84616071843373946fab042562a8fa7a8d3c29fc"
 S = "${WORKDIR}/git"
 PV = "0.1+git${SRCPV}"
 
@@ -16,6 +18,8 @@ inherit cmake obmc-phosphor-ipmiprovider-symlink
 
 EXTRA_OECMAKE="-DENABLE_TEST=0 -DYOCTO=1"
 EXTRA_OECMAKE_append_yosemitev2 = " -DBIC=1"
+
+EXTRA_OECMAKE_append = " -DHOST_INSTANCES='${OBMC_HOST_INSTANCES}'"
 
 LIBRARY_NAMES = "libzfboemcmds.so"
 
