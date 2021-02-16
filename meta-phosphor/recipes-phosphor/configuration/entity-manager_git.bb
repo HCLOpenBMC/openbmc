@@ -6,7 +6,7 @@ and configures system sensors"
 #SRCREV = "f094125cd3bdbc8737dc8035a6e9ac252f6e8840"
 
 SRC_URI = "git://github.com/HCLOpenBMC/entity-manager.git;protocol=http;branch=YV2-Demo-22Oct file://blocklist.json"
-SRCREV = "0520c46a6e4ca48e12c54adba774e5ddfc4620de"
+SRCREV = "9a46f7ae16be1cd0936a337046f0c2ddb61fffe4"
 PV = "0.1+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
