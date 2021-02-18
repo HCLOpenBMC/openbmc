@@ -3,9 +3,6 @@
 # Exit immediately if a command exits with a non-zero status                           
 set -e                                                                                 
                                                                                        
-# Initialise variables                                                                 
-POWER_CMD="/usr/sbin/power-util "                                                      
-                                                                                       
 # Get the Slot_id and the bin file path                                            
 SLOT_ID=$2    
 FUN=$3
@@ -13,12 +10,20 @@ CMD_ID=$4
 
 if [ "$SLOT_ID" = "host1" ]; then
     SLOT_NUM=1
+    POWER_CMD_OFF="busctl set-property xyz.openbmc_project.State.Chassis1 /xyz/openbmc_project/state/chassis1 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.Off"
+    POWER_CMD_ON="busctl set-property xyz.openbmc_project.State.Chassis1 /xyz/openbmc_project/state/chassis1 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.On" 
 elif [ "$SLOT_ID" = "host2" ]; then
-	SLOT_NUM=2
+    SLOT_NUM=2
+    POWER_CMD_OFF="busctl set-property xyz.openbmc_project.State.Chassis2 /xyz/openbmc_project/state/chassis2 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.Off" 
+    POWER_CMD_ON="busctl set-property xyz.openbmc_project.State.Chassis2 /xyz/openbmc_project/state/chassis2 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.On" 
 elif [ "$SLOT_ID" = "host3" ]; then
-	SLOT_NUM=3
+    SLOT_NUM=3
+    POWER_CMD_OFF="busctl set-property xyz.openbmc_project.State.Chassis3 /xyz/openbmc_project/state/chassis3 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.Off"
+    POWER_CMD_ON="busctl set-property xyz.openbmc_project.State.Chassis3 /xyz/openbmc_project/state/chassis3 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.On" 
 elif [ "$SLOT_ID" = "host4" ]; then
-	SLOT_NUM=4
+    SLOT_NUM=4
+    POWER_CMD_OFF="busctl set-property xyz.openbmc_project.State.Chassis4 /xyz/openbmc_project/state/chassis4 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.Off"
+    POWER_CMD_ON="busctl set-property xyz.openbmc_project.State.Chassis4 /xyz/openbmc_project/state/chassis4 xyz.openbmc_project.State.Chassis RequestedPowerTransition s xyz.openbmc_project.State.Chassis.Transition.On" 
 fi
 
 if [ "$CMD_ID" = "bios" ]; then
@@ -35,31 +40,15 @@ fi
                                                                                        
 # Power-off the slot                                                                  
 echo "Power-Off the slot#"$SLOT_NUM                
-$POWER_CMD $SLOT_NUM off                                                          
-                                                           
-# Check whether the slot is in Off condition                                     
-if [[ $($POWER_CMD $SLOT_NUM status) != *"off"* ]];                                   
-then                                                                             
-    echo "Power-Off Didn't occur in slot#"$SLOT_NUM
-    echo "Bios upgrade failed"                                                   
-    exit -1                                                                      
-fi                                                                                
-echo "Powered-Off Slot#"$SLOT_NUM 
-
+$POWER_CMD_OFF                                                         
+       
+sleep 2 
+                                                    
 # Write firmware 
 oem-firmware-update $BIN_FILE_PATH $SLOT_ID $FUN $CMD_ID
 
 # Power on the slot
 echo "Power-on the slot#"$SLOT_NUM
-$POWER_CMD $SLOT_NUM on
+$POWER_CMD_ON
 
-# Check whether the slot is in On condition                                     
-if [[ $($POWER_CMD $SLOT_NUM status) != *"on"* ]];                                   
-then                                                                             
-    echo "Failed to power-On slot#"$SLOT_NUM
-    echo "Bios upgrade failed"                                                   
-    exit -1                                                                      
-fi                                                                                
-echo "Powered-On Slot#"$SLOT_NUM
-
-
+sleep 2
