@@ -5,7 +5,7 @@ DESCRIPTION = "Dbus Sensor Services Configured from D-Bus"
 #SRCREV = "3a18b860ec24e63ab98159abc46713dcf5acea49"
 
 SRC_URI = "git://github.com/HCLOpenBMC/dbus-sensors.git;protocol=http;branch=YV2-Demo-Feb"
-SRCREV = "a50efcf5483f843d1b82009fb86e5071360844a8"
+SRCREV = "77b87a6ffd3aa8456ab8b0bcd941ad5d3a0a7286"
 
 PV = "0.1+git${SRCPV}"
 
@@ -23,6 +23,7 @@ PACKAGECONFIG ??= " \
     mcutempsensor \
     psusensor \
     external \
+    pldmsensor \
     "
 
 PACKAGECONFIG[adcsensor] = "-Dadc=enabled, -Dadc=disabled"
@@ -36,6 +37,7 @@ PACKAGECONFIG[mcutempsensor] = "-Dmcu=enabled, -Dmcu=disabled"
 PACKAGECONFIG[psusensor] = "-Dpsu=enabled, -Dpsu=disabled"
 PACKAGECONFIG[nvmesensor] = "-Dnvme=enabled, -Dnvme=disabled"
 PACKAGECONFIG[external] = "-Dexternal=enabled, -Dexternal=disabled"
+PACKAGECONFIG[pldmsensor] = "-Dexternal=enabled, -Dexternal=disabled"
 
 SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'adcsensor', \
                                                'xyz.openbmc_project.adcsensor.service', \
@@ -67,8 +69,11 @@ SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'psusensor', \
 SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'externalsensor', \
                                                'xyz.openbmc_project.externalsensor.service', \
                                                '', d)}"
+SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'pldmsensor', \
+                                               'xyz.openbmc_project.pldmsensor.service', \
+                                               '', d)}"
 
-DEPENDS = "boost nlohmann-json sdbusplus i2c-tools libgpiod"
+DEPENDS = "boost nlohmann-json sdbusplus i2c-tools libgpiod pldm libnl"
 inherit meson systemd
 
 S = "${WORKDIR}/git"
