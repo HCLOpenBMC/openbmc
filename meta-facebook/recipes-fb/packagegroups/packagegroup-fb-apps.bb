@@ -48,11 +48,15 @@ RDEPENDS_${PN}-system = " \
         fb-ipmi-oem \
 	oem-firmware-udpate \
         phosphor-hostlogger \
-        phosphor-sel-logger \
         ipmitool \
         pldm \
         mctp \
         phosphor-post-code-manager \
         phosphor-host-postd \
         phosphor-virtual-sensor \
+        obmc-phosphor-buttons \
+        obmc-phosphor-buttons-handler \
+        obmc-phosphor-buttons-signals \
+        phosphor-gpio-monitor \
+        virtual/obmc-gpio-monitor \
         "

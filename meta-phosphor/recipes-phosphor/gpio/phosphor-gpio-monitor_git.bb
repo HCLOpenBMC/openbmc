@@ -43,6 +43,9 @@ FILES_${PN}-monitor += "${bindir}/phosphor-gpio-util"
 FILES_${PN}-monitor += "${base_libdir}/udev/rules.d/99-gpio-keys.rules"
 FILES_${PN}-presence += "${bindir}/phosphor-gpio-presence"
 
-SRC_URI += "git://github.com/openbmc/phosphor-gpio-monitor"
-SRCREV = "3ce88a7b5a1c17ca53b63859a5dad840a995f42e"
+
+
+#SRC_URI += "git://github.com/openbmc/phosphor-gpio-monitor"
+SRC_URI += "git://github.com/HCLOpenBMC/phosphor-gpio-monitor.git;protocol=http;branch=test"
+SRCREV = "6f8645ca2fecc5c4af7817fb9e01f87d17e7f65a" 
 S = "${WORKDIR}/git"
