@@ -55,4 +55,5 @@ RDEPENDS_${PN}-system = " \
         phosphor-post-code-manager \
         phosphor-host-postd \
         phosphor-virtual-sensor \
+        phosphor-time-manager\
         "
