@@ -772,7 +772,7 @@ def check_sanity_everybuild(status, d):
 
     # Check the Python version, we now have a minimum of Python 3.6
     import sys
-    if sys.hexversion < 0x030500F0:
+    if sys.hexversion < 0x030600F0:
         status.addresult('The system requires at least Python 3.6 to run. Please update your Python interpreter.\n')
 
     # Check the bitbake version meets minimum requirements
