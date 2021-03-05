@@ -13,11 +13,10 @@ SRC_URI = "git://gitlab.freedesktop.org/mesa/piglit.git;protocol=https \
            file://0001-serializer.py-make-.gz-files-reproducible.patch \
            file://0001-framework-profile.py-make-test-lists-reproducible.patch \
            file://0001-tests-shader.py-sort-the-file-list-before-working-on.patch \
-           file://0001-render-ops.c-add-missing-format-string.patch \
            "
 UPSTREAM_CHECK_COMMITS = "1"
 
-SRCREV = "603deba4ab66e2a8948693a14d715e536caddcc5"
+SRCREV = "d4d9353b7290ed22cb7349226a8e4017402d3f02"
 # (when PV goes above 1.0 remove the trailing r)
 PV = "1.0+gitr${SRCPV}"
 
