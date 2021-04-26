@@ -5,14 +5,11 @@ PV = "1.0+git${SRCPV}"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=fa818a259cbed7ce8bc2a22d35a464fc"
 
-inherit autotools pkgconfig
+inherit meson pkgconfig
 inherit obmc-phosphor-systemd
 
 PACKAGECONFIG ??= ""
-# Autotools configure option to enable/disable max31785-msl
-PACKAGECONFIG[max31785-msl] = "--enable-max31785-msl, --disable-max31785-msl"
-# Meson configure option to enable/disable max31785-msl
-# PACKAGECONFIG[max31785-msl] = "-Denable-max31785-msl=true, -Denable-max31785-msl=false"
+PACKAGECONFIG[max31785-msl] = "-Denable-max31785-msl=true, -Denable-max31785-msl=false"
 
 PACKAGE_BEFORE_PN = "max31785-msl"
 SYSTEMD_PACKAGES = "${PN} max31785-msl"
@@ -46,7 +43,7 @@ SRC_URI += "file://70-hwmon.rules"
 SRC_URI += "file://70-iio.rules"
 SRC_URI += "file://start_hwmon.sh"
 
-SRCREV = "f4414cba09577e906b7b022a96b41e6a859da149"
+SRCREV = "73769099e215de68fbb6c82664eb682cacce9f56"
 
 S = "${WORKDIR}/git"
 
