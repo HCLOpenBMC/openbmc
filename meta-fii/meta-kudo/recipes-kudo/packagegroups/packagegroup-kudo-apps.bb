@@ -20,10 +20,14 @@ RDEPENDS_${PN}-kudo-system = " \
     ethtool \
     memtester \
     loadsvf \
+    fii-ipmi-oem \
+    kudo-entity-association-map \
+    hotswap-power-cycle \
     obmc-console \
     usb-network \
     ncsid \
     gbmc-mac-config \
+    kudo-boot \
     "
 
 SUMMARY_${PN}-kudo-fw = "KUDO Firmware"
