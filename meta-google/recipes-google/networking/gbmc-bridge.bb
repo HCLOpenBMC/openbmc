@@ -7,8 +7,8 @@ inherit systemd
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 SRC_URI += " \
-  file://-bmc-gbmcbr.netdev.in \
-  file://-bmc-gbmcbr.network \
+  file://-bmc-gbmcbr.netdev \
+  file://-bmc-gbmcbr.network.in \
   file://-bmc-gbmcbrdummy.netdev \
   file://-bmc-gbmcbrdummy.network \
   file://+-bmc-gbmcbrusb.network \
@@ -18,6 +18,8 @@ SRC_URI += " \
   file://gbmc-br-from-ra.sh \
   file://gbmc-br-ensure-ra.sh \
   file://gbmc-br-ensure-ra.service \
+  file://gbmc-br-gw-src.sh \
+  file://gbmc-br-nft.sh \
   "
 
 FILES_${PN}_append = " \
@@ -59,17 +61,15 @@ do_install() {
   install -d -m0755 $netdir
 
   if [ ! -z "${GBMC_BR_MAC_ADDR}" ]; then
-    sed -i 's,@MAC@,Address=fe80::${@mac_to_eui64(GBMC_BR_MAC_ADDR)}/64,' \
-      ${WORKDIR}/-bmc-gbmcbr.netdev.in
-	addr=${GBMC_ULA_PREFIX}:${@mac_to_eui64(GBMC_BR_MAC_ADDR)}/64
-    sed -i "s,@ADDR@,Address=$addr," ${WORKDIR}/-bmc-gbmcbr.netdev.in
+    sfx='${@mac_to_eui64(GBMC_BR_MAC_ADDR)}'
+    addr="Address=${GBMC_ULA_PREFIX}:$sfx/64\nAddress=fe80::$sfx/64"
+    sed -i "s,@ADDR@,$addr," ${WORKDIR}/-bmc-gbmcbr.network.in
   else
-    sed -i '/@MAC@/d' ${WORKDIR}/-bmc-gbmcbr.netdev.in
-    sed -i '/@ADDR@/d' ${WORKDIR}/-bmc-gbmcbr.netdev.in
+    sed -i '/@ADDR@/d' ${WORKDIR}/-bmc-gbmcbr.network.in
   fi
 
-  install -m0644 ${WORKDIR}/-bmc-gbmcbr.netdev.in $netdir/-bmc-gbmcbr.netdev
-  install -m0644 ${WORKDIR}/-bmc-gbmcbr.network $netdir/
+  install -m0644 ${WORKDIR}/-bmc-gbmcbr.netdev $netdir/
+  install -m0644 ${WORKDIR}/-bmc-gbmcbr.network.in $netdir/-bmc-gbmcbr.network
   install -m0644 ${WORKDIR}/-bmc-gbmcbrdummy.netdev $netdir/
   install -m0644 ${WORKDIR}/-bmc-gbmcbrdummy.network $netdir/
   install -m0644 ${WORKDIR}/+-bmc-gbmcbrusb.network $netdir/
@@ -89,9 +89,17 @@ do_install() {
   install -d -m0755 "$mondir"
   install -m0644 ${WORKDIR}/gbmc-br-ula.sh "$mondir"/
   install -m0644 ${WORKDIR}/gbmc-br-from-ra.sh "$mondir"/
+  install -m0644 ${WORKDIR}/gbmc-br-gw-src.sh "$mondir"/
+  install -m0644 ${WORKDIR}/gbmc-br-nft.sh "$mondir"/
 
   install -d -m0755 ${D}${libexecdir}
   install -m0755 ${WORKDIR}/gbmc-br-ensure-ra.sh ${D}${libexecdir}/
   install -d -m0755 ${D}${systemd_system_unitdir}
   install -m0755 ${WORKDIR}/gbmc-br-ensure-ra.service ${D}${systemd_system_unitdir}/
+}
+
+do_rm_work_prepend() {
+  # HACK: Work around broken do_rm_work not properly calling rm with `--`
+  # It doesn't like filenames that start with `-`
+  rm -rf -- ${WORKDIR}/-*
 }
