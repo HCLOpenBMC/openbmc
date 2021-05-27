@@ -8,6 +8,12 @@
 
 
     {
+        "Name" : "SlotPower",
+        "LineName" : "SLOT1_POWER",
+        "Type" : "GPIO"
+    },
+
+    {
         "Name" : "PowerOk",
         "LineName" : "SLOT1_POWER_OK",
         "Type" : "GPIO"
@@ -34,6 +40,7 @@
     "PsPowerOKWatchdogMs": 8000,
     "GracefulPowerOffS": 300,
     "WarmResetCheckMs": 500,
-    "PowerOffSaveMs": 7000
-  }
+    "PowerOffSaveMs": 7000,
+    "slotPowerCycleTimeMs": 200
+}
 }
