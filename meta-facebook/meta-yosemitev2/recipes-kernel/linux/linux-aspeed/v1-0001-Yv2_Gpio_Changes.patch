@@ -1,14 +1,14 @@
-From 845e8bd7f7b55a975885604a185eac49ce95a200 Mon Sep 17 00:00:00 2001
-From: Priyatharshan P <priyatharshanp@hcl.com>
-Date: Wed, 15 Jul 2020 13:45:24 +0530
-Subject: [PATCH v1] Yv2_Gpio_Changes
+From 09933e905614356b37b3b0537cac224b533f082a Mon Sep 17 00:00:00 2001
+From: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+Date: Mon, 19 Oct 2020 15:14:05 +0530
+Subject: [PATCH v4] add yosemitev2 gpio support
 
 ---
  .../boot/dts/aspeed-bmc-facebook-yosemitev2.dts    | 34 ++++++++++++++++++++++
  1 file changed, 34 insertions(+)
 
 diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
-index 9fcafd7..d4b8f40 100644
+index 8864e9c..9caf07d 100644
 --- a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
 +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
 @@ -119,6 +119,40 @@
@@ -21,21 +21,21 @@ index 9fcafd7..d4b8f40 100644
 +        /*A0-A7*/   "","","","","","","","",
 +        /*B0-B7*/   "","","","","","","","",
 +        /*C0-C7*/   "","","","","","","","",
-+        /*D0-D7*/   "","POWER_OUT1","","POWER_OUT2","","POWER_OUT3","","POWER_OUT4",
++        /*D0-D7*/   "POWER_BUTTON","POWER_OUT1","","POWER_OUT2","","POWER_OUT3","","POWER_OUT4",
 +        /*E0-E7*/   "","","","","","","","",
 +        /*F0-F7*/   "","","","","","","","",
-+        /*G0-G7*/   "","","MULTI_HOST_RESET_BUTTON","","","","","",
++        /*G0-G7*/   "LED_POST_CODE_0","LED_POST_CODE_1","LED_POST_CODE_2","LED_POST_CODE_3","","","","",
 +        /*H0-H7*/   "","","","","","","","",
 +        /*I0-I7*/   "SLOT1_POWER_OK","SLOT2_POWER_OK","SLOT3_POWER_OK","SLOT4_POWER_OK","","","","",
 +        /*J0-J7*/   "","","","","","","","",
 +        /*K0-K7*/   "","","","","","","","",
 +        /*L0-L7*/   "","","","","","","","",
 +        /*M0-M7*/   "","","","","","","","",
-+        /*N0-N7*/   "","","","","","","","",
-+        /*O0-O7*/   "","","","","SLOT1_POWER","SLOT2_POWER","SLOT3_POWER","SLOT4_POWER",
-+        /*P0-P7*/   "","","","","","MULTI_HOST_POWER_BUTTON","","",
++        /*N0-N7*/   "","","I2C_SLOT1","I2C_SLOT2","I2C_SLOT3","I2C_SLOT4","","",
++        /*O0-O7*/   "","","","SELECTOR_BUTTON","SLOT1_POWER","SLOT2_POWER","SLOT3_POWER","SLOT4_POWER",
++        /*P0-P7*/   "","","","","LED_POST_CODE_4","LED_POST_CODE_5","LED_POST_CODE_6","LED_POST_CODE_7",
 +        /*Q0-Q7*/   "","","","","","","","",
-+        /*R0-R7*/   "","","","","","","","",
++        /*R0-R7*/   "","","","GPIO_DBG_CARD_PRSNT","","","","",
 +        /*S0-S7*/   "RESET_OUT1","RESET_OUT2","RESET_OUT3","RESET_OUT4","","","","",
 +        /*T0-T7*/   "","","","","","","","",
 +        /*U0-U7*/   "","","","","","","","",
@@ -43,9 +43,9 @@ index 9fcafd7..d4b8f40 100644
 +        /*W0-W7*/   "","","","","","","","",
 +        /*X0-X7*/   "","","","","","","","",
 +        /*Y0-Y7*/   "","","","","","","","",
-+        /*Z0-Z7*/   "","","","","","","","",
++        /*Z0-Z7*/   "POST_COMPLETE","POST_COMPLETE2","POST_COMPLETE3","POST_COMPLETE4","","","","",
 +        /*AA0-AA7*/ "","","","","HAND_SW1","HAND_SW2","HAND_SW3","HAND_SW4",
-+        /*AB0-AB7*/ "","","","","","","","",
++        /*AB0-AB7*/ "RESET_BUTTON","","","","","","","",
 +        /*AC0-AC7*/ "","","","","","","","";
 +    };
 +

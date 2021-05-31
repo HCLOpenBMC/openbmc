@@ -9,6 +9,7 @@ PACKAGES = " \
         ${PN}-extras \
         ${PN}-fans \
         ${PN}-flash \
+        ${PN}-leds \
         ${PN}-system \
         "
 
@@ -40,11 +41,15 @@ RDEPENDS_${PN}-flash = " \
         phosphor-software-manager \
         "
 
+SUMMARY_${PN}-leds = "Facebook LEDs"
+RDEPENDS_${PN}-leds = " \
+        phosphor-led-manager \
+        "
+
 SUMMARY_${PN}-system = "Facebook System"
 RDEPENDS_${PN}-system = " \
         entity-manager \
         dbus-sensors \
-        fb-powerctrl \
         phosphor-ipmi-ipmb \
         fb-ipmi-oem \
         phosphor-hostlogger \
@@ -53,4 +58,10 @@ RDEPENDS_${PN}-system = " \
         phosphor-post-code-manager \
         phosphor-host-postd \
         phosphor-virtual-sensor \
+        phosphor-led-manager-faultmonitor \
+        obmc-phosphor-buttons \
+        obmc-phosphor-buttons-handler \
+        obmc-phosphor-buttons-signals \
+        phosphor-gpio-monitor \
+        virtual/obmc-gpio-monitor \
         "
