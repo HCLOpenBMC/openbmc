@@ -54,7 +54,7 @@ FILES_phosphor-rsyslog-config += " \
 "
 
 SRC_URI += "git://github.com/openbmc/phosphor-logging"
-SRCREV = "3b8ed7f2d3a93af5d27b549a934667f310412da4"
+SRCREV = "b41fa54bc07601ac80cf721a3bb2a1275348dbed"
 
 S = "${WORKDIR}/git"
 
@@ -63,11 +63,12 @@ PACKAGECONFIG ??= ""
 PACKAGECONFIG[openpower-pels] = " \
         -Dopenpower-pel-extension=enabled, \
         -Dopenpower-pel-extension=disabled, \
-        nlohmann-json cli11 pldm, \
+        nlohmann-json cli11 pldm python3, \
         python3, \
         "
 
 EXTRA_OEMESON = " \
+        -Dtests=disabled \
         -Dyamldir=${STAGING_DIR_TARGET}${yaml_dir} \
         -Dcallout_yaml=${STAGING_DIR_NATIVE}${callouts_datadir}/callouts.yaml \
         "
