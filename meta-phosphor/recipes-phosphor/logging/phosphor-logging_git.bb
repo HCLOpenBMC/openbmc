@@ -42,7 +42,7 @@ USERADD_PACKAGES = "${PN}-base"
 GROUPADD_PARAM_${PN}-base = "-r phosphor-logging"
 
 FILES_${PN}-base += " \
-        ${sysconfdir}/dbus-1 \
+        ${datadir}/dbus-1 \
         ${bindir}/phosphor-log-manager \
         ${libdir}/libphosphor_logging.so.* \
 "
@@ -54,7 +54,7 @@ FILES_phosphor-rsyslog-config += " \
 "
 
 SRC_URI += "git://github.com/openbmc/phosphor-logging"
-SRCREV = "b41fa54bc07601ac80cf721a3bb2a1275348dbed"
+SRCREV = "b6b255755561d39780b65fa945ec43fd81319a9f"
 
 S = "${WORKDIR}/git"
 
