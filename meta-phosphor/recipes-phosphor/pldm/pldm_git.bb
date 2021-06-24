@@ -13,6 +13,8 @@ DEPENDS += "sdeventplus"
 DEPENDS += "phosphor-dbus-interfaces"
 DEPENDS += "nlohmann-json"
 DEPENDS += "cli11"
+DEPENDS += "libnl"
+DEPENDS += "phosphor-logging"
 
 S = "${WORKDIR}/git"
 

@@ -20,6 +20,7 @@ PACKAGECONFIG ??= " \
     mcutempsensor \
     psusensor \
     external \
+    pldmsensor \
     "
 
 PACKAGECONFIG[adcsensor] = "-Dadc=enabled, -Dadc=disabled"
@@ -33,6 +34,7 @@ PACKAGECONFIG[mcutempsensor] = "-Dmcu=enabled, -Dmcu=disabled"
 PACKAGECONFIG[psusensor] = "-Dpsu=enabled, -Dpsu=disabled"
 PACKAGECONFIG[nvmesensor] = "-Dnvme=enabled, -Dnvme=disabled"
 PACKAGECONFIG[external] = "-Dexternal=enabled, -Dexternal=disabled"
+PACKAGECONFIG[pldmsensor] = "-Dexternal=enabled, -Dexternal=disabled"
 
 SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'adcsensor', \
                                                'xyz.openbmc_project.adcsensor.service', \
@@ -64,8 +66,12 @@ SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'psusensor', \
 SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'external', \
                                                'xyz.openbmc_project.externalsensor.service', \
                                                '', d)}"
+SYSTEMD_SERVICE_${PN} += "${@bb.utils.contains('PACKAGECONFIG', 'pldmsensor', \
+                                               'xyz.openbmc_project.pldmsensor.service', \
+                                               '', d)}"
 
-DEPENDS = "boost nlohmann-json sdbusplus i2c-tools libgpiod"
+DEPENDS = "boost nlohmann-json sdbusplus i2c-tools libgpiod pldm libnl"
+
 inherit meson systemd
 
 S = "${WORKDIR}/git"
