@@ -45,7 +45,6 @@ RDEPENDS_${PN}-flash = " \
 
 RDEPENDS_PN_SYSTEM_EXTRAS = ""
 RDEPENDS_PN_SYSTEM_EXTRAS_fb-withhost = " \
-        fb-powerctrl \
         phosphor-ipmi-ipmb \
         fb-ipmi-oem \
         phosphor-hostlogger \

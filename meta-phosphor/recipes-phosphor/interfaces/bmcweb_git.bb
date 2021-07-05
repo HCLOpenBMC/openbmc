@@ -10,10 +10,10 @@ GROUPADD_PARAM_${PN} = "web; redfish"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=a6a4edad4aed50f39a66d098d74b265b"
 
-SRC_URI = "git://github.com/openbmc/bmcweb.git"
+SRC_URI = "git://github.com/HCLOpenBMC/bmcweb.git;protocol=http;branch=redfish_demo_july21"
 
 PV = "1.0+git${SRCPV}"
-SRCREV = "49e429ca172365bd4ba16c924501321c73527cbe"
+SRCREV = "b30f9d204beddb69916cc5b623df216affa06acf"
 
 S = "${WORKDIR}/git"
 

@@ -5,6 +5,7 @@ Description=System unit to hard reset or system reset chassis for yosemitev2
 Type=oneshot
 RemainAfterExit=no
 ExecStart=i2cset -f -y 10 0x40 0xd9 c
+#ExecStart="echo sled cycle start"
 
 [Install]
 WantedBy=chassis-system-reset.target
