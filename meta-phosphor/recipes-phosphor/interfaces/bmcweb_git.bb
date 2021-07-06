@@ -13,7 +13,7 @@ LIC_FILES_CHKSUM = "file://LICENCE;md5=a6a4edad4aed50f39a66d098d74b265b"
 SRC_URI = "git://github.com/HCLOpenBMC/bmcweb.git;protocol=http;branch=redfish_demo_july21"
 
 PV = "1.0+git${SRCPV}"
-SRCREV = "b30f9d204beddb69916cc5b623df216affa06acf"
+SRCREV = "a60bfc8c3e6a3bcca185c7d8003b4baa35ffc17a"
 
 S = "${WORKDIR}/git"
 
