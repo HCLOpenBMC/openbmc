@@ -2,8 +2,10 @@ SUMMARY = "Entity Manager"
 DESCRIPTION = "Entity Manager provides d-bus configuration data \
 and configures system sensors"
 
-SRC_URI = "git://github.com/openbmc/entity-manager.git file://blocklist.json"
-SRCREV = "395c6d45395f5ebee1e4c44b300683ba89a8e1fd"
+#SRC_URI = "git://github.com/openbmc/entity-manager.git file://blocklist.json"
+#SRCREV = "395c6d45395f5ebee1e4c44b300683ba89a8e1fd"
+SRC_URI = "git://github.com/HCLOpenBMC/entity-manager.git;protocol=http;branch=Redfish_Demo file://blocklist.json"
+SRCREV = "1993941ec8971f2cc1350bbf8062a1f764ca9118"
 PV = "0.1+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
@@ -41,4 +43,5 @@ FILES_fru-device = "${bindir}/fru-device ${datadir}/${BPN}/blacklist.json"
 SYSTEMD_PACKAGES = "${PN} ${EXTRA_ENTITY_MANAGER_PACKAGES}"
 SYSTEMD_SERVICE_${PN} = "xyz.openbmc_project.EntityManager.service"
 SYSTEMD_SERVICE_fru-device = "xyz.openbmc_project.FruDevice.service"
+SYSTEMD_SERVICE_fru-device += "xyz.openbmc_project.Ipmb.FruDevice.service"
 SYSTEMD_AUTO_ENABLE_fru-device_ibm-power-cpu = "disable"

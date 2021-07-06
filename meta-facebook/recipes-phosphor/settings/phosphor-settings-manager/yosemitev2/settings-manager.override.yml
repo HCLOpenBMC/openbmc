@@ -8,6 +8,12 @@
           BootMode:
               Default: Mode::Modes::Regular
 
+/xyz/openbmc_project/control/host1/boot/one_time:
+    - Interface: xyz.openbmc_project.Object.Enable
+      Properties:
+          Enabled:
+              Default: 'false'
+
 /xyz/openbmc_project/control/host2/boot:
     - Interface: xyz.openbmc_project.Control.Boot.Source
       Properties:
@@ -17,6 +23,12 @@
       Properties:
           BootMode:
               Default: Mode::Modes::Regular
+
+/xyz/openbmc_project/control/host2/boot/one_time:
+    - Interface: xyz.openbmc_project.Object.Enable
+      Properties:
+          Enabled:
+              Default: 'false'
 
 /xyz/openbmc_project/control/host3/boot:
     - Interface: xyz.openbmc_project.Control.Boot.Source
@@ -28,6 +40,12 @@
           BootMode:
               Default: Mode::Modes::Regular
 
+/xyz/openbmc_project/control/host3/boot/one_time:
+    - Interface: xyz.openbmc_project.Object.Enable
+      Properties:
+          Enabled:
+              Default: 'false'
+
 /xyz/openbmc_project/control/host4/boot:
     - Interface: xyz.openbmc_project.Control.Boot.Source
       Properties:
@@ -37,3 +55,9 @@
       Properties:
           BootMode:
               Default: Mode::Modes::Regular
+
+/xyz/openbmc_project/control/host4/boot/one_time:
+    - Interface: xyz.openbmc_project.Object.Enable
+      Properties:
+          Enabled:
+              Default: 'false'
