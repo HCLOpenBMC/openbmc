@@ -1,0 +1,21 @@
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
+index 8864e9c..972dd7a 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev2.dts
+@@ -215,6 +215,16 @@
+ 	};
+ };
+ 
++&i2c13 {
++	//Host4 IPMB bus
++	status = "okay";
++	multi-master;
++	ipmb13@10 {
++		compatible = "ipmb-dev";
++		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
++		i2c-protocol;
++	};
++};
+ &pwm_tacho {
+ 	status = "okay";
+ 	//FSC
